@@ -1,0 +1,10 @@
+# Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+
+# .NET MAUI
+Generated%20Files/
