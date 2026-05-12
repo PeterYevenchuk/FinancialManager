@@ -1,11 +1,10 @@
 ﻿using FinancialManager.Models;
 
-namespace FinancialManager.Data.Repositories
+namespace FinancialManager.Data.Repositories;
+
+public interface ITransactionTypeRepository : IRepository<TransactionType> { }
+
+public class TransactionTypeRepository : BaseRepository<TransactionType>, ITransactionTypeRepository
 {
-    public interface ITransactionTypeRepository : IRepository<TransactionType> { }
 
-    public class TransactionTypeRepository : BaseRepository<TransactionType>, ITransactionTypeRepository
-    {
-
-    }
 }

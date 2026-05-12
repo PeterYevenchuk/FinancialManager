@@ -4,8 +4,22 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:FinancialManager"
+    xmlns:views="clr-namespace:FinancialManager.Views"
     Title="FinancialManager">
+    
+    <FlyoutItem Title="Home" Icon="home_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate views:MainPage}" />
+    </FlyoutItem>
+ 
+    <FlyoutItem Title="Transactions" Icon="list_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate views:TransactionsPage}" />
+    </FlyoutItem>
 
-    <ShellContent />
+    <FlyoutItem Title="Categories" Icon="category_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate views:CategoryPage}" />
+    </FlyoutItem>
 
+    <FlyoutItem Title="Types" Icon="settings_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate views:TransactionTypePage}" />
+    </FlyoutItem>
 </Shell>

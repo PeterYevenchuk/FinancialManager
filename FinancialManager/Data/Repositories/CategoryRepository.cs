@@ -1,11 +1,10 @@
 ﻿using FinancialManager.Models;
 
-namespace FinancialManager.Data.Repositories
-{
-    public interface ICategoryRepository : IRepository<Category> { }
+namespace FinancialManager.Data.Repositories;
 
-    public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
-    {
-        
-    }
+public interface ICategoryRepository : IRepository<Category> { }
+
+public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
+{
+    
 }

@@ -1,15 +1,19 @@
 ﻿using SQLite;
 
-namespace FinancialManager.Models
+namespace FinancialManager.Models;
+
+public class Category
 {
-    public class Category
+    public Category()
     {
-        [PrimaryKey, AutoIncrement]
-        public Guid Id { get; set; }
-
-        public string Icon { get; set; }
-
-        [Ignore]
-        public string LocalizedName { get; set; }
+        Id = Guid.NewGuid();
     }
+
+    [PrimaryKey]
+    public Guid Id { get; set; }
+
+    public string Icon { get; set; }
+
+    [Ignore]
+    public string LocalizedName { get; set; }
 }
