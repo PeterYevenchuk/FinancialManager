@@ -1,23 +1,72 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FinancialManager.ViewModels"
+             xmlns:models="clr-namespace:FinancialManager.Models"
              x:Class="FinancialManager.Views.CategoryPage"
              Title="Categories">
-    
-    <Grid RowDefinitions="*, Auto">
-        <CollectionView ItemsSource="{Binding Categories}">
+
+    <Grid>
+        <CollectionView ItemsSource="{Binding Categories}"
+                    SelectionMode="Single"
+                    SelectedItem="{Binding SelectedCategory}">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame Margin="10,5" Padding="15">
-                        <HorizontalStackLayout Spacing="15">
-                            <Label Text="{Binding Icon}" FontSize="24" VerticalOptions="Center"/>
-                            <Label Text="{Binding LocalizedName}" FontSize="18" VerticalOptions="Center"/>
-                        </HorizontalStackLayout>
-                    </Frame>
+                <DataTemplate x:DataType="models:Category">
+                    <Grid Margin="10,5">
+                        <Frame Padding="0" 
+                            CornerRadius="10" 
+                            HasShadow="False" 
+                            BackgroundColor="#1a1a1a"
+                            BorderColor="#333">
+
+                            <VerticalStackLayout>
+                                <Grid Padding="15">
+                                    <HorizontalStackLayout Spacing="15">
+                                        <Label Text="{Binding Icon}" FontSize="24" VerticalOptions="Center"/>
+                                        <Label Text="{Binding LocalizedName}" FontSize="18" VerticalOptions="Center" TextColor="White"/>
+                                    </HorizontalStackLayout>
+                                </Grid>
+
+                                <BoxView HeightRequest="1" BackgroundColor="#333" IsVisible="{Binding IsSelected}"/>
+
+                                <Grid IsVisible="{Binding IsSelected}" 
+                                    ColumnDefinitions="*, *" 
+                                    HeightRequest="50"
+                                    BackgroundColor="#252525">
+
+                                    <Button Grid.Column="0" 
+                                        Text="✏️ Edit" 
+                                        TextColor="White"
+                                        BackgroundColor="Transparent"
+                                        CornerRadius="0"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CategoryViewModel}}, Path=EditCategoryCommand}"
+                                        CommandParameter="{Binding .}"/>
+
+                                    <Button Grid.Column="1" 
+                                        Text="🗑️ Delete" 
+                                        TextColor="#ff4d4d"
+                                        BackgroundColor="Transparent"
+                                        CornerRadius="0"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CategoryViewModel}}, Path=DeleteCategoryCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Grid.Row="1" Text="Add Category" Margin="20" Command="{Binding AddCategoryCommand}"/>
+        <Button Text="+"
+            FontSize="24"
+            BackgroundColor="#28a745"
+            TextColor="White"
+            CornerRadius="25"
+            HeightRequest="50"
+            WidthRequest="50"
+            HorizontalOptions="End"
+            VerticalOptions="End"
+            Margin="20"
+            Command="{Binding AddCategoryCommand}"/>
     </Grid>
 </ContentPage>

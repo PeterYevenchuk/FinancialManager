@@ -14,6 +14,9 @@ public partial class CategoryViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<Category> categories = new();
 
+    [ObservableProperty]
+    private Category selectedCategory;
+
     public CategoryViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository)
     {
         _categoryRepository = categoryRepository;
@@ -22,18 +25,6 @@ public partial class CategoryViewModel : ObservableObject
     }
 
     public Command LoadCategoriesCommand { get; }
-
-    private async Task LoadCategories()
-    {
-        var items = await _categoryRepository.GetAsync();
-        Categories = new ObservableCollection<Category>(items);
-    }
-
-    [RelayCommand]
-    private async Task AddCategory()
-    {
-        await Shell.Current.GoToAsync("CategoryAddPage");
-    }
 
     public async Task RefreshCategories()
     {
@@ -55,5 +46,63 @@ public partial class CategoryViewModel : ObservableObject
         }
 
         Categories = new ObservableCollection<Category>(allCategories);
+    }
+
+    private async Task LoadCategories()
+    {
+        var items = await _categoryRepository.GetAsync();
+        Categories = new ObservableCollection<Category>(items);
+    }
+
+    partial void OnSelectedCategoryChanged(Category value)
+    {
+        foreach (var cat in Categories)
+        {
+            cat.IsSelected = false;
+        }
+
+        if (value != null)
+        {
+            value.IsSelected = true;
+        }
+    }
+
+    [RelayCommand]
+    private async Task AddCategory()
+    {
+        await Shell.Current.GoToAsync("CategoryAddPage");
+    }
+
+    [RelayCommand]
+    private async Task EditCategory(Category category)
+    {
+        var navigationParameter = new Dictionary<string, object>
+        {
+            { "CategoryToEdit", category }
+        };
+        await Shell.Current.GoToAsync("CategoryAddPage", navigationParameter);
+    }
+
+    [RelayCommand]
+    private async Task DeleteCategory(Category category)
+    {
+        bool confirm = await Shell.Current.DisplayAlert("Видалення", $"Ви впевнені, що хочете видалити категорію {category.LocalizedName}?", "Так", "Ні");
+
+        if (confirm)
+        {
+            var allLocs = await _localizationRepository.GetAsync();
+            var categoryLocs = allLocs.Where(l => l.ParentId == category.Id).ToList();
+
+            foreach (var loc in categoryLocs)
+            {
+                await _localizationRepository.DeleteAsync(loc);
+            }
+
+            await _categoryRepository.DeleteAsync(category);
+
+            await RefreshCategories();
+
+            SelectedCategory = null;
+        }
     }
 }

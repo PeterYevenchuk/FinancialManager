@@ -5,19 +5,39 @@ using FinancialManager.Models;
 
 namespace FinancialManager.ViewModels;
 
+[QueryProperty(nameof(CategoryToEdit), "CategoryToEdit")]
 public partial class CategoryAddViewModel : ObservableObject
 {
     private readonly ICategoryRepository _categoryRepository;
-    private readonly IRepository<Localization> _localizationRepository;
+    private readonly ILocalizationRepository _localizationRepository;
 
-    [ObservableProperty] private string icon = "📁";
+    [ObservableProperty] private string icon = "✨";
     [ObservableProperty] private string nameEng;
     [ObservableProperty] private string nameUkr;
 
-    public CategoryAddViewModel(ICategoryRepository categoryRepository, IRepository<Localization> localizationRepository)
+    [ObservableProperty] private Category? categoryToEdit;
+
+    public CategoryAddViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository)
     {
         _categoryRepository = categoryRepository;
         _localizationRepository = localizationRepository;
+    }
+
+    partial void OnCategoryToEditChanged(Category? value)
+    {
+        if (value != null)
+        {
+            Icon = value.Icon;
+            LoadLocalizations(value.Id);
+        }
+    }
+
+    private async void LoadLocalizations(Guid categoryId)
+    {
+        var allLocs = await _localizationRepository.GetAsync();
+
+        NameEng = allLocs.FirstOrDefault(l => l.ParentId == categoryId && l.LanguageCode == "en")?.Value ?? string.Empty;
+        NameUkr = allLocs.FirstOrDefault(l => l.ParentId == categoryId && l.LanguageCode == "uk")?.Value ?? string.Empty;
     }
 
     [RelayCommand]
@@ -25,30 +45,39 @@ public partial class CategoryAddViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(NameEng))
         {
-            await Shell.Current.DisplayAlert("Error", "English name is required!", "OK");
+            await Shell.Current.DisplayAlert("Помилка", "English name is required!", "OK");
             return;
         }
 
-        var category = new Category { Icon = Icon };
+        var category = CategoryToEdit ?? new Category();
+        category.Icon = Icon;
+
         await _categoryRepository.SaveAsync(category);
 
-        await _localizationRepository.SaveAsync(new Localization
-        {
-            ParentId = category.Id,
-            LanguageCode = "en",
-            Value = NameEng
-        });
+        await SaveOrUpdateLocalization(category.Id, "en", NameEng);
+        await SaveOrUpdateLocalization(category.Id, "uk", NameUkr);
 
-        if (!string.IsNullOrWhiteSpace(NameUkr))
+        await Shell.Current.GoToAsync("..");
+    }
+
+    private async Task SaveOrUpdateLocalization(Guid parentId, string langCode, string value)
+    {
+        var allLocs = await _localizationRepository.GetAsync();
+        var existingLoc = allLocs.FirstOrDefault(l => l.ParentId == parentId && l.LanguageCode == langCode);
+
+        if (existingLoc != null)
+        {
+            existingLoc.Value = value;
+            await _localizationRepository.SaveAsync(existingLoc);
+        }
+        else if (!string.IsNullOrWhiteSpace(value))
         {
             await _localizationRepository.SaveAsync(new Localization
             {
-                ParentId = category.Id,
-                LanguageCode = "uk",
-                Value = NameUkr
+                ParentId = parentId,
+                LanguageCode = langCode,
+                Value = value
             });
         }
-
-        await Shell.Current.GoToAsync("..");
     }
 }

@@ -22,7 +22,7 @@ namespace FinancialManager
             builder.Services.AddSingleton<ITransactionRepository, TransactionRepository>();
             builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();
             builder.Services.AddSingleton<ITransactionTypeRepository, TransactionTypeRepository>();
-            builder.Services.AddSingleton<IRepository<Localization>, LocalizationRepository>();
+            builder.Services.AddSingleton<ILocalizationRepository, LocalizationRepository>();
 
             builder.Services.AddTransient<CategoryPage>();
             builder.Services.AddTransient<CategoryViewModel>();

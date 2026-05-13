@@ -1,8 +1,9 @@
-﻿using SQLite;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SQLite;
 
 namespace FinancialManager.Models;
 
-public class Category
+public partial class Category : ObservableObject
 {
     public Category()
     {
@@ -16,4 +17,8 @@ public class Category
 
     [Ignore]
     public string LocalizedName { get; set; }
+
+    [ObservableProperty]
+    [property: Ignore]
+    private bool isSelected;
 }
