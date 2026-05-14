@@ -30,6 +30,10 @@ namespace FinancialManager
             builder.Services.AddTransient<CategoryAddViewModel>();
             builder.Services.AddTransient<CategoryPage>();
             builder.Services.AddTransient<CategoryViewModel>();
+            builder.Services.AddTransient<TransactionTypeAddViewModel>();
+            builder.Services.AddTransient<TransactionTypeAddPage>();
+            builder.Services.AddTransient<TransactionTypePage>();
+            builder.Services.AddTransient<TransactionTypeViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();

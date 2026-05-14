@@ -1,0 +1,108 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using FinancialManager.Data.Repositories;
+using FinancialManager.Models;
+using System.Collections.ObjectModel;
+
+namespace FinancialManager.ViewModels;
+
+public partial class TransactionTypeViewModel : ObservableObject
+{
+    private readonly ITransactionTypeRepository _transactionTypeRepository;
+    private readonly ILocalizationRepository _localizationRepository;
+
+    [ObservableProperty]
+    private ObservableCollection<TransactionType> transactionTypes = new();
+
+    [ObservableProperty]
+    private TransactionType selectedType;
+
+    public Command LoadTransactionTypesCommand { get; }
+
+    public TransactionTypeViewModel(ITransactionTypeRepository transactionTypeRepository, ILocalizationRepository localizationRepository)
+    {
+        _localizationRepository = localizationRepository;
+        _transactionTypeRepository = transactionTypeRepository;
+        LoadTransactionTypesCommand = new Command(async () => await LoadTransactionTypes());
+    }
+
+    public async Task RefreshTransactionTypes()
+    {
+        var allTransactionTypes = await _transactionTypeRepository.GetAsync();
+        var allLocalizations = await _localizationRepository.GetAsync();
+
+        string currentLang = "uk";
+
+        foreach (var type in allTransactionTypes)
+        {
+            var loc = allLocalizations.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == currentLang);
+
+            if (loc == null)
+            {
+                loc = allLocalizations.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == "en");
+            }
+
+            type.LocalizedName = loc?.Value ?? "No Name";
+        }
+
+        TransactionTypes = new ObservableCollection<TransactionType>(allTransactionTypes);
+    }
+
+    private async Task LoadTransactionTypes()
+    {
+        var items = await _transactionTypeRepository.GetAsync();
+        TransactionTypes = new ObservableCollection<TransactionType>(items);
+    }
+
+    partial void OnSelectedTypeChanged(TransactionType value)
+    {
+        foreach (var type in TransactionTypes)
+        {
+            type.IsSelected = false;
+        }
+
+        if (value != null)
+        {
+            value.IsSelected = true;
+        }
+    }
+
+    [RelayCommand]
+    private async Task AddTransactionTypes()
+    {
+        await Shell.Current.GoToAsync("TransactionTypeAddPage");
+    }
+
+    [RelayCommand]
+    private async Task EditTransactionType(TransactionType type)
+    {
+        var navigationParameter = new Dictionary<string, object>
+        {
+            { "TransactionTypeToEdit", type }
+        };
+        await Shell.Current.GoToAsync("TransactionTypeAddPage", navigationParameter);
+    }
+
+    [RelayCommand]
+    private async Task DeleteCategory(TransactionType type)
+    {
+        bool confirm = await Shell.Current.DisplayAlert("Видалення", $"Ви впевнені, що хочете видалити тип транзакції {type.LocalizedName}?", "Так", "Ні");
+
+        if (confirm)
+        {
+            var allLocs = await _localizationRepository.GetAsync();
+            var transactionTypeLocs = allLocs.Where(l => l.ParentId == type.Id).ToList();
+
+            foreach (var loc in transactionTypeLocs)
+            {
+                await _localizationRepository.DeleteAsync(loc);
+            }
+
+            await _transactionTypeRepository.DeleteAsync(type);
+
+            await RefreshTransactionTypes();
+
+            SelectedType = null;
+        }
+    }
+}

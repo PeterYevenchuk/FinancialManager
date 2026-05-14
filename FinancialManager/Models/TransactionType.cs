@@ -1,8 +1,9 @@
-﻿using SQLite;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SQLite;
 
 namespace FinancialManager.Models;
 
-public class TransactionType
+public partial class TransactionType : ObservableObject
 {
     public TransactionType()
     {
@@ -14,4 +15,8 @@ public class TransactionType
 
     [Ignore]
     public string LocalizedName { get; set; }
+
+    [ObservableProperty]
+    [property: Ignore]
+    private bool isSelected;
 }

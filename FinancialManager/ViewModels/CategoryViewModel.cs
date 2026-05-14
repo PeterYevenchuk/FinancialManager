@@ -17,14 +17,14 @@ public partial class CategoryViewModel : ObservableObject
     [ObservableProperty]
     private Category selectedCategory;
 
+    public Command LoadCategoriesCommand { get; }
+
     public CategoryViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository)
     {
         _categoryRepository = categoryRepository;
         LoadCategoriesCommand = new Command(async () => await LoadCategories());
         _localizationRepository = localizationRepository;
     }
-
-    public Command LoadCategoriesCommand { get; }
 
     public async Task RefreshCategories()
     {

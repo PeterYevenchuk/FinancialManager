@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FinancialManager.ViewModels"
+             x:Class="FinancialManager.Views.TransactionTypeAddPage"
+             Title="Manage Type"
+             BackgroundColor="#121212">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <Label Text="Transaction Type Details" 
+                   FontSize="22" 
+                   FontAttributes="Bold" 
+                   TextColor="White"
+                   HorizontalOptions="Center" 
+                   Margin="0,0,0,10"/>
+
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Name (English)" TextColor="#aaa" Margin="5,0"/>
+                <Frame Padding="10,0" BackgroundColor="#1a1a1a" BorderColor="#333" CornerRadius="8">
+                    <Entry Text="{Binding NameEng}" 
+                           Placeholder="e.g. Income" 
+                           PlaceholderColor="#555"
+                           TextColor="White" />
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Назва (Українська)" TextColor="#aaa" Margin="5,0"/>
+                <Frame Padding="10,0" BackgroundColor="#1a1a1a" BorderColor="#333" CornerRadius="8">
+                    <Entry Text="{Binding NameUkr}" 
+                           Placeholder="напр. Дохід" 
+                           PlaceholderColor="#555"
+                           TextColor="White" />
+                </Frame>
+            </VerticalStackLayout>
+
+            <Button Text="Save"
+                    Command="{Binding SaveCommand}"
+                    BackgroundColor="#28a745"
+                    TextColor="White"
+                    HeightRequest="50"
+                    CornerRadius="10"
+                    Margin="0,20,0,0"
+                    FontAttributes="Bold"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

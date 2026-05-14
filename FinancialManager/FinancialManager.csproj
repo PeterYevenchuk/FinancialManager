@@ -92,6 +92,9 @@
 	  <MauiXaml Update="Views\TransactionsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\TransactionTypeAddPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\TransactionTypePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
