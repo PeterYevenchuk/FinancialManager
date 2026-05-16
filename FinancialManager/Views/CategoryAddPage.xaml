@@ -15,7 +15,7 @@
         <Label Text="Назва (Українська)" />
         <Entry Text="{Binding NameUkr}" Placeholder="Optional" />
 
-        <Button Text="Save Category" 
+        <Button Text="Save" 
                 Command="{Binding SaveCommand}"
                 Margin="0,20,0,0" 
                 BackgroundColor="#2196F3" 

@@ -1,5 +1,5 @@
 ﻿using FinancialManager.Data.Repositories;
-using FinancialManager.Models;
+using FinancialManager.Services;
 using FinancialManager.ViewModels;
 using FinancialManager.Views;
 using Microsoft.Extensions.Logging;
@@ -24,16 +24,25 @@ namespace FinancialManager
             builder.Services.AddSingleton<ITransactionTypeRepository, TransactionTypeRepository>();
             builder.Services.AddSingleton<ILocalizationRepository, LocalizationRepository>();
 
-            builder.Services.AddTransient<CategoryPage>();
+            builder.Services.AddSingleton<ILocalizationService, LocalizationService>();
+
             builder.Services.AddTransient<CategoryViewModel>();
-            builder.Services.AddTransient<CategoryAddPage>();
             builder.Services.AddTransient<CategoryAddViewModel>();
-            builder.Services.AddTransient<CategoryPage>();
             builder.Services.AddTransient<CategoryViewModel>();
             builder.Services.AddTransient<TransactionTypeAddViewModel>();
+            builder.Services.AddTransient<TransactionTypeViewModel>();
+            builder.Services.AddTransient<TransactionViewModel>();
+            builder.Services.AddTransient<TransactionAddViewModel>();
+            builder.Services.AddSingleton<AppShellViewModel>();
+
+            builder.Services.AddTransient<TransactionAddPage>();
+            builder.Services.AddTransient<TransactionPage>();
             builder.Services.AddTransient<TransactionTypeAddPage>();
             builder.Services.AddTransient<TransactionTypePage>();
-            builder.Services.AddTransient<TransactionTypeViewModel>();
+            builder.Services.AddTransient<CategoryPage>();
+            builder.Services.AddTransient<CategoryAddPage>();
+            builder.Services.AddTransient<CategoryPage>();
+            builder.Services.AddSingleton<AppShell>();
 
 #if DEBUG
             builder.Logging.AddDebug();

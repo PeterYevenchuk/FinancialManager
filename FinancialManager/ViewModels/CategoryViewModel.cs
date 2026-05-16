@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
+using FinancialManager.Services;
 using System.Collections.ObjectModel;
 
 namespace FinancialManager.ViewModels;
@@ -10,6 +11,7 @@ public partial class CategoryViewModel : ObservableObject
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly ILocalizationRepository _localizationRepository;
+    private readonly ILocalizationService _localizationService;
 
     [ObservableProperty]
     private ObservableCollection<Category> categories = new();
@@ -19,11 +21,12 @@ public partial class CategoryViewModel : ObservableObject
 
     public Command LoadCategoriesCommand { get; }
 
-    public CategoryViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository)
+    public CategoryViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository, ILocalizationService localizationService)
     {
         _categoryRepository = categoryRepository;
         LoadCategoriesCommand = new Command(async () => await LoadCategories());
         _localizationRepository = localizationRepository;
+        _localizationService = localizationService;
     }
 
     public async Task RefreshCategories()
@@ -31,7 +34,7 @@ public partial class CategoryViewModel : ObservableObject
         var allCategories = await _categoryRepository.GetAsync();
         var allLocalizations = await _localizationRepository.GetAsync();
 
-        string currentLang = "uk";
+        string currentLang = _localizationService.CurrentLanguage;
 
         foreach (var cat in allCategories)
         {
@@ -42,7 +45,7 @@ public partial class CategoryViewModel : ObservableObject
                 loc = allLocalizations.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == "en");
             }
 
-            cat.LocalizedName = loc?.Value ?? "No Name";
+            cat.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
         }
 
         Categories = new ObservableCollection<Category>(allCategories);
@@ -86,7 +89,7 @@ public partial class CategoryViewModel : ObservableObject
     [RelayCommand]
     private async Task DeleteCategory(Category category)
     {
-        bool confirm = await Shell.Current.DisplayAlert("Видалення", $"Ви впевнені, що хочете видалити категорію {category.LocalizedName}?", "Так", "Ні");
+        bool confirm = await Shell.Current.DisplayAlert(Resources.Strings.DeleteTitle, string.Format(Resources.Strings.DeleteCategoryMessage, category.LocalizedName), Resources.Strings.Yes, Resources.Strings.No);
 
         if (confirm)
         {

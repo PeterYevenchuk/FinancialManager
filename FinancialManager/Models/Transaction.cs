@@ -1,13 +1,15 @@
-﻿using SQLite;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SQLite;
 using SQLiteNetExtensions.Attributes;
 
 namespace FinancialManager.Models;
 
-public class Transaction
+public partial class Transaction : ObservableObject
 {
     public Transaction()
     {
         Id = Guid.NewGuid();
+        Date = DateTime.Now;
     }
 
     [PrimaryKey]
@@ -30,4 +32,8 @@ public class Transaction
 
     [ManyToOne]
     public TransactionType TransactionType { get; set; }
+
+    [ObservableProperty]
+    [property: Ignore]
+    private bool isSelected;
 }

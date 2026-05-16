@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
+using FinancialManager.Services;
 
 namespace FinancialManager.ViewModels;
 
@@ -10,16 +11,18 @@ public partial class TransactionTypeAddViewModel : ObservableObject
 {
     private readonly ITransactionTypeRepository _transactionTypeRepository;
     private readonly ILocalizationRepository _localizationRepository;
+    private readonly ILocalizationService _localizationService;
 
     [ObservableProperty] private string nameEng;
     [ObservableProperty] private string nameUkr;
 
     [ObservableProperty] private TransactionType? transactionTypeToEdit;
 
-    public TransactionTypeAddViewModel(ITransactionTypeRepository transactionTypeRepository, ILocalizationRepository localizationRepository)
+    public TransactionTypeAddViewModel(ITransactionTypeRepository transactionTypeRepository, ILocalizationRepository localizationRepository, ILocalizationService localizationService)
     {
         _transactionTypeRepository = transactionTypeRepository;
         _localizationRepository = localizationRepository;
+        _localizationService = localizationService;
     }
 
     partial void OnTransactionTypeToEditChanged(TransactionType? value)
@@ -43,7 +46,7 @@ public partial class TransactionTypeAddViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(NameEng))
         {
-            await Shell.Current.DisplayAlert("Помилка", "English name is required!", "OK");
+            await Shell.Current.DisplayAlert(Resources.Strings.Error, Resources.Strings.EnglishNameRequired, Resources.Strings.Ok);
             return;
         }
 

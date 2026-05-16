@@ -1,17 +1,21 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FinancialManager.Services;
 
-namespace FinancialManager
+namespace FinancialManager;
+
+public partial class App : Application
 {
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
-        }
+    private readonly AppShell _appShell;
 
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            return new Window(new AppShell());
-        }
+    public App(ILocalizationService localizationService, AppShell appShell)
+    {
+        InitializeComponent();
+
+        localizationService.Init();
+        _appShell = appShell;
+    }
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        return new Window(_appShell);
     }
 }

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
+using FinancialManager.Services;
 
 namespace FinancialManager.ViewModels;
 
@@ -10,6 +11,7 @@ public partial class CategoryAddViewModel : ObservableObject
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly ILocalizationRepository _localizationRepository;
+    private readonly ILocalizationService _localizationService;
 
     [ObservableProperty] private string icon = "✨";
     [ObservableProperty] private string nameEng;
@@ -17,10 +19,11 @@ public partial class CategoryAddViewModel : ObservableObject
 
     [ObservableProperty] private Category? categoryToEdit;
 
-    public CategoryAddViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository)
+    public CategoryAddViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository, ILocalizationService localizationService)
     {
         _categoryRepository = categoryRepository;
         _localizationRepository = localizationRepository;
+        _localizationService = localizationService;
     }
 
     partial void OnCategoryToEditChanged(Category? value)
@@ -45,7 +48,7 @@ public partial class CategoryAddViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(NameEng))
         {
-            await Shell.Current.DisplayAlert("Помилка", "English name is required!", "OK");
+            await Shell.Current.DisplayAlert(Resources.Strings.Error, Resources.Strings.EnglishNameRequired, Resources.Strings.Ok);
             return;
         }
 

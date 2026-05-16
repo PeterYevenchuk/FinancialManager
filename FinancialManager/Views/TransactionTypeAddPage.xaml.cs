@@ -4,7 +4,7 @@ namespace FinancialManager.Views;
 
 public partial class TransactionTypeAddPage : ContentPage
 {
-	public TransactionTypeAddPage(TransactionTypeViewModel viewModel)
+	public TransactionTypeAddPage(TransactionTypeAddViewModel viewModel)
 	{
 		InitializeComponent();
         BindingContext = viewModel;

@@ -5,14 +5,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:FinancialManager"
     xmlns:views="clr-namespace:FinancialManager.Views"
+    xmlns:vm="clr-namespace:FinancialManager.ViewModels"
+    x:DataType="vm:AppShellViewModel"
     Title="FinancialManager">
-    
+
     <FlyoutItem Title="Home" Icon="home_icon.png">
         <ShellContent ContentTemplate="{DataTemplate views:MainPage}" />
     </FlyoutItem>
- 
+
     <FlyoutItem Title="Transactions" Icon="list_icon.png">
-        <ShellContent ContentTemplate="{DataTemplate views:TransactionsPage}" />
+        <ShellContent ContentTemplate="{DataTemplate views:TransactionPage}" />
     </FlyoutItem>
 
     <FlyoutItem Title="Categories" Icon="category_icon.png">
@@ -22,4 +24,29 @@
     <FlyoutItem Title="Types" Icon="settings_icon.png">
         <ShellContent ContentTemplate="{DataTemplate views:TransactionTypePage}" />
     </FlyoutItem>
+
+    <Shell.FlyoutFooter>
+        <Frame BackgroundColor="#1a1a1a" 
+               BorderColor="#333" 
+               CornerRadius="0" 
+               Padding="15,10" 
+               HasShadow="False"
+               x:DataType="vm:AppShellViewModel">
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Language / Мова" 
+                       TextColor="#888" 
+                       FontSize="11" 
+                       FontAttributes="Bold"/>
+
+                <Picker ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type Shell}}, Path=BindingContext.Languages}"
+                        SelectedItem="{Binding Source={RelativeSource AncestorType={x:Type Shell}}, Path=BindingContext.SelectedLanguage, Mode=TwoWay}"
+                        ItemDisplayBinding="{Binding Name}"
+                        TextColor="White"
+                        TitleColor="#555"
+                        FontSize="14"
+                        HeightRequest="40"
+                        BackgroundColor="#252525"/>
+            </VerticalStackLayout>
+        </Frame>
+    </Shell.FlyoutFooter>
 </Shell>

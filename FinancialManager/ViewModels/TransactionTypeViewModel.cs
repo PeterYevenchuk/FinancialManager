@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
+using FinancialManager.Services;
 using System.Collections.ObjectModel;
 
 namespace FinancialManager.ViewModels;
@@ -10,6 +11,7 @@ public partial class TransactionTypeViewModel : ObservableObject
 {
     private readonly ITransactionTypeRepository _transactionTypeRepository;
     private readonly ILocalizationRepository _localizationRepository;
+    private readonly ILocalizationService _localizationService;
 
     [ObservableProperty]
     private ObservableCollection<TransactionType> transactionTypes = new();
@@ -19,10 +21,11 @@ public partial class TransactionTypeViewModel : ObservableObject
 
     public Command LoadTransactionTypesCommand { get; }
 
-    public TransactionTypeViewModel(ITransactionTypeRepository transactionTypeRepository, ILocalizationRepository localizationRepository)
+    public TransactionTypeViewModel(ITransactionTypeRepository transactionTypeRepository, ILocalizationRepository localizationRepository, ILocalizationService localizationService)
     {
         _localizationRepository = localizationRepository;
         _transactionTypeRepository = transactionTypeRepository;
+        _localizationService = localizationService;
         LoadTransactionTypesCommand = new Command(async () => await LoadTransactionTypes());
     }
 
@@ -31,7 +34,7 @@ public partial class TransactionTypeViewModel : ObservableObject
         var allTransactionTypes = await _transactionTypeRepository.GetAsync();
         var allLocalizations = await _localizationRepository.GetAsync();
 
-        string currentLang = "uk";
+        string currentLang = _localizationService.CurrentLanguage;
 
         foreach (var type in allTransactionTypes)
         {
@@ -42,7 +45,7 @@ public partial class TransactionTypeViewModel : ObservableObject
                 loc = allLocalizations.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == "en");
             }
 
-            type.LocalizedName = loc?.Value ?? "No Name";
+            type.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
         }
 
         TransactionTypes = new ObservableCollection<TransactionType>(allTransactionTypes);
@@ -86,7 +89,7 @@ public partial class TransactionTypeViewModel : ObservableObject
     [RelayCommand]
     private async Task DeleteCategory(TransactionType type)
     {
-        bool confirm = await Shell.Current.DisplayAlert("Видалення", $"Ви впевнені, що хочете видалити тип транзакції {type.LocalizedName}?", "Так", "Ні");
+        bool confirm = await Shell.Current.DisplayAlert(Resources.Strings.DeleteTitle, string.Format(Resources.Strings.DeleteTransactionTypeMessage, type.LocalizedName), Resources.Strings.Yes, Resources.Strings.No);
 
         if (confirm)
         {

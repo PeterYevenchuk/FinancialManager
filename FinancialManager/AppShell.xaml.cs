@@ -1,12 +1,18 @@
-﻿namespace FinancialManager
+﻿using FinancialManager.ViewModels;
+using FinancialManager.Views;
+
+namespace FinancialManager
 {
     public partial class AppShell : Shell
     {
-        public AppShell()
+        public AppShell(AppShellViewModel viewModel)
         {
             InitializeComponent();
-            Routing.RegisterRoute(nameof(Views.CategoryAddPage), typeof(Views.CategoryAddPage));
-            Routing.RegisterRoute(nameof(Views.TransactionTypeAddPage), typeof(Views.TransactionTypeAddPage));
+            BindingContext = viewModel;
+
+            Routing.RegisterRoute(nameof(CategoryAddPage), typeof(CategoryAddPage));
+            Routing.RegisterRoute(nameof(TransactionTypeAddPage), typeof(TransactionTypeAddPage));
+            Routing.RegisterRoute(nameof(TransactionAddPage), typeof(TransactionAddPage));
         }
     }
 }
