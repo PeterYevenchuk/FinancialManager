@@ -10,12 +10,14 @@ public partial class Transaction : ObservableObject
     {
         Id = Guid.NewGuid();
         Date = DateTime.Now;
+        Currency = "₴";
     }
 
     [PrimaryKey]
     public Guid Id { get; set; }
 
     public double Amount { get; set; }
+    public string Currency { get; set; } = "₴";
 
     public string Description { get; set; }
 
@@ -32,6 +34,9 @@ public partial class Transaction : ObservableObject
 
     [ManyToOne]
     public TransactionType TransactionType { get; set; }
+
+    [Ignore]
+    public string AmountDisplay => $"{Amount:N2} {Currency ?? "₴"}";
 
     [ObservableProperty]
     [property: Ignore]

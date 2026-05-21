@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:FinancialManager.ViewModels"
              xmlns:models="clr-namespace:FinancialManager.Models"
+             xmlns:resources="clr-namespace:Resources"
              x:Class="FinancialManager.Views.TransactionTypePage"
-             Title="Transaction Types">
+             Title="{DynamicResource TransactionTypesTitle}">
 
     <Grid>
         <CollectionView ItemsSource="{Binding TransactionTypes}"
@@ -37,14 +38,14 @@
                                       BackgroundColor="#252525">
 
                                     <Button Grid.Column="0" 
-                                            Text="✏️ Edit" 
+                                            Text="{DynamicResource Edit}" 
                                             TextColor="White"
                                             BackgroundColor="Transparent"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionTypeViewModel}}, Path=EditTransactionTypeCommand}"
                                             CommandParameter="{Binding .}"/>
 
                                     <Button Grid.Column="1" 
-                                            Text="🗑️ Delete" 
+                                            Text="{DynamicResource Delete}" 
                                             TextColor="#ff4d4d"
                                             BackgroundColor="Transparent"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionTypeViewModel}}, Path=DeleteCategoryCommand}"
@@ -57,7 +58,7 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Text="+"
+        <Button Text="{DynamicResource Plus}"
                 FontSize="24"
                 BackgroundColor="#28a745"
                 TextColor="White"

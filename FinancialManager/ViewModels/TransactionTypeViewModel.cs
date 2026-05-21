@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
 using FinancialManager.Services;
+using FinancialManager.Services.Messages;
 using System.Collections.ObjectModel;
 
 namespace FinancialManager.ViewModels;
@@ -27,6 +29,14 @@ public partial class TransactionTypeViewModel : ObservableObject
         _transactionTypeRepository = transactionTypeRepository;
         _localizationService = localizationService;
         LoadTransactionTypesCommand = new Command(async () => await LoadTransactionTypes());
+
+        WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, async (r, m) =>
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await RefreshTransactionTypes();
+            });
+        });
     }
 
     public async Task RefreshTransactionTypes()

@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using FinancialManager.Services;
+using FinancialManager.Services.Messages;
 using System.Collections.ObjectModel;
 
 namespace FinancialManager.ViewModels;
@@ -34,14 +36,8 @@ public partial class AppShellViewModel : ObservableObject
         {
             _localizationService.CurrentLanguage = value.Code;
 
-            AlertLanguageChanged();
+            WeakReferenceMessenger.Default.Send(new LanguageChangedMessage(value.Code));
         }
-    }
-
-    private async void AlertLanguageChanged()
-    {
-        await Shell.Current.DisplayAlert("Локалізація / Localization",
-            "Мову змінено! Перевідкрийте сторінку для оновлення списків.", "OK");
     }
 }
 

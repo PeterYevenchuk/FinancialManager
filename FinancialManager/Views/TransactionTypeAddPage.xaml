@@ -7,17 +7,22 @@
              BackgroundColor="#121212">
 
     <VerticalStackLayout Padding="20" Spacing="15">
-        <Label Text="Name (English) *" FontAttributes="Bold" />
-        <Entry Text="{Binding NameEng}" Placeholder="Required" />
 
-        <Label Text="Назва (Українська)" />
-        <Entry Text="{Binding NameUkr}" Placeholder="Optional" />
+        <VerticalStackLayout Spacing="5">
+            <Label Text="Name (English) *" FontAttributes="Bold" />
+            <Entry Text="{Binding NameEng}" Placeholder="Required" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Spacing="5" IsVisible="{Binding IsUkrVisible}">
+            <Label Text="Назва (Українська)" />
+            <Entry Text="{Binding NameUkr}" Placeholder="Optional" />
+        </VerticalStackLayout>
 
         <Button Text="Save" 
-         Command="{Binding SaveCommand}"
-         Margin="0,20,0,0" 
-         BackgroundColor="#2196F3" 
-         TextColor="White" />
+             Command="{Binding SaveCommand}"
+             Margin="0,20,0,0" 
+             BackgroundColor="#2196F3" 
+             TextColor="White" />
 
     </VerticalStackLayout>
 </ContentPage>

@@ -1,33 +1,47 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resources="clr-namespace:Resources"
              x:Class="FinancialManager.Views.TransactionAddPage"
-             Title="Manage Transaction">
+             Title="{DynamicResource ManageTransactionTitle}">
 
     <VerticalStackLayout Padding="20" Spacing="15">
 
-        <Label Text="Amount *" FontAttributes="Bold" />
-        <Entry Text="{Binding Amount}" Keyboard="Numeric" Placeholder="0.00" />
+        <Grid ColumnDefinitions="*, 80" ColumnSpacing="10">
+            <Entry Grid.Column="0" 
+                   Text="{Binding Amount}" 
+                   Keyboard="Numeric" 
+                   Placeholder="{DynamicResource PlaceholderAmount}"
+                   TextColor="White"/>
 
-        <Label Text="Description" />
-        <Entry Text="{Binding Description}" Placeholder="e.g. Dinner, Gas" MaxLength="250" />
+            <Picker Grid.Column="1" 
+                    ItemsSource="{Binding Currencies}" 
+                    SelectedItem="{Binding SelectedCurrency}" 
+                    TextColor="White"
+                    TitleColor="#555"
+                    HorizontalOptions="Fill"
+                    FontSize="16"/>
+        </Grid>
 
-        <Label Text="Category *" FontAttributes="Bold" />
+        <Label Text="{DynamicResource DescriptionLabel}" />
+        <Entry Text="{Binding Description}" Placeholder="{DynamicResource PlaceholderDescription}" MaxLength="250" />
+
+        <Label Text="{DynamicResource CategoryLabel}" FontAttributes="Bold" />
         <Picker ItemsSource="{Binding Categories}" 
                 SelectedItem="{Binding SelectedCategory}" 
                 ItemDisplayBinding="{Binding LocalizedName}" 
-                Title="Select Category" />
+                Title="{DynamicResource SelectCategory}" />
 
-        <Label Text="Type *" FontAttributes="Bold" />
+        <Label Text="{DynamicResource TypeLabel}" FontAttributes="Bold" />
         <Picker ItemsSource="{Binding TransactionTypes}" 
                 SelectedItem="{Binding SelectedType}" 
                 ItemDisplayBinding="{Binding LocalizedName}" 
-                Title="Select Type" />
+                Title="{DynamicResource SelectType}" />
 
-        <Label Text="Date" />
+        <Label Text="{DynamicResource DateLabel}" />
         <DatePicker Date="{Binding Date}" />
 
-        <Button Text="Save" 
+        <Button Text="{DynamicResource Save}" 
                 Command="{Binding SaveCommand}"
                 Margin="0,20,0,0" 
                 BackgroundColor="#2196F3" 

@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
 using FinancialManager.Services;
+using FinancialManager.Services.Messages;
 
 namespace FinancialManager.ViewModels;
 
@@ -19,11 +21,18 @@ public partial class CategoryAddViewModel : ObservableObject
 
     [ObservableProperty] private Category? categoryToEdit;
 
+    public bool IsUkrVisible => _localizationService.CurrentLanguage == "uk";
+
     public CategoryAddViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository, ILocalizationService localizationService)
     {
         _categoryRepository = categoryRepository;
         _localizationRepository = localizationRepository;
         _localizationService = localizationService;
+
+        WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, (r, m) =>
+        {
+            OnPropertyChanged(nameof(IsUkrVisible));
+        });
     }
 
     partial void OnCategoryToEditChanged(Category? value)

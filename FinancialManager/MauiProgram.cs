@@ -25,6 +25,7 @@ namespace FinancialManager
             builder.Services.AddSingleton<ILocalizationRepository, LocalizationRepository>();
 
             builder.Services.AddSingleton<ILocalizationService, LocalizationService>();
+            builder.Services.AddSingleton<ILocalizationManager, LocalizationManager>();
 
             builder.Services.AddTransient<CategoryViewModel>();
             builder.Services.AddTransient<CategoryAddViewModel>();

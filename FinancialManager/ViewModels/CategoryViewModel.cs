@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
 using FinancialManager.Services;
+using FinancialManager.Services.Messages;
 using System.Collections.ObjectModel;
 
 namespace FinancialManager.ViewModels;
@@ -27,6 +29,14 @@ public partial class CategoryViewModel : ObservableObject
         LoadCategoriesCommand = new Command(async () => await LoadCategories());
         _localizationRepository = localizationRepository;
         _localizationService = localizationService;
+
+        WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, async (r, m) =>
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await RefreshCategories();
+            });
+        });
     }
 
     public async Task RefreshCategories()

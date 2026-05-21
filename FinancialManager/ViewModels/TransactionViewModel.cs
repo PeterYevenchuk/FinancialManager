@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
 using FinancialManager.Services;
+using FinancialManager.Services.Messages;
 using System.Collections.ObjectModel;
 
 namespace FinancialManager.ViewModels;
@@ -44,6 +46,14 @@ public partial class TransactionViewModel : ObservableObject
         var now = DateTime.Now;
         DateFrom = new DateTime(now.Year, now.Month, 1);
         DateTo = new DateTime(now.Year, now.Month, DateTime.DaysInMonth(now.Year, now.Month));
+
+        WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, async (r, m) =>
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await InitAsync();
+            });
+        });
     }
 
     public async Task InitAsync()

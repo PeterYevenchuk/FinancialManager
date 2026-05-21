@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
 using FinancialManager.Services;
+using FinancialManager.Services.Messages;
 
 namespace FinancialManager.ViewModels;
 
@@ -18,11 +20,18 @@ public partial class TransactionTypeAddViewModel : ObservableObject
 
     [ObservableProperty] private TransactionType? transactionTypeToEdit;
 
+    public bool IsUkrVisible => _localizationService.CurrentLanguage == "uk";
+
     public TransactionTypeAddViewModel(ITransactionTypeRepository transactionTypeRepository, ILocalizationRepository localizationRepository, ILocalizationService localizationService)
     {
         _transactionTypeRepository = transactionTypeRepository;
         _localizationRepository = localizationRepository;
         _localizationService = localizationService;
+
+        WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, (r, m) =>
+        {
+            OnPropertyChanged(nameof(IsUkrVisible));
+        });
     }
 
     partial void OnTransactionTypeToEditChanged(TransactionType? value)

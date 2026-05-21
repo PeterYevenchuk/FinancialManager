@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:FinancialManager.ViewModels"
              xmlns:models="clr-namespace:FinancialManager.Models"
+             xmlns:resources="clr-namespace:Resources"
              x:Class="FinancialManager.Views.CategoryPage"
-             Title="Categories">
+             Title="{DynamicResource CategoriesTitle}">
 
     <Grid>
         <CollectionView ItemsSource="{Binding Categories}"
@@ -35,7 +36,7 @@
                                     BackgroundColor="#252525">
 
                                     <Button Grid.Column="0" 
-                                        Text="✏️ Edit" 
+                                        Text="{DynamicResource Edit}" 
                                         TextColor="White"
                                         BackgroundColor="Transparent"
                                         CornerRadius="0"
@@ -43,7 +44,7 @@
                                         CommandParameter="{Binding .}"/>
 
                                     <Button Grid.Column="1" 
-                                        Text="🗑️ Delete" 
+                                        Text="{DynamicResource Delete}" 
                                         TextColor="#ff4d4d"
                                         BackgroundColor="Transparent"
                                         CornerRadius="0"
@@ -57,7 +58,7 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Text="+"
+        <Button Text="{DynamicResource Plus}"
             FontSize="24"
             BackgroundColor="#28a745"
             TextColor="White"

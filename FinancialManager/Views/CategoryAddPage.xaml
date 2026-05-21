@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resources="clr-namespace:Resources"
              x:Class="FinancialManager.Views.CategoryAddPage"
-             Title="Add New Category">
+             Title="{DynamicResource AddNewCategoryTitle}">
 
     <VerticalStackLayout Padding="20" Spacing="15">
 
-        <Label Text="Category Icon (Emoji or Text)" />
-        <Entry Text="{Binding Icon}" Placeholder="e.g. 🍕" />
+        <VerticalStackLayout Spacing="5">
+            <Label Text="{DynamicResource CategoryIconLabel}" TextColor="#aaa" />
+            <Entry Text="{Binding Icon}" Placeholder="{DynamicResource PlaceholderIcon}" TextColor="White" />
+        </VerticalStackLayout>
 
-        <Label Text="Name (English) *" FontAttributes="Bold" />
-        <Entry Text="{Binding NameEng}" Placeholder="Required" />
+        <VerticalStackLayout Spacing="5">
+            <Label Text="{DynamicResource NameEnglishLabel}" FontAttributes="Bold" TextColor="White" />
+            <Entry Text="{Binding NameEng}" Placeholder="{DynamicResource PlaceholderRequired}" TextColor="White" />
+        </VerticalStackLayout>
 
-        <Label Text="Назва (Українська)" />
-        <Entry Text="{Binding NameUkr}" Placeholder="Optional" />
+        <VerticalStackLayout Spacing="5" IsVisible="{Binding IsUkrVisible}">
+            <Label Text="{DynamicResource NameUkrLabel}" TextColor="#aaa" />
+            <Entry Text="{Binding NameUkr}" Placeholder="{DynamicResource PlaceholderOptional}" TextColor="White" />
+        </VerticalStackLayout>
 
-        <Button Text="Save" 
+        <Button Text="{DynamicResource Save}" 
                 Command="{Binding SaveCommand}"
                 Margin="0,20,0,0" 
                 BackgroundColor="#2196F3" 

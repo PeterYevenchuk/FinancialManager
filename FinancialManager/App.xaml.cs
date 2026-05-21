@@ -6,12 +6,11 @@ public partial class App : Application
 {
     private readonly AppShell _appShell;
 
-    public App(ILocalizationService localizationService, AppShell appShell)
+    public App(ILocalizationManager localizationManager, AppShell appShell)
     {
         InitializeComponent();
-
-        localizationService.Init();
         _appShell = appShell;
+        localizationManager?.Initialize();
     }
 
     protected override Window CreateWindow(IActivationState? activationState)
