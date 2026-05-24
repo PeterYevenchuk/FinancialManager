@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FinancialManager.ViewModels"
+             x:Class="FinancialManager.Views.BackupPage"
+             x:DataType="vm:BackupViewModel"
+             Title="{DynamicResource BackupTitle}"
+             BackgroundColor="#121212">
+
+    <ScrollView>
+        <Grid RowDefinitions="*, Auto" Padding="20">
+
+            <VerticalStackLayout Grid.Row="0" Spacing="20" VerticalOptions="Start">
+
+                <Frame BackgroundColor="#1a1a1a" BorderColor="#222" CornerRadius="12" Padding="20">
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Label Text="🛡️" FontSize="48" HorizontalOptions="Center" />
+                        <Label Text="{DynamicResource Backup_SecurityHeading}" 
+                               TextColor="White" 
+                               FontSize="18" 
+                               FontAttributes="Bold" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="{DynamicResource Backup_SecurityDesc}" 
+                               TextColor="#888" 
+                               FontSize="13" 
+                               HorizontalTextAlignment="Center" 
+                               LineBreakMode="WordWrap"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="#1a1a1a" BorderColor="#333" CornerRadius="12" Padding="15">
+                    <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto" ColumnSpacing="15" RowSpacing="10">
+                        <Label Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="📤" FontSize="32" VerticalOptions="Center"/>
+
+                        <Label Grid.Column="1" Grid.Row="0" Text="{DynamicResource Backup_ExportTitle}" TextColor="White" FontSize="16" FontAttributes="Bold"/>
+                        <Label Grid.Column="1" Grid.Row="1" Text="{DynamicResource Backup_ExportDesc}" TextColor="#aaa" FontSize="13"/>
+
+                        <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"
+                                Text="{DynamicResource Backup_ExportButton}"
+                                Command="{Binding ExportBackupCommand}"
+                                BackgroundColor="#28a745"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                HeightRequest="45"
+                                CornerRadius="8"
+                                Margin="0,5,0,0"/>
+                    </Grid>
+                </Frame>
+
+                <Frame BackgroundColor="#1a1a1a" BorderColor="#333" CornerRadius="12" Padding="15">
+                    <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto" ColumnSpacing="15" RowSpacing="10">
+                        <Label Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="📥" FontSize="32" VerticalOptions="Center"/>
+
+                        <Label Grid.Column="1" Grid.Row="0" Text="{DynamicResource Backup_ImportTitle}" TextColor="White" FontSize="16" FontAttributes="Bold"/>
+                        <Label Grid.Column="1" Grid.Row="1" Text="{DynamicResource Backup_ImportDesc}" TextColor="#aaa" FontSize="13"/>
+
+                        <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"
+                                Text="{DynamicResource Backup_ImportButton}"
+                                Command="{Binding ImportBackupCommand}"
+                                BackgroundColor="#2196F3"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                HeightRequest="45"
+                                CornerRadius="8"
+                                Margin="0,5,0,0"/>
+                    </Grid>
+                </Frame>
+
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Row="1" HorizontalOptions="Center" VerticalOptions="End" Margin="0,20,0,0">
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#2196F3" HeightRequest="40" WidthRequest="40"/>
+                <Label Text="{DynamicResource Backup_Processing}" IsVisible="{Binding IsBusy}" TextColor="#2196F3" FontSize="12" Margin="0,5,0,0" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+        </Grid>
+    </ScrollView>
+</ContentPage>

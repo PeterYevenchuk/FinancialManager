@@ -6,23 +6,31 @@
     xmlns:local="clr-namespace:FinancialManager"
     xmlns:views="clr-namespace:FinancialManager.Views"
     xmlns:vm="clr-namespace:FinancialManager.ViewModels"
+    xmlns:resources="clr-namespace:Resources"
     x:DataType="vm:AppShellViewModel"
     Title="FinancialManager">
 
-    <FlyoutItem Title="Home" Icon="home_icon.png">
+    <FlyoutItem Title="{DynamicResource HomeTitle}" Icon="home_icon.png">
         <ShellContent ContentTemplate="{DataTemplate views:MainPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Transactions" Icon="list_icon.png">
+    <FlyoutItem Title="{DynamicResource TransactionsTitle}" Icon="list_icon.png">
         <ShellContent ContentTemplate="{DataTemplate views:TransactionPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Categories" Icon="category_icon.png">
+    <FlyoutItem Title="{DynamicResource CategoriesTitle}" Icon="category_icon.png">
         <ShellContent ContentTemplate="{DataTemplate views:CategoryPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Types" Icon="settings_icon.png">
+    <FlyoutItem Title="{DynamicResource TransactionTypesTitle}" Icon="settings_icon.png">
         <ShellContent ContentTemplate="{DataTemplate views:TransactionTypePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="{DynamicResource BackupTitle}" Route="BackupPage">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="🛡️" Size="20" Color="White"/>
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate views:BackupPage}" />
     </FlyoutItem>
 
     <Shell.FlyoutFooter>
@@ -33,7 +41,7 @@
                HasShadow="False"
                x:DataType="vm:AppShellViewModel">
             <VerticalStackLayout Spacing="5">
-                <Label Text="Language / Мова" 
+                <Label Text="{DynamicResource LanguageLabel}" 
                        TextColor="#888" 
                        FontSize="11" 
                        FontAttributes="Bold"/>

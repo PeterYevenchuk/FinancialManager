@@ -70,6 +70,22 @@ public class LocalizationManager : ILocalizationManager
             d["PlaceholderRequired"] = Resources.Strings.PlaceholderRequired;
             d["PlaceholderOptional"] = Resources.Strings.PlaceholderOptional;
 
+            // AppShell / general
+            d["HomeTitle"] = Resources.Strings.HomeTitle;
+            d["LanguageLabel"] = Resources.Strings.LanguageLabel;
+            d["BackupTitle"] = Resources.Strings.BackupTitle;
+
+            // Backup page
+            d["Backup_SecurityHeading"] = Resources.Strings.Backup_SecurityHeading;
+            d["Backup_SecurityDesc"] = Resources.Strings.Backup_SecurityDesc;
+            d["Backup_ExportTitle"] = Resources.Strings.Backup_ExportTitle;
+            d["Backup_ExportDesc"] = Resources.Strings.Backup_ExportDesc;
+            d["Backup_ExportButton"] = Resources.Strings.Backup_ExportButton;
+            d["Backup_ImportTitle"] = Resources.Strings.Backup_ImportTitle;
+            d["Backup_ImportDesc"] = Resources.Strings.Backup_ImportDesc;
+            d["Backup_ImportButton"] = Resources.Strings.Backup_ImportButton;
+            d["Backup_Processing"] = Resources.Strings.Backup_Processing;
+
             if (Application.Current?.Resources == null)
             {
                 Application.Current.Resources = d;

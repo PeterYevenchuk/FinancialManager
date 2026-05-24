@@ -59,5 +59,32 @@ namespace Resources
         public static string NameUkrLabel => CurrentLanguage == "uk" ? "Назва (Українська)" : "Назва (Українська)";
         public static string PlaceholderRequired => CurrentLanguage == "uk" ? "Обов'язково" : "Required";
         public static string PlaceholderOptional => CurrentLanguage == "uk" ? "Необов'язково" : "Optional";
+
+        // AppShell / Home
+        public static string HomeTitle => CurrentLanguage == "uk" ? "Головна" : "Home";
+        public static string LanguageLabel => CurrentLanguage == "uk" ? "Мова" : "Language";
+        public static string BackupTitle => CurrentLanguage == "uk" ? "Бекап даних" : "Backup";
+
+        // Backup page texts
+        public static string Backup_SecurityHeading => CurrentLanguage == "uk" ? "Безпека ваших даних" : "Your data security";
+        public static string Backup_SecurityDesc => CurrentLanguage == "uk" ? "Керуйте резервними копіями вашого гаманця. Усі дані експортуються у безпечному текстовому форматі JSON." : "Manage backups of your wallet. All data is exported in a safe JSON text format.";
+
+        public static string Backup_ExportTitle => CurrentLanguage == "uk" ? "Створити копію" : "Create backup";
+        public static string Backup_ExportDesc => CurrentLanguage == "uk" ? "Зберегти поточні транзакції, категорії та локалізації у файл." : "Save current transactions, categories and localizations to a file.";
+        public static string Backup_ExportButton => CurrentLanguage == "uk" ? "Експортувати в JSON" : "Export to JSON";
+
+        public static string Backup_ImportTitle => CurrentLanguage == "uk" ? "Відновити дані" : "Restore data";
+        public static string Backup_ImportDesc => CurrentLanguage == "uk" ? "Завантажити дані з раніше створеного файлу бекапу." : "Upload data from a previously created backup file.";
+        public static string Backup_ImportButton => CurrentLanguage == "uk" ? "Імпортувати файл" : "Import file";
+
+        public static string Backup_Processing => CurrentLanguage == "uk" ? "Обробка даних..." : "Processing data...";
+        // Backup related
+        public static string Backup_SaveTitle => CurrentLanguage == "uk" ? "Зберегти бекап" : "Save backup";
+        public static string Backup_PickTitle => CurrentLanguage == "uk" ? "Оберіть файл бекапу (.json)" : "Pick backup file (.json)";
+        public static string Backup_ReplaceConfirmation => CurrentLanguage == "uk" ? "Це повністю замінить твої поточні дані. Продовжуємо?" : "This will completely replace your current data. Continue?";
+        public static string Backup_RestoreSuccess => CurrentLanguage == "uk" ? "Дані відновлено! Перезапусти додаток." : "Data restored! Please restart the app.";
+        public static string Warning => CurrentLanguage == "uk" ? "Увага" : "Warning";
+        public static string Success => CurrentLanguage == "uk" ? "Успіх" : "Success";
+        public static string ImportErrorTitle => CurrentLanguage == "uk" ? "Помилка імпорту" : "Import error";
     }
 }
