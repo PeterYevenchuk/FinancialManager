@@ -59,6 +59,9 @@ namespace Resources
         public static string NameUkrLabel => CurrentLanguage == "uk" ? "Назва (Українська)" : "Назва (Українська)";
         public static string PlaceholderRequired => CurrentLanguage == "uk" ? "Обов'язково" : "Required";
         public static string PlaceholderOptional => CurrentLanguage == "uk" ? "Необов'язково" : "Optional";
+        // Repository messages
+        public static string SystemCategoryDeleteForbidden => CurrentLanguage == "uk" ? "Системні категорії видаляти заборонено!" : "System categories cannot be deleted!";
+        public static string SystemTransactionTypeDeleteForbidden => CurrentLanguage == "uk" ? "Системні типи транзакцій видаляти заборонено!" : "System transaction types cannot be deleted!";
 
         // AppShell / Home
         public static string HomeTitle => CurrentLanguage == "uk" ? "Головна" : "Home";
@@ -78,6 +81,8 @@ namespace Resources
         public static string Backup_ImportButton => CurrentLanguage == "uk" ? "Імпортувати файл" : "Import file";
 
         public static string Backup_Processing => CurrentLanguage == "uk" ? "Обробка даних..." : "Processing data...";
+        // TransactionType icon
+        public static string TransactionType_IconLabel => CurrentLanguage == "uk" ? "Іконка типу (Emoji або текст)" : "Type Icon (Emoji or Text)";
         // Backup related
         public static string Backup_SaveTitle => CurrentLanguage == "uk" ? "Зберегти бекап" : "Save backup";
         public static string Backup_PickTitle => CurrentLanguage == "uk" ? "Оберіть файл бекапу (.json)" : "Pick backup file (.json)";

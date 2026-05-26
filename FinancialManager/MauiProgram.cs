@@ -1,8 +1,10 @@
-﻿using FinancialManager.Data.Repositories;
+﻿using FinancialManager.Data;
+using FinancialManager.Data.Repositories;
 using FinancialManager.Services;
 using FinancialManager.ViewModels;
 using FinancialManager.Views;
 using Microsoft.Extensions.Logging;
+using SQLite;
 
 namespace FinancialManager
 {
@@ -18,6 +20,11 @@ namespace FinancialManager
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+
+            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "FinData.db");
+
+            builder.Services.AddSingleton(new SQLiteAsyncConnection(dbPath));
+            builder.Services.AddSingleton<DatabaseInitializer>();
 
             builder.Services.AddSingleton<ITransactionRepository, TransactionRepository>();
             builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();

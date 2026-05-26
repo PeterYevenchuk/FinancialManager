@@ -5,18 +5,15 @@ namespace FinancialManager.Data.Repositories;
 
 public abstract class BaseRepository<T> : IRepository<T> where T : class, new()
 {
-    protected SQLiteAsyncConnection _database;
-    private readonly string _dbPath = Path.Combine(FileSystem.AppDataDirectory, "FinData.db");
+    protected readonly SQLiteAsyncConnection _database;
+
+    protected BaseRepository(SQLiteAsyncConnection database)
+    {
+        _database = database;
+    }
 
     protected async Task Init()
     {
-        if (_database is not null)
-        {
-            return;
-        }
-
-        _database = new SQLiteAsyncConnection(_dbPath);
-
         await _database.CreateTablesAsync<TransactionType, Category, Transaction, Localization>();
     }
 

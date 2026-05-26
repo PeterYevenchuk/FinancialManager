@@ -22,10 +22,13 @@
 
                             <VerticalStackLayout>
                                 <Grid Padding="15">
-                                    <Label Text="{Binding LocalizedName}" 
-                                           FontSize="18" 
-                                           VerticalOptions="Center" 
-                                           TextColor="White"/>
+                                    <HorizontalStackLayout Spacing="15">
+                                        <Label Text="{Binding Icon}" FontSize="24" VerticalOptions="Center" />
+                                        <Label Text="{Binding LocalizedName}" 
+                                               FontSize="18" 
+                                               VerticalOptions="Center" 
+                                               TextColor="White"/>
+                                    </HorizontalStackLayout>
                                 </Grid>
 
                                 <BoxView HeightRequest="1" 

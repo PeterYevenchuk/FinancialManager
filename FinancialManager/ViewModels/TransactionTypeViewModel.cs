@@ -74,6 +74,14 @@ public partial class TransactionTypeViewModel : ObservableObject
             type.IsSelected = false;
         }
 
+        if (value == null) return;
+
+        if (value.IsSystem)
+        {
+            SelectedType = null;
+            return;
+        }
+
         if (value != null)
         {
             value.IsSelected = true;
@@ -111,7 +119,7 @@ public partial class TransactionTypeViewModel : ObservableObject
                 await _localizationRepository.DeleteAsync(loc);
             }
 
-            await _transactionTypeRepository.DeleteAsync(type);
+            await _transactionTypeRepository.DeleteTransactionTypeAsync(type);
 
             await RefreshTransactionTypes();
 

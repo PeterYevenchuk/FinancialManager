@@ -1,7 +1,5 @@
 using CommunityToolkit.Mvvm.Messaging;
 using FinancialManager.Services.Messages;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Controls;
 
 namespace FinancialManager.Services;
 
@@ -65,6 +63,7 @@ public class LocalizationManager : ILocalizationManager
             d["AddNewCategoryTitle"] = Resources.Strings.AddNewCategoryTitle;
             d["CategoryIconLabel"] = Resources.Strings.CategoryIconLabel;
             d["PlaceholderIcon"] = Resources.Strings.PlaceholderIcon;
+            d["TransactionType_IconLabel"] = Resources.Strings.TransactionType_IconLabel;
             d["NameEnglishLabel"] = Resources.Strings.NameEnglishLabel;
             d["NameUkrLabel"] = Resources.Strings.NameUkrLabel;
             d["PlaceholderRequired"] = Resources.Strings.PlaceholderRequired;

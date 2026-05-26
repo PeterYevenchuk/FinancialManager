@@ -9,6 +9,11 @@
     <VerticalStackLayout Padding="20" Spacing="15">
 
         <VerticalStackLayout Spacing="5">
+            <Label Text="{DynamicResource TransactionType_IconLabel}" />
+            <Entry Text="{Binding Icon}" Placeholder="{DynamicResource PlaceholderIcon}" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Spacing="5">
             <Label Text="Name (English) *" FontAttributes="Bold" />
             <Entry Text="{Binding NameEng}" Placeholder="Required" />
         </VerticalStackLayout>

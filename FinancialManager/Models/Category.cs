@@ -15,6 +15,8 @@ public partial class Category : ObservableObject
 
     public string Icon { get; set; }
 
+    public bool IsSystem { get; set; }
+
     [Ignore]
     public string LocalizedName { get; set; }
 

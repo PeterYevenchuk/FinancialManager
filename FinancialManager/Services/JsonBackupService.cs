@@ -49,8 +49,7 @@ public class JsonBackupService
     {
         var result = await FilePicker.Default.PickAsync(new PickOptions
         {
-            PickerTitle = Resources.Strings.Backup_PickTitle,
-            FileTypes = FilePickerFileType.Jpeg
+            PickerTitle = Resources.Strings.Backup_PickTitle
         });
 
         if (result == null) return false;

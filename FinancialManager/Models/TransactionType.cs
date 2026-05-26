@@ -13,6 +13,10 @@ public partial class TransactionType : ObservableObject
     [PrimaryKey]
     public Guid Id { get; set; }
 
+    public bool IsSystem { get; set; }
+
+    public string Icon { get; set; }
+
     [Ignore]
     public string LocalizedName { get; set; }
 

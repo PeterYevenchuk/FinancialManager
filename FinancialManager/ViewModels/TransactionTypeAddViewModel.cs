@@ -16,6 +16,7 @@ public partial class TransactionTypeAddViewModel : ObservableObject
     private readonly ILocalizationService _localizationService;
 
     [ObservableProperty] private string nameEng;
+    [ObservableProperty] private string icon = "✨";
     [ObservableProperty] private string nameUkr;
 
     [ObservableProperty] private TransactionType? transactionTypeToEdit;
@@ -39,6 +40,7 @@ public partial class TransactionTypeAddViewModel : ObservableObject
         if (value != null)
         {
             LoadLocalizations(value.Id);
+            Icon = value.Icon;
         }
     }
 
@@ -60,6 +62,7 @@ public partial class TransactionTypeAddViewModel : ObservableObject
         }
 
         var transactionType = TransactionTypeToEdit ?? new TransactionType();
+        transactionType.Icon = Icon;
 
         await _transactionTypeRepository.SaveAsync(transactionType);
 

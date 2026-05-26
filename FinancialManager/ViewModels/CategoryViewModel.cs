@@ -74,6 +74,14 @@ public partial class CategoryViewModel : ObservableObject
             cat.IsSelected = false;
         }
 
+        if (value == null) return;
+
+        if (value.IsSystem)
+        {
+            SelectedCategory = null;
+            return;
+        }
+
         if (value != null)
         {
             value.IsSelected = true;
@@ -111,7 +119,7 @@ public partial class CategoryViewModel : ObservableObject
                 await _localizationRepository.DeleteAsync(loc);
             }
 
-            await _categoryRepository.DeleteAsync(category);
+            await _categoryRepository.DeleteCategoryAsync(category);
 
             await RefreshCategories();
 
