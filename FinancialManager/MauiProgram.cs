@@ -44,6 +44,7 @@ namespace FinancialManager
             builder.Services.AddTransient<TransactionAddViewModel>();
             builder.Services.AddSingleton<AppShellViewModel>();
             builder.Services.AddTransient<BackupViewModel>();
+            builder.Services.AddTransient<MainViewModel>();
 
             builder.Services.AddTransient<TransactionAddPage>();
             builder.Services.AddTransient<TransactionPage>();
@@ -54,6 +55,7 @@ namespace FinancialManager
             builder.Services.AddTransient<CategoryPage>();
             builder.Services.AddSingleton<AppShell>();
             builder.Services.AddTransient<BackupPage>();
+            builder.Services.AddTransient<MainPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();
