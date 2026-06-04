@@ -11,13 +11,17 @@ public partial class Transaction : ObservableObject
         Id = Guid.NewGuid();
         Date = DateTime.Now;
         Currency = "₴";
+        ExchangeRateToUah = 1.0;
     }
 
     [PrimaryKey]
     public Guid Id { get; set; }
 
     public double Amount { get; set; }
+
     public string Currency { get; set; } = "₴";
+
+    public double ExchangeRateToUah { get; set; } = 1.0;
 
     public string Description { get; set; }
 
@@ -37,6 +41,17 @@ public partial class Transaction : ObservableObject
 
     [Ignore]
     public string AmountDisplay => $"{Amount:N2} {Currency ?? "₴"}";
+
+    public double GetAmountInUah(Dictionary<string, double> currentRatesFallback)
+    {
+        if (Currency == "₴") return Amount;
+        if (ExchangeRateToUah > 0) return Amount * ExchangeRateToUah;
+        if (currentRatesFallback != null && currentRatesFallback.TryGetValue(Currency, out double currentRate))
+        {
+            return Amount * currentRate;
+        }
+        return Amount;
+    }
 
     [ObservableProperty]
     [property: Ignore]

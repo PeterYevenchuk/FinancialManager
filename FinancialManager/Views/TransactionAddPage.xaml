@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:resources="clr-namespace:Resources"
              x:Class="FinancialManager.Views.TransactionAddPage"
-             Title="{DynamicResource ManageTransactionTitle}">
+             Title="{DynamicResource ManageTransactionTitle}"
+             BackgroundColor="#121212">
 
     <VerticalStackLayout Padding="20" Spacing="15">
 
@@ -22,6 +23,14 @@
                     HorizontalOptions="Fill"
                     FontSize="16"/>
         </Grid>
+
+        <VerticalStackLayout IsVisible="{Binding IsRateFieldsVisible}" Spacing="5">
+            <Label Text="{DynamicResource ExchangeRateLabel}" TextColor="#aaa" FontSize="12"/>
+            <Entry Text="{Binding ExchangeRate}" 
+                   Keyboard="Numeric" 
+                   TextColor="White"
+                   Placeholder="{DynamicResource PlaceholderExchangeRate}"/>
+        </VerticalStackLayout>
 
         <Label Text="{DynamicResource DescriptionLabel}" />
         <Entry Text="{Binding Description}" Placeholder="{DynamicResource PlaceholderDescription}" MaxLength="250" />

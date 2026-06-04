@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:FinancialManager.ViewModels"
              x:Class="FinancialManager.Views.TransactionTypeAddPage"
-             Title="Manage Type"
+             Title="{DynamicResource ManageTypeTitle}"
              BackgroundColor="#121212">
 
     <VerticalStackLayout Padding="20" Spacing="15">
@@ -14,16 +14,16 @@
         </VerticalStackLayout>
 
         <VerticalStackLayout Spacing="5">
-            <Label Text="Name (English) *" FontAttributes="Bold" />
-            <Entry Text="{Binding NameEng}" Placeholder="Required" />
+            <Label Text="{DynamicResource NameEnglishLabel}" FontAttributes="Bold" />
+            <Entry Text="{Binding NameEng}" Placeholder="{DynamicResource PlaceholderRequired}" />
         </VerticalStackLayout>
 
         <VerticalStackLayout Spacing="5" IsVisible="{Binding IsUkrVisible}">
-            <Label Text="Назва (Українська)" />
-            <Entry Text="{Binding NameUkr}" Placeholder="Optional" />
+            <Label Text="{DynamicResource NameUkrLabel}" />
+            <Entry Text="{Binding NameUkr}" Placeholder="{DynamicResource PlaceholderOptional}" />
         </VerticalStackLayout>
 
-        <Button Text="Save" 
+        <Button Text="{DynamicResource Save}" 
              Command="{Binding SaveCommand}"
              Margin="0,20,0,0" 
              BackgroundColor="#2196F3" 

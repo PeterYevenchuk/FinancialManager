@@ -37,6 +37,8 @@ public class LocalizationManager : ILocalizationManager
             d["TransactionsTitle"] = Resources.Strings.TransactionsTitle;
             d["CategoriesTitle"] = Resources.Strings.CategoriesTitle;
             d["TransactionTypesTitle"] = Resources.Strings.TransactionTypesTitle;
+            d["FromLabel"] = Resources.Strings.FromLabel;
+            d["ToLabel"] = Resources.Strings.ToLabel;
 
             d["CategoryLabel"] = Resources.Strings.CategoryLabel;
             d["TypeLabel"] = Resources.Strings.TypeLabel;
@@ -84,6 +86,24 @@ public class LocalizationManager : ILocalizationManager
             d["Backup_ImportDesc"] = Resources.Strings.Backup_ImportDesc;
             d["Backup_ImportButton"] = Resources.Strings.Backup_ImportButton;
             d["Backup_Processing"] = Resources.Strings.Backup_Processing;
+
+            // Main / Dashboard
+            d["DashboardTitle"] = Resources.Strings.DashboardTitle;
+            d["TotalBalanceLabel"] = Resources.Strings.TotalBalanceLabel;
+            d["IncomeLabel"] = Resources.Strings.IncomeLabel;
+            d["ExpenseLabel"] = Resources.Strings.ExpenseLabel;
+            d["SavingsLabel"] = Resources.Strings.SavingsLabel;
+            d["OthersLabel"] = Resources.Strings.OthersLabel;
+            d["TransactionTypeHeader"] = Resources.Strings.TransactionTypeHeader;
+            d["ChartPlaceholder"] = Resources.Strings.ChartPlaceholder;
+            d["ChartSubtitle"] = Resources.Strings.ChartSubtitle;
+            d["TransactionsPeriodLabel"] = Resources.Strings.TransactionsPeriodLabel;
+            d["Reset"] = Resources.Strings.Reset;
+            d["ReportCurrencyLabel"] = Resources.Strings.ReportCurrencyLabel;
+            d["ExchangeRateLabel"] = Resources.Strings.ExchangeRateLabel;
+            d["PlaceholderExchangeRate"] = Resources.Strings.PlaceholderExchangeRate;
+            d["InvalidExchangeRateTitle"] = Resources.Strings.InvalidExchangeRateTitle;
+            d["InvalidExchangeRateMessage"] = Resources.Strings.InvalidExchangeRateMessage;
 
             if (Application.Current?.Resources == null)
             {

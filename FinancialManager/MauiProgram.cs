@@ -1,8 +1,10 @@
 ﻿using FinancialManager.Data;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Services;
+using FinancialManager.Services.Contracts;
 using FinancialManager.ViewModels;
 using FinancialManager.Views;
+using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
 using SQLite;
 
@@ -15,6 +17,7 @@ namespace FinancialManager
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMicrocharts()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -33,6 +36,7 @@ namespace FinancialManager
 
             builder.Services.AddSingleton<ILocalizationService, LocalizationService>();
             builder.Services.AddSingleton<ILocalizationManager, LocalizationManager>();
+            builder.Services.AddSingleton<ICurrencyService, CurrencyService>();
             builder.Services.AddSingleton<JsonBackupService>();
 
             builder.Services.AddTransient<CategoryViewModel>();

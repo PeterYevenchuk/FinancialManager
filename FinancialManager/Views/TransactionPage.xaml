@@ -28,14 +28,15 @@
                 </Grid>
 
                 <Grid ColumnDefinitions="*, *, Auto" ColumnSpacing="10" VerticalOptions="Center">
-                    <VerticalStackLayout>
-                        <Label Text="{DynamicResource FromLabel}" TextColor="#aaa" FontSize="12"/>
-                        <DatePicker Date="{Binding DateFrom}" Format="yyyy-MM-dd" TextColor="White"/>
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="1">
-                        <Label Text="{DynamicResource ToLabel}" TextColor="#aaa" FontSize="12"/>
-                        <DatePicker Date="{Binding DateTo}" Format="yyyy-MM-dd" TextColor="White"/>
-                    </VerticalStackLayout>
+                    <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center" HorizontalOptions="Start">
+                        <Label Text="{DynamicResource FromLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
+                        <DatePicker Date="{Binding DateFrom}" Format="dd.MM.yyyy" TextColor="White" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" HorizontalOptions="Start">
+                        <Label Text="{DynamicResource ToLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
+                        <DatePicker Date="{Binding DateTo}" Format="dd.MM.yyyy" TextColor="White" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
 
                     <Button Grid.Column="2" 
                             Text="{DynamicResource Apply}" 

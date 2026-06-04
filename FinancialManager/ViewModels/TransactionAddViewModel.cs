@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
 using FinancialManager.Services;
+using FinancialManager.Services.Contracts;
 using System.Collections.ObjectModel;
 
 namespace FinancialManager.ViewModels;
@@ -16,6 +17,7 @@ public partial class TransactionAddViewModel : ObservableObject
     private readonly ITransactionTypeRepository _typeRepository;
     private readonly ILocalizationRepository _localizationRepository;
     private readonly ILocalizationService _localizationService;
+    private readonly ICurrencyService _currencyService;
 
     [ObservableProperty] private double amount;
     [ObservableProperty] private string description = string.Empty;
@@ -23,6 +25,8 @@ public partial class TransactionAddViewModel : ObservableObject
     [ObservableProperty] private Category? selectedCategory;
     [ObservableProperty] private TransactionType? selectedType;
     [ObservableProperty] private string selectedCurrency = "₴";
+    [ObservableProperty] private string exchangeRate = "1.0";
+    [ObservableProperty] private bool isRateFieldsVisible;
 
     [ObservableProperty] private ObservableCollection<Category> categories = new();
     [ObservableProperty] private ObservableCollection<TransactionType> transactionTypes = new();
@@ -36,13 +40,15 @@ public partial class TransactionAddViewModel : ObservableObject
         ICategoryRepository categoryRepository,
         ITransactionTypeRepository typeRepository,
         ILocalizationRepository localizationRepository,
-        ILocalizationService localizationService)
+        ILocalizationService localizationService,
+        ICurrencyService currencyService)
     {
         _transactionRepository = transactionRepository;
         _categoryRepository = categoryRepository;
         _typeRepository = typeRepository;
         _localizationRepository = localizationRepository;
         _localizationService = localizationService;
+        _currencyService = currencyService;
     }
 
     public async Task LoadDataAsync()
@@ -78,10 +84,12 @@ public partial class TransactionAddViewModel : ObservableObject
             SelectedCategory = Categories.FirstOrDefault(c => c.Id == TransactionToEdit.CategoryId);
             SelectedType = TransactionTypes.FirstOrDefault(t => t.Id == TransactionToEdit.TransactionTypeId);
             SelectedCurrency = Currencies.Contains(TransactionToEdit.Currency) ? TransactionToEdit.Currency : "₴";
+            ExchangeRate = TransactionToEdit.ExchangeRateToUah.ToString("F2");
         }
         else
         {
             SelectedCurrency = "₴";
+            ExchangeRate = "1.0";
         }
     }
 
@@ -95,6 +103,7 @@ public partial class TransactionAddViewModel : ObservableObject
             SelectedCategory = null;
             SelectedType = null;
             SelectedCurrency = "₴";
+            ExchangeRate = "1.0";
         }
     }
 
@@ -112,6 +121,16 @@ public partial class TransactionAddViewModel : ObservableObject
             return;
         }
 
+        double rateValue = 1.0;
+        if (SelectedCurrency != "₴")
+        {
+            if (string.IsNullOrWhiteSpace(ExchangeRate) || !double.TryParse(ExchangeRate, out rateValue) || rateValue <= 0)
+            {
+                await Shell.Current.DisplayAlert(Resources.Strings.InvalidExchangeRateTitle, Resources.Strings.InvalidExchangeRateMessage, Resources.Strings.Ok);
+                return;
+            }
+        }
+
         var transaction = TransactionToEdit ?? new Transaction();
         transaction.Amount = Amount;
         transaction.Description = Description;
@@ -119,8 +138,35 @@ public partial class TransactionAddViewModel : ObservableObject
         transaction.CategoryId = SelectedCategory.Id;
         transaction.TransactionTypeId = SelectedType.Id;
         transaction.Currency = SelectedCurrency;
+        transaction.ExchangeRateToUah = rateValue;
 
         await _transactionRepository.SaveAsync(transaction);
         await Shell.Current.GoToAsync("..");
+    }
+
+    partial void OnSelectedCurrencyChanged(string value)
+    {
+        IsRateFieldsVisible = value != "₴";
+        if (value == "₴")
+        {
+            ExchangeRate = "1.0";
+        }
+        else
+        {
+            _ = AutoFetchRateAsync(value);
+        }
+    }
+
+    private async Task AutoFetchRateAsync(string currencySymbol)
+    {
+        var rates = await _currencyService.GetLatestRatesAsync();
+        if (rates != null && rates.TryGetValue(currencySymbol, out double fetchedRate))
+        {
+            ExchangeRate = fetchedRate.ToString("F2");
+        }
+        else
+        {
+            ExchangeRate = "";
+        }
     }
 }
