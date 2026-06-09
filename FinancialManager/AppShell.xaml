@@ -8,7 +8,12 @@
     xmlns:vm="clr-namespace:FinancialManager.ViewModels"
     xmlns:resources="clr-namespace:Resources"
     x:DataType="vm:AppShellViewModel"
-    Title="FinancialManager">
+    Title="FinancialManager"
+    FlyoutBackgroundColor="#121212"
+    Shell.BackgroundColor="#121212"
+    Shell.ForegroundColor="White"
+    Shell.TitleColor="White"
+    Shell.UnselectedColor="#aaaaaa">
 
     <FlyoutItem Title="{DynamicResource HomeTitle}" Icon="home_icon.png">
         <ShellContent ContentTemplate="{DataTemplate views:MainPage}" />
