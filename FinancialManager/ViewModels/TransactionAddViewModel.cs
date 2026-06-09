@@ -5,6 +5,7 @@ using FinancialManager.Data.Repositories;
 using FinancialManager.Models;
 using FinancialManager.Services;
 using FinancialManager.Services.Contracts;
+using FinancialManager.Services.Messages;
 using System.Collections.ObjectModel;
 
 namespace FinancialManager.ViewModels;
@@ -49,9 +50,38 @@ public partial class TransactionAddViewModel : ObservableObject
         _localizationRepository = localizationRepository;
         _localizationService = localizationService;
         _currencyService = currencyService;
+
+        WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, async (r, m) =>
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await RefreshLocalizationOnlyAsync();
+            });
+        });
     }
 
     public async Task LoadDataAsync()
+    {
+        await RefreshLocalizationOnlyAsync();
+
+        if (TransactionToEdit != null)
+        {
+            Amount = TransactionToEdit.Amount;
+            Description = TransactionToEdit.Description;
+            Date = TransactionToEdit.Date;
+            SelectedCategory = Categories.FirstOrDefault(c => c.Id == TransactionToEdit.CategoryId);
+            SelectedType = TransactionTypes.FirstOrDefault(t => t.Id == TransactionToEdit.TransactionTypeId);
+            SelectedCurrency = Currencies.Contains(TransactionToEdit.Currency) ? TransactionToEdit.Currency : "₴";
+            ExchangeRate = TransactionToEdit.ExchangeRateToUah.ToString("F2");
+        }
+        else
+        {
+            SelectedCurrency = "₴";
+            ExchangeRate = "1.0";
+        }
+    }
+
+    private async Task RefreshLocalizationOnlyAsync()
     {
         var allCats = await _categoryRepository.GetAsync();
         var allTypes = await _typeRepository.GetAsync();
@@ -73,24 +103,17 @@ public partial class TransactionAddViewModel : ObservableObject
             type.LocalizedName = loc?.Value ?? "No Name";
         }
 
+        var currentSelectedCatId = SelectedCategory?.Id;
+        var currentSelectedTypeId = SelectedType?.Id;
+
         Categories = new ObservableCollection<Category>(allCats);
         TransactionTypes = new ObservableCollection<TransactionType>(allTypes);
 
-        if (TransactionToEdit != null)
-        {
-            Amount = TransactionToEdit.Amount;
-            Description = TransactionToEdit.Description;
-            Date = TransactionToEdit.Date;
-            SelectedCategory = Categories.FirstOrDefault(c => c.Id == TransactionToEdit.CategoryId);
-            SelectedType = TransactionTypes.FirstOrDefault(t => t.Id == TransactionToEdit.TransactionTypeId);
-            SelectedCurrency = Currencies.Contains(TransactionToEdit.Currency) ? TransactionToEdit.Currency : "₴";
-            ExchangeRate = TransactionToEdit.ExchangeRateToUah.ToString("F2");
-        }
-        else
-        {
-            SelectedCurrency = "₴";
-            ExchangeRate = "1.0";
-        }
+        if (currentSelectedCatId != null)
+            SelectedCategory = Categories.FirstOrDefault(c => c.Id == currentSelectedCatId);
+
+        if (currentSelectedTypeId != null)
+            SelectedType = TransactionTypes.FirstOrDefault(t => t.Id == currentSelectedTypeId);
     }
 
     public void ResetForm()

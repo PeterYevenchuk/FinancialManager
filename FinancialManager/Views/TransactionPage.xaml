@@ -12,40 +12,43 @@
 
         <Frame Grid.Row="0" Margin="10" Padding="10" BackgroundColor="#1a1a1a" BorderColor="#333" CornerRadius="10">
             <VerticalStackLayout Spacing="10">
-                <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
-                    <VerticalStackLayout>
+                <Grid ColumnDefinitions="*, *, Auto" ColumnSpacing="10">
+                    <VerticalStackLayout Grid.Column="0">
                         <Label Text="{DynamicResource CategoryLabel}" TextColor="#aaa" FontSize="12"/>
                         <Picker ItemsSource="{Binding Categories}" 
-                                SelectedItem="{Binding SelectedCategoryFilter}" 
-                                ItemDisplayBinding="{Binding LocalizedName}"/>
+                        SelectedItem="{Binding SelectedCategoryFilter}" 
+                        ItemDisplayBinding="{Binding LocalizedName}"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="1">
                         <Label Text="{DynamicResource TypeLabel}" TextColor="#aaa" FontSize="12"/>
                         <Picker ItemsSource="{Binding TransactionTypes}" 
-                                SelectedItem="{Binding SelectedTypeFilter}" 
-                                ItemDisplayBinding="{Binding LocalizedName}"/>
+                        SelectedItem="{Binding SelectedTypeFilter}" 
+                        ItemDisplayBinding="{Binding LocalizedName}"/>
                     </VerticalStackLayout>
+
+                    <Button Grid.Column="2" 
+                        Text="{DynamicResource Apply}" 
+                        Command="{Binding ApplyFiltersCommand}" 
+                        BackgroundColor="#28a745" 
+                        TextColor="White" 
+                        FontAttributes="Bold"
+                        VerticalOptions="End" 
+                        HeightRequest="36"
+                        WidthRequest="95"
+                        Padding="0"
+                        Margin="0,0,0,1"/>
                 </Grid>
 
                 <Grid ColumnDefinitions="*, *, Auto" ColumnSpacing="10" VerticalOptions="Center">
-                    <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center" HorizontalOptions="Start">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
                         <Label Text="{DynamicResource FromLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
                         <DatePicker Date="{Binding DateFrom}" Format="dd.MM.yyyy" TextColor="White" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
 
-                    <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" HorizontalOptions="Start">
+                    <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
                         <Label Text="{DynamicResource ToLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
                         <DatePicker Date="{Binding DateTo}" Format="dd.MM.yyyy" TextColor="White" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
-
-                    <Button Grid.Column="2" 
-                            Text="{DynamicResource Apply}" 
-                            Command="{Binding ApplyFiltersCommand}" 
-                            BackgroundColor="#28a745" 
-                            TextColor="White" 
-                            FontAttributes="Bold"
-                            VerticalOptions="End" 
-                            HeightRequest="40"/>
                 </Grid>
 
                 <Button Text="{DynamicResource ClearFilters}" Command="{Binding ClearFiltersCommand}" 
@@ -53,11 +56,17 @@
             </VerticalStackLayout>
         </Frame>
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Transactions}"
-                        SelectionMode="Single" SelectedItem="{Binding SelectedTransaction}">
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Transactions}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Transaction">
                     <Grid Margin="10,5">
+
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionViewModel}}, Path=SelectTransactionCommand}" 
+                                CommandParameter="{Binding .}"/>
+                        </Grid.GestureRecognizers>
+
                         <Frame Padding="0" CornerRadius="10" HasShadow="False" BackgroundColor="#1a1a1a" BorderColor="#333">
                             <VerticalStackLayout>
                                 <Grid Padding="15" ColumnDefinitions="*, Auto">
@@ -96,7 +105,7 @@
                                            Margin="0,0,0,12"/>
 
                                     <Grid ColumnDefinitions="*, *">
-                                    <Button Grid.Column="0" Text="{DynamicResource Edit}" TextColor="White" BackgroundColor="Transparent"
+                                        <Button Grid.Column="0" Text="{DynamicResource Edit}" TextColor="White" BackgroundColor="Transparent"
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionViewModel}}, Path=EditTransactionCommand}" CommandParameter="{Binding .}"/>
                                         <Button Grid.Column="1" Text="{DynamicResource Delete}" TextColor="#ff4d4d" BackgroundColor="Transparent"
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionViewModel}}, Path=DeleteTransactionCommand}" CommandParameter="{Binding .}"/>

@@ -113,8 +113,24 @@ public partial class MainViewModel : ObservableObject
         ApplyFilters();
     }
 
-    partial void OnStartDateChanged(DateTime value) => ApplyFilters();
-    partial void OnEndDateChanged(DateTime value) => ApplyFilters();
+    partial void OnStartDateChanged(DateTime value)
+    {
+        if (value > EndDate)
+        {
+            EndDate = value;
+        }
+        ApplyFilters();
+    }
+
+    partial void OnEndDateChanged(DateTime value)
+    {
+        if (value < StartDate)
+        {
+            StartDate = value;
+        }
+        ApplyFilters();
+    }
+
     partial void OnDisplayCurrencyChanged(string value) => ApplyFilters();
 
     [RelayCommand]

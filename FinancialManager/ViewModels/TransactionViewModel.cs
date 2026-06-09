@@ -160,6 +160,20 @@ public partial class TransactionViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void SelectTransaction(Transaction? transaction)
+    {
+        if (transaction == null) return;
+
+        foreach (var t in Transactions)
+        {
+            if (t != transaction)
+                t.IsSelected = false;
+        }
+
+        transaction.IsSelected = !transaction.IsSelected;
+    }
+
+    [RelayCommand]
     private async Task AddTransaction() => await Shell.Current.GoToAsync("TransactionAddPage");
 
     [RelayCommand]
@@ -179,5 +193,23 @@ public partial class TransactionViewModel : ObservableObject
             await _transactionRepository.DeleteAsync(transaction);
             await RefreshTransactions();
         }
+    }
+
+    partial void OnDateFromChanged(DateTime value)
+    {
+        if (value > DateTo)
+        {
+            DateTo = value;
+        }
+        ApplyFilters();
+    }
+
+    partial void OnDateToChanged(DateTime value)
+    {
+        if (value < DateFrom)
+        {
+            DateFrom = value;
+        }
+        ApplyFilters();
     }
 }
