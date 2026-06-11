@@ -150,12 +150,6 @@ public partial class TransactionViewModel : ObservableObject
         if (value != null)
         {
             value.IsSelected = true;
-
-            int index = Transactions.IndexOf(value);
-            if (index != -1)
-            {
-                Transactions[index] = value;
-            }
         }
     }
 
@@ -164,10 +158,10 @@ public partial class TransactionViewModel : ObservableObject
     {
         if (transaction == null) return;
 
-        foreach (var t in Transactions)
+        var previouslySelected = Transactions.FirstOrDefault(t => t != transaction && t.IsSelected);
+        if (previouslySelected != null)
         {
-            if (t != transaction)
-                t.IsSelected = false;
+            previouslySelected.IsSelected = false;
         }
 
         transaction.IsSelected = !transaction.IsSelected;

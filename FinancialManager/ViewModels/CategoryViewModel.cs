@@ -19,7 +19,7 @@ public partial class CategoryViewModel : ObservableObject
     private ObservableCollection<Category> categories = new();
 
     [ObservableProperty]
-    private Category selectedCategory;
+    private Category? selectedCategory;
 
     public Command LoadCategoriesCommand { get; }
 
@@ -67,25 +67,20 @@ public partial class CategoryViewModel : ObservableObject
         Categories = new ObservableCollection<Category>(items);
     }
 
-    partial void OnSelectedCategoryChanged(Category value)
+    [RelayCommand]
+    private void SelectCategory(Category? category)
     {
-        foreach (var cat in Categories)
+        if (category == null || category.IsSystem) return;
+
+        var previouslySelected = Categories.FirstOrDefault(c => c != category && c.IsSelected);
+        if (previouslySelected != null)
         {
-            cat.IsSelected = false;
+            previouslySelected.IsSelected = false;
         }
 
-        if (value == null) return;
+        category.IsSelected = !category.IsSelected;
 
-        if (value.IsSystem)
-        {
-            SelectedCategory = null;
-            return;
-        }
-
-        if (value != null)
-        {
-            value.IsSelected = true;
-        }
+        SelectedCategory = category.IsSelected ? category : null;
     }
 
     [RelayCommand]
@@ -97,6 +92,8 @@ public partial class CategoryViewModel : ObservableObject
     [RelayCommand]
     private async Task EditCategory(Category category)
     {
+        if (category == null || category.IsSystem) return;
+
         var navigationParameter = new Dictionary<string, object>
         {
             { "CategoryToEdit", category }
@@ -107,6 +104,8 @@ public partial class CategoryViewModel : ObservableObject
     [RelayCommand]
     private async Task DeleteCategory(Category category)
     {
+        if (category == null || category.IsSystem) return;
+
         bool confirm = await Shell.Current.DisplayAlert(Resources.Strings.DeleteTitle, string.Format(Resources.Strings.DeleteCategoryMessage, category.LocalizedName), Resources.Strings.Yes, Resources.Strings.No);
 
         if (confirm)

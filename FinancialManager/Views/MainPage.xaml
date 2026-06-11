@@ -17,23 +17,24 @@
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" Margin="0,0,0,5">
                         <Label Text="{DynamicResource ReportCurrencyLabel}" TextColor="#D1E4FF" FontSize="12" VerticalOptions="Center"/>
                         <Picker ItemsSource="{Binding AvailableDisplayCurrencies}"
-                            SelectedItem="{Binding DisplayCurrency}"
-                            TextColor="White"
-                            TitleColor="White"
-                            FontSize="12"
-                            HeightRequest="30"
-                            VerticalOptions="Center"/>
+                                SelectedItem="{Binding DisplayCurrency}"
+                                IsEnabled="{Binding IsCurrencySelectionEnabled}"
+                                TextColor="White"
+                                TitleColor="White"
+                                FontSize="12"
+                                HeightRequest="30"
+                                VerticalOptions="Center"/>
                     </HorizontalStackLayout>
 
                     <Label Text="{DynamicResource TotalBalanceLabel}" TextColor="#D1E4FF" FontSize="13" HorizontalOptions="Center"/>
                     <Label Text="{Binding CurrentBalance}" TextColor="White" FontSize="30" FontAttributes="Bold" HorizontalOptions="Center"/>
 
                     <FlexLayout Wrap="Wrap" 
-                        Direction="Row" 
-                        JustifyContent="SpaceAround" 
-                        AlignItems="Center"
-                        AlignContent="Stretch"
-                        Margin="0,15,0,0">
+                                Direction="Row" 
+                                JustifyContent="SpaceAround" 
+                                AlignItems="Center"
+                                AlignContent="Stretch"
+                                Margin="0,15,0,0">
 
                         <VerticalStackLayout Margin="10,5" HorizontalOptions="Center">
                             <Label Text="{DynamicResource IncomeLabel}" TextColor="#A6C8FF" FontSize="11" HorizontalOptions="Center"/>
@@ -59,20 +60,31 @@
                 </VerticalStackLayout>
             </Border>
 
-            <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="10" VerticalOptions="Center">
                 <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
                     <Label Text="{DynamicResource FromLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
-                    <DatePicker Date="{Binding StartDate}" Format="dd.MM.yyyy" TextColor="White" VerticalOptions="Center"/>
+                    <DatePicker Date="{Binding StartDate}" 
+                                MaximumDate="{Binding EndDate}" 
+                                Format="dd.MM.yyyy" 
+                                TextColor="White" 
+                                VerticalOptions="Center"/>
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
                     <Label Text="{DynamicResource ToLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
-                    <DatePicker Date="{Binding EndDate}" Format="dd.MM.yyyy" TextColor="White" VerticalOptions="Center"/>
+                    <DatePicker Date="{Binding EndDate}" 
+                                MinimumDate="{Binding StartDate}" 
+                                Format="dd.MM.yyyy" 
+                                TextColor="White" 
+                                VerticalOptions="Center"/>
                 </HorizontalStackLayout>
             </Grid>
 
             <VerticalStackLayout Spacing="10">
-                <Label Text="{DynamicResource TransactionTypeHeader}" FontAttributes="Bold" FontSize="14" TextColor="White"/>
+                <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                    <Label Grid.Column="0" Text="{DynamicResource TransactionTypeHeader}" FontAttributes="Bold" FontSize="14" TextColor="White" VerticalOptions="Center"/>
+                    <Button Grid.Column="1" Text="{DynamicResource Reset}" FontSize="12" Command="{Binding ClearFiltersCommand}" BackgroundColor="Transparent" TextColor="#2196F3" Padding="0" HeightRequest="30"/>
+                </Grid>
 
                 <FlexLayout BindableLayout.ItemsSource="{Binding TransactionTypes}"
                             Wrap="Wrap"
@@ -110,54 +122,54 @@
             </VerticalStackLayout>
 
             <Border StrokeShape="RoundRectangle 12" 
-                Padding="15" 
-                HeightRequest="220" 
-                BackgroundColor="#1a1a1a" 
-                Stroke="#333">
+                    Padding="15" 
+                    HeightRequest="220" 
+                    BackgroundColor="#1a1a1a" 
+                    Stroke="#333">
 
                 <Grid ColumnDefinitions="1.2*, 1*" ColumnSpacing="15">
 
                     <microcharts:ChartView Grid.Column="0"
-                               Chart="{Binding CategoryChart}" 
-                               HorizontalOptions="FillAndExpand" 
-                               VerticalOptions="FillAndExpand"/>
+                                           Chart="{Binding CategoryChart}" 
+                                           HorizontalOptions="Fill" 
+                                           VerticalOptions="Fill"/>
 
                     <ScrollView Grid.Column="1" VerticalScrollBarVisibility="Never">
                         <VerticalStackLayout BindableLayout.ItemsSource="{Binding ChartLegendItems}" 
-                         Spacing="12" 
-                         VerticalOptions="Center">
+                                             Spacing="12" 
+                                             VerticalOptions="Center">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="models:ChartLegendItem">
 
                                     <Grid ColumnDefinitions="Auto, Auto, *, Auto" ColumnSpacing="6" VerticalOptions="Center">
 
                                         <BoxView Grid.Column="0" 
-                                             WidthRequest="10" 
-                                             HeightRequest="10" 
-                                             CornerRadius="2" 
-                                             BackgroundColor="{Binding ColorHex}"
-                                             VerticalOptions="Center"/>
+                                                 WidthRequest="10" 
+                                                 HeightRequest="10" 
+                                                 CornerRadius="2" 
+                                                 BackgroundColor="{Binding ColorHex}"
+                                                 VerticalOptions="Center"/>
 
                                         <Label Grid.Column="1" 
-                                           Text="{Binding Icon}" 
-                                           FontSize="13" 
-                                           VerticalOptions="Center"/>
+                                               Text="{Binding Icon}" 
+                                               FontSize="13" 
+                                               VerticalOptions="Center"/>
 
                                         <Label Grid.Column="2" 
-                                           Text="{Binding Label}" 
-                                           FontSize="13" 
-                                           TextColor="White" 
-                                           LineBreakMode="WordWrap"
-                                           VerticalOptions="Center"/>
+                                               Text="{Binding Label}" 
+                                               FontSize="13" 
+                                               TextColor="White" 
+                                               LineBreakMode="WordWrap"
+                                               VerticalOptions="Center"/>
 
                                         <Label Grid.Column="3" 
-                                           Text="{Binding ValueLabel}" 
-                                           FontSize="12" 
-                                           TextColor="#aaa" 
-                                           FontAttributes="Bold"
-                                           HorizontalOptions="End"
-                                           VerticalOptions="Center"
-                                           Margin="4,0,0,0"/>
+                                               Text="{Binding ValueLabel}" 
+                                               FontSize="12" 
+                                               TextColor="#aaa" 
+                                               FontAttributes="Bold"
+                                               HorizontalOptions="End"
+                                               VerticalOptions="Center"
+                                               Margin="4,0,0,0"/>
                                     </Grid>
 
                                 </DataTemplate>
@@ -168,19 +180,60 @@
             </Border>
 
             <VerticalStackLayout Spacing="10">
-                <Grid ColumnDefinitions="*, Auto">
-                    <Label Grid.Column="0" Text="{DynamicResource TransactionsPeriodLabel}" FontAttributes="Bold" FontSize="16" TextColor="White"/>
-                    <Button Grid.Column="1" Text="{DynamicResource Reset}" FontSize="12" Command="{Binding ClearFiltersCommand}" BackgroundColor="Transparent" TextColor="#2196F3" Padding="0"/>
+                <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                    <Label Grid.Column="0" 
+               Text="{DynamicResource TransactionsPeriodLabel}" 
+               FontAttributes="Bold" 
+               FontSize="16" 
+               TextColor="White" 
+               VerticalOptions="Center"/>
+
+                    <HorizontalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                        <Button Text="▲" 
+                    FontSize="14" 
+                    Command="{Binding ToggleSortAscendingCommand}" 
+                    BackgroundColor="Transparent" 
+                    TextColor="#777" 
+                    Padding="0" 
+                    WidthRequest="30" 
+                    HeightRequest="30">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding IsSortedAscending}" Value="True">
+                                    <Setter Property="TextColor" Value="#2196F3" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+
+                        <Button Text="▼" 
+                    FontSize="14" 
+                    Command="{Binding ToggleSortDescendingCommand}" 
+                    BackgroundColor="Transparent" 
+                    TextColor="#777" 
+                    Padding="0" 
+                    WidthRequest="30" 
+                    HeightRequest="30">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding IsSortedDescending}" Value="True">
+                                    <Setter Property="TextColor" Value="#2196F3" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                    </HorizontalStackLayout>
                 </Grid>
 
-                <CollectionView ItemsSource="{Binding FilteredTransactions}" HeightRequest="300">
+                <CollectionView ItemsSource="{Binding FilteredTransactions}" SelectionMode="None">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:Transaction">
                             <Grid Margin="0,5">
-                                <Frame Padding="0" CornerRadius="10" HasShadow="False" BackgroundColor="#1a1a1a" BorderColor="#333">
+                                <Border Padding="0" StrokeShape="RoundRectangle 10" BackgroundColor="#1a1a1a" Stroke="#333" StrokeThickness="1">
+
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=SelectTransactionCommand}" CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+
                                     <Grid Padding="15" ColumnDefinitions="*, Auto">
 
-                                        <VerticalStackLayout Spacing="4">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="3" VerticalOptions="Center">
                                             <HorizontalStackLayout Spacing="10">
                                                 <Label Text="{Binding Category.Icon}" FontSize="18"/>
                                                 <Label Text="{Binding Category.LocalizedName}" FontSize="16" TextColor="White" FontAttributes="Bold"/>
@@ -191,17 +244,29 @@
                                                 <Label Text="{Binding TransactionType.LocalizedName}" FontSize="14" TextColor="#bbb"/>
                                             </HorizontalStackLayout>
 
-                                            <Label Text="{Binding Date, StringFormat='{0:yyyy-MM-dd}'}" FontSize="12" TextColor="#888" Margin="28,0,0,0"/>
+                                            <Label Text="{Binding Description}" 
+                                       FontSize="14" 
+                                       TextColor="#bbb" 
+                                       LineBreakMode="WordWrap" 
+                                       Margin="28,4,10,0"
+                                       IsVisible="{Binding IsSelected}"/>
                                         </VerticalStackLayout>
 
-                                        <Label Grid.Column="1" 
-                                               Text="{Binding AmountDisplay}" 
-                                               FontSize="18" 
-                                               FontAttributes="Bold" 
-                                               VerticalOptions="Center"
-                                               TextColor="White"/>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center" Margin="10,0,0,0">
+                                            <Label Text="{Binding Date, StringFormat='{0:yyyy-MM-dd}'}" 
+                                       FontSize="12" 
+                                       TextColor="#888" 
+                                       Margin="0,0,0,5" 
+                                       HorizontalOptions="End"/>
+                                            <Label Text="{Binding AmountDisplay}" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="White"
+                                       HorizontalOptions="End"/>
+                                        </VerticalStackLayout>
+
                                     </Grid>
-                                </Frame>
+                                </Border>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

@@ -5,20 +5,27 @@
              xmlns:models="clr-namespace:FinancialManager.Models"
              xmlns:resources="clr-namespace:Resources"
              x:Class="FinancialManager.Views.CategoryPage"
+             x:Name="thisPage"
              Title="{DynamicResource CategoriesTitle}">
 
     <Grid>
         <CollectionView ItemsSource="{Binding Categories}"
-                    SelectionMode="Single"
-                    SelectedItem="{Binding SelectedCategory}">
+                        SelectionMode="None"
+                        ItemsUpdatingScrollMode="KeepScrollOffset">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Category">
                     <Grid Margin="10,5">
                         <Frame Padding="0" 
-                            CornerRadius="10" 
-                            HasShadow="False" 
-                            BackgroundColor="#1a1a1a"
-                            BorderColor="#333">
+                               CornerRadius="10" 
+                               HasShadow="False" 
+                               BackgroundColor="#1a1a1a"
+                               BorderColor="#333">
+
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.SelectCategoryCommand}" 
+                                    CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
 
                             <VerticalStackLayout>
                                 <Grid Padding="15">
@@ -31,25 +38,25 @@
                                 <BoxView HeightRequest="1" BackgroundColor="#333" IsVisible="{Binding IsSelected}"/>
 
                                 <Grid IsVisible="{Binding IsSelected}" 
-                                    ColumnDefinitions="*, *" 
-                                    HeightRequest="50"
-                                    BackgroundColor="#252525">
+                                      ColumnDefinitions="*, *" 
+                                      HeightRequest="50"
+                                      BackgroundColor="#252525">
 
                                     <Button Grid.Column="0" 
-                                        Text="{DynamicResource Edit}" 
-                                        TextColor="White"
-                                        BackgroundColor="Transparent"
-                                        CornerRadius="0"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CategoryViewModel}}, Path=EditCategoryCommand}"
-                                        CommandParameter="{Binding .}"/>
+                                            Text="{DynamicResource Edit}" 
+                                            TextColor="White"
+                                            BackgroundColor="Transparent"
+                                            CornerRadius="0"
+                                            Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.EditCategoryCommand}"
+                                            CommandParameter="{Binding .}"/>
 
                                     <Button Grid.Column="1" 
-                                        Text="{DynamicResource Delete}" 
-                                        TextColor="#ff4d4d"
-                                        BackgroundColor="Transparent"
-                                        CornerRadius="0"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CategoryViewModel}}, Path=DeleteCategoryCommand}"
-                                        CommandParameter="{Binding .}"/>
+                                            Text="{DynamicResource Delete}" 
+                                            TextColor="#ff4d4d"
+                                            BackgroundColor="Transparent"
+                                            CornerRadius="0"
+                                            Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.DeleteCategoryCommand}"
+                                            CommandParameter="{Binding .}"/>
                                 </Grid>
                             </VerticalStackLayout>
                         </Frame>
@@ -59,15 +66,15 @@
         </CollectionView>
 
         <Button Text="{DynamicResource Plus}"
-            FontSize="24"
-            BackgroundColor="#28a745"
-            TextColor="White"
-            CornerRadius="25"
-            HeightRequest="50"
-            WidthRequest="50"
-            HorizontalOptions="End"
-            VerticalOptions="End"
-            Margin="20"
-            Command="{Binding AddCategoryCommand}"/>
+                FontSize="24"
+                BackgroundColor="#28a745"
+                TextColor="White"
+                CornerRadius="25"
+                HeightRequest="50"
+                WidthRequest="50"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="20"
+                Command="{Binding AddCategoryCommand}"/>
     </Grid>
 </ContentPage>

@@ -34,6 +34,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<Transaction> filteredTransactions = new();
     [ObservableProperty] private List<ChartLegendItem> chartLegendItems = new();
     [ObservableProperty] private string displayCurrency = "₴";
+    [ObservableProperty] private bool isCurrencySelectionEnabled = true;
+    [ObservableProperty] private bool isSortedAscending;
+    [ObservableProperty] private bool isSortedDescending;
 
     public List<string> AvailableDisplayCurrencies { get; } = new() { "₴", "$", "€" };
 
@@ -70,7 +73,16 @@ public partial class MainViewModel : ObservableObject
         var cats = await _categoryRepository.GetAsync();
         var locs = await _localizationRepository.GetAsync();
 
-        _currentRates = await _currencyService.GetLatestRatesAsync();
+        try
+        {
+            _currentRates = await _currencyService.GetLatestRatesAsync();
+            IsCurrencySelectionEnabled = _currentRates != null && _currentRates.Count > 1;
+        }
+        catch (Exception)
+        {
+            _currentRates = new Dictionary<string, double> { { "₴", 1.0 } };
+            IsCurrencySelectionEnabled = false;
+        }
 
         string currentLang = _localizationService.CurrentLanguage;
 
@@ -131,7 +143,45 @@ public partial class MainViewModel : ObservableObject
         ApplyFilters();
     }
 
-    partial void OnDisplayCurrencyChanged(string value) => ApplyFilters();
+    partial void OnDisplayCurrencyChanged(string value)
+    {
+        if (value != "₴" && (_currentRates == null || !_currentRates.ContainsKey(value)))
+        {
+            DisplayCurrency = "₴";
+            return;
+        }
+        ApplyFilters();
+    }
+
+    [RelayCommand]
+    private void ToggleSortAscending()
+    {
+        if (IsSortedAscending)
+        {
+            IsSortedAscending = false;
+        }
+        else
+        {
+            IsSortedAscending = true;
+            IsSortedDescending = false;
+        }
+        ApplyFilters();
+    }
+
+    [RelayCommand]
+    private void ToggleSortDescending()
+    {
+        if (IsSortedDescending)
+        {
+            IsSortedDescending = false;
+        }
+        else
+        {
+            IsSortedDescending = true;
+            IsSortedAscending = false;
+        }
+        ApplyFilters();
+    }
 
     [RelayCommand]
     private void SelectType(TransactionType type)
@@ -151,6 +201,8 @@ public partial class MainViewModel : ObservableObject
             t.IsSelected = false;
         }
 
+        IsSortedAscending = false;
+        IsSortedDescending = false;
         DisplayCurrency = "₴";
         StartDate = DateTime.Now.AddDays(-30);
         EndDate = DateTime.Now;
@@ -168,6 +220,16 @@ public partial class MainViewModel : ObservableObject
         }
 
         var filteredList = filtered.ToList();
+
+        if (IsSortedAscending)
+        {
+            filteredList = filteredList.OrderBy(t => t.GetAmountInUah(_currentRates)).ToList();
+        }
+        else if (IsSortedDescending)
+        {
+            filteredList = filteredList.OrderByDescending(t => t.GetAmountInUah(_currentRates)).ToList();
+        }
+
         FilteredTransactions = new ObservableCollection<Transaction>(filteredList);
 
         var incomeInUah = filteredList.Where(t => t.TransactionType?.Icon == "📥").Sum(t => t.GetAmountInUah(_currentRates));

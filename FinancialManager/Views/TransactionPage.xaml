@@ -5,6 +5,7 @@
              xmlns:models="clr-namespace:FinancialManager.Models"
              xmlns:resources="clr-namespace:Resources"
              x:Class="FinancialManager.Views.TransactionPage"
+             x:Name="thisPage"
              Title="{DynamicResource TransactionsTitle}"
              BackgroundColor="#121212">
 
@@ -42,12 +43,20 @@
                 <Grid ColumnDefinitions="*, *, Auto" ColumnSpacing="10" VerticalOptions="Center">
                     <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
                         <Label Text="{DynamicResource FromLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
-                        <DatePicker Date="{Binding DateFrom}" Format="dd.MM.yyyy" TextColor="White" VerticalOptions="Center"/>
+                        <DatePicker Date="{Binding DateFrom}" 
+                    MaximumDate="{Binding DateTo}" 
+                    Format="dd.MM.yyyy" 
+                    TextColor="White" 
+                    VerticalOptions="Center"/>
                     </HorizontalStackLayout>
 
                     <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
                         <Label Text="{DynamicResource ToLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
-                        <DatePicker Date="{Binding DateTo}" Format="dd.MM.yyyy" TextColor="White" VerticalOptions="Center"/>
+                        <DatePicker Date="{Binding DateTo}" 
+                    MinimumDate="{Binding DateFrom}" 
+                    Format="dd.MM.yyyy" 
+                    TextColor="White" 
+                    VerticalOptions="Center"/>
                     </HorizontalStackLayout>
                 </Grid>
 
@@ -56,18 +65,21 @@
             </VerticalStackLayout>
         </Frame>
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Transactions}" SelectionMode="None">
+        <CollectionView Grid.Row="1" 
+                        ItemsSource="{Binding Transactions}" 
+                        SelectionMode="None"
+                        ItemsUpdatingScrollMode="KeepScrollOffset">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Transaction">
                     <Grid Margin="10,5">
 
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer 
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionViewModel}}, Path=SelectTransactionCommand}" 
-                                CommandParameter="{Binding .}"/>
-                        </Grid.GestureRecognizers>
-
                         <Frame Padding="0" CornerRadius="10" HasShadow="False" BackgroundColor="#1a1a1a" BorderColor="#333">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer 
+                            Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.SelectTransactionCommand}" 
+                            CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+
                             <VerticalStackLayout>
                                 <Grid Padding="15" ColumnDefinitions="*, Auto">
                                     <VerticalStackLayout Spacing="4">
@@ -87,11 +99,11 @@
                                     </VerticalStackLayout>
 
                                     <Label Grid.Column="1" 
-                                       Text="{Binding AmountDisplay}" 
-                                       FontSize="18" 
-                                       FontAttributes="Bold" 
-                                       VerticalOptions="Center"
-                                       TextColor="White"/>
+                                   Text="{Binding AmountDisplay}" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" 
+                                   VerticalOptions="Center"
+                                   TextColor="White"/>
                                 </Grid>
 
                                 <BoxView HeightRequest="1" BackgroundColor="#333" IsVisible="{Binding IsSelected}"/>
@@ -99,16 +111,16 @@
                                 <VerticalStackLayout IsVisible="{Binding IsSelected}" BackgroundColor="#252525" Padding="15,12">
 
                                     <Label Text="{Binding Description}" 
-                                           TextColor="#ccc" 
-                                           FontSize="14" 
-                                           LineBreakMode="WordWrap"
-                                           Margin="0,0,0,12"/>
+                                   TextColor="#ccc" 
+                                   FontSize="14" 
+                                   LineBreakMode="WordWrap"
+                                   Margin="0,0,0,12"/>
 
                                     <Grid ColumnDefinitions="*, *">
                                         <Button Grid.Column="0" Text="{DynamicResource Edit}" TextColor="White" BackgroundColor="Transparent"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionViewModel}}, Path=EditTransactionCommand}" CommandParameter="{Binding .}"/>
+                                        Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.EditTransactionCommand}" CommandParameter="{Binding .}"/>
                                         <Button Grid.Column="1" Text="{DynamicResource Delete}" TextColor="#ff4d4d" BackgroundColor="Transparent"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionViewModel}}, Path=DeleteTransactionCommand}" CommandParameter="{Binding .}"/>
+                                        Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.DeleteTransactionCommand}" CommandParameter="{Binding .}"/>
                                     </Grid>
                                 </VerticalStackLayout>
                             </VerticalStackLayout>

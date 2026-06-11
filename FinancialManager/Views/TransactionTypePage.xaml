@@ -5,12 +5,13 @@
              xmlns:models="clr-namespace:FinancialManager.Models"
              xmlns:resources="clr-namespace:Resources"
              x:Class="FinancialManager.Views.TransactionTypePage"
+             x:Name="thisPage"
              Title="{DynamicResource TransactionTypesTitle}">
 
     <Grid>
         <CollectionView ItemsSource="{Binding TransactionTypes}"
-                        SelectionMode="Single"
-                        SelectedItem="{Binding SelectedType}">
+                        SelectionMode="None"
+                        ItemsUpdatingScrollMode="KeepScrollOffset">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:TransactionType">
                     <Grid Margin="10,5">
@@ -19,6 +20,12 @@
                                HasShadow="False" 
                                BackgroundColor="#1a1a1a"
                                BorderColor="#333">
+
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.SelectTypeCommand}" 
+                                    CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
 
                             <VerticalStackLayout>
                                 <Grid Padding="15">
@@ -44,14 +51,14 @@
                                             Text="{DynamicResource Edit}" 
                                             TextColor="White"
                                             BackgroundColor="Transparent"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionTypeViewModel}}, Path=EditTransactionTypeCommand}"
+                                            Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.EditTransactionTypeCommand}"
                                             CommandParameter="{Binding .}"/>
 
                                     <Button Grid.Column="1" 
                                             Text="{DynamicResource Delete}" 
                                             TextColor="#ff4d4d"
                                             BackgroundColor="Transparent"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TransactionTypeViewModel}}, Path=DeleteCategoryCommand}"
+                                            Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.DeleteCategoryCommand}"
                                             CommandParameter="{Binding .}"/>
                                 </Grid>
                             </VerticalStackLayout>

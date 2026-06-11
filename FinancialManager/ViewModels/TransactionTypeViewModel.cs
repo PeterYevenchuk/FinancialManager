@@ -19,7 +19,7 @@ public partial class TransactionTypeViewModel : ObservableObject
     private ObservableCollection<TransactionType> transactionTypes = new();
 
     [ObservableProperty]
-    private TransactionType selectedType;
+    private TransactionType? selectedType;
 
     public Command LoadTransactionTypesCommand { get; }
 
@@ -67,25 +67,20 @@ public partial class TransactionTypeViewModel : ObservableObject
         TransactionTypes = new ObservableCollection<TransactionType>(items);
     }
 
-    partial void OnSelectedTypeChanged(TransactionType value)
+    [RelayCommand]
+    private void SelectType(TransactionType? type)
     {
-        foreach (var type in TransactionTypes)
+        if (type == null || type.IsSystem) return;
+
+        var previouslySelected = TransactionTypes.FirstOrDefault(t => t != type && t.IsSelected);
+        if (previouslySelected != null)
         {
-            type.IsSelected = false;
+            previouslySelected.IsSelected = false;
         }
 
-        if (value == null) return;
+        type.IsSelected = !type.IsSelected;
 
-        if (value.IsSystem)
-        {
-            SelectedType = null;
-            return;
-        }
-
-        if (value != null)
-        {
-            value.IsSelected = true;
-        }
+        SelectedType = type.IsSelected ? type : null;
     }
 
     [RelayCommand]
@@ -97,6 +92,8 @@ public partial class TransactionTypeViewModel : ObservableObject
     [RelayCommand]
     private async Task EditTransactionType(TransactionType type)
     {
+        if (type == null || type.IsSystem) return;
+
         var navigationParameter = new Dictionary<string, object>
         {
             { "TransactionTypeToEdit", type }
@@ -107,6 +104,8 @@ public partial class TransactionTypeViewModel : ObservableObject
     [RelayCommand]
     private async Task DeleteCategory(TransactionType type)
     {
+        if (type == null || type.IsSystem) return;
+
         bool confirm = await Shell.Current.DisplayAlert(Resources.Strings.DeleteTitle, string.Format(Resources.Strings.DeleteTransactionTypeMessage, type.LocalizedName), Resources.Strings.Yes, Resources.Strings.No);
 
         if (confirm)

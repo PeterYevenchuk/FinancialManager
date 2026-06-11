@@ -105,7 +105,7 @@ namespace Resources
         public static string Backup_SaveTitle => CurrentLanguage == "uk" ? "Зберегти бекап" : "Save backup";
         public static string Backup_PickTitle => CurrentLanguage == "uk" ? "Оберіть файл бекапу (.json)" : "Pick backup file (.json)";
         public static string Backup_ReplaceConfirmation => CurrentLanguage == "uk" ? "Це повністю замінить твої поточні дані. Продовжуємо?" : "This will completely replace your current data. Continue?";
-        public static string Backup_RestoreSuccess => CurrentLanguage == "uk" ? "Дані відновлено! Перезапусти додаток." : "Data restored! Please restart the app.";
+        public static string Backup_RestoreSuccess => CurrentLanguage == "uk" ? "Дані відновлено!" : "Data restored!";
         public static string Warning => CurrentLanguage == "uk" ? "Увага" : "Warning";
         public static string Success => CurrentLanguage == "uk" ? "Успіх" : "Success";
         public static string ImportErrorTitle => CurrentLanguage == "uk" ? "Помилка імпорту" : "Import error";
