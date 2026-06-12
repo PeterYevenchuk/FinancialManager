@@ -1,4 +1,4 @@
-﻿using FinancialManager.Data.Repositories;
+﻿using FinancialManager.Data.Contracts;
 using FinancialManager.Models;
 using System.Text.Json;
 

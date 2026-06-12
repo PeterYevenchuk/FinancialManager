@@ -1,12 +1,8 @@
 using CommunityToolkit.Mvvm.Messaging;
+using FinancialManager.Services.Contracts;
 using FinancialManager.Services.Messages;
 
 namespace FinancialManager.Services;
-
-public interface ILocalizationManager
-{
-    void Initialize();
-}
 
 public class LocalizationManager : ILocalizationManager
 {

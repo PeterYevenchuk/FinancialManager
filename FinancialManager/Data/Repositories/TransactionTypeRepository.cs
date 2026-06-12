@@ -1,12 +1,8 @@
-﻿using FinancialManager.Models;
+﻿using FinancialManager.Data.Contracts;
+using FinancialManager.Models;
 using SQLite;
 
 namespace FinancialManager.Data.Repositories;
-
-public interface ITransactionTypeRepository : IRepository<TransactionType> 
-{
-    Task DeleteTransactionTypeAsync(TransactionType type);
-}
 
 public class TransactionTypeRepository : BaseRepository<TransactionType>, ITransactionTypeRepository
 {

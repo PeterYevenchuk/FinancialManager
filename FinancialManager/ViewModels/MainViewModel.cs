@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FinancialManager.Data.Repositories;
+using FinancialManager.Data.Contracts;
+using FinancialManager.Helpers;
 using FinancialManager.Models;
-using FinancialManager.Services;
 using FinancialManager.Services.Contracts;
 using Microcharts;
 using SkiaSharp;
@@ -19,26 +19,25 @@ public partial class MainViewModel : ObservableObject
     private readonly ILocalizationService _localizationService;
     private readonly ICurrencyService _currencyService;
 
-    private List<Transaction> _allTransactions = new();
-    private Dictionary<string, double> _currentRates = new() { { "₴", 1.0 } };
-
-    [ObservableProperty] private string currentBalance = "0.00 ₴";
-    [ObservableProperty] private string totalIncome = "0.00 ₴";
-    [ObservableProperty] private string totalExpenses = "0.00 ₴";
-    [ObservableProperty] private string totalSavings = "0.00 ₴";
-    [ObservableProperty] private string totalOthers = "0.00 ₴";
+    [ObservableProperty] private string currentBalance = StaticData.BalancePlaceholderUah;
+    [ObservableProperty] private string totalIncome = StaticData.BalancePlaceholderUah;
+    [ObservableProperty] private string totalExpenses = StaticData.BalancePlaceholderUah;
+    [ObservableProperty] private string totalSavings = StaticData.BalancePlaceholderUah;
+    [ObservableProperty] private string totalOthers = StaticData.BalancePlaceholderUah;
     [ObservableProperty] private DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
     [ObservableProperty] private DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
     [ObservableProperty] private ObservableCollection<TransactionType> transactionTypes = new();
     [ObservableProperty] private ObservableCollection<Category> categories = new();
     [ObservableProperty] private ObservableCollection<Transaction> filteredTransactions = new();
     [ObservableProperty] private List<ChartLegendItem> chartLegendItems = new();
-    [ObservableProperty] private string displayCurrency = "₴";
+    [ObservableProperty] private string displayCurrency = StaticData.UahCurrency;
     [ObservableProperty] private bool isCurrencySelectionEnabled = true;
     [ObservableProperty] private bool isSortedAscending;
     [ObservableProperty] private bool isSortedDescending;
 
-    public List<string> AvailableDisplayCurrencies { get; } = new() { "₴", "$", "€" };
+    private List<Transaction> _allTransactions = new();
+    private Dictionary<string, double> _currentRates = new() { { StaticData.UahCurrency, 1.0 } };
+    public List<string> AvailableDisplayCurrencies { get; } = new() { StaticData.UahCurrency, StaticData.UsdCurrency, StaticData.EurCurrency };
 
     private Chart _categoryChart;
     public Chart CategoryChart
@@ -80,7 +79,7 @@ public partial class MainViewModel : ObservableObject
         }
         catch (Exception)
         {
-            _currentRates = new Dictionary<string, double> { { "₴", 1.0 } };
+            _currentRates = new Dictionary<string, double> { { StaticData.UahCurrency, 1.0 } };
             IsCurrencySelectionEnabled = false;
         }
 
@@ -89,14 +88,14 @@ public partial class MainViewModel : ObservableObject
         foreach (var type in types)
         {
             var loc = locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == currentLang)
-                      ?? locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == "en");
+                      ?? locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == StaticData.EnCode);
             type.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
         }
 
         foreach (var cat in cats)
         {
             var loc = locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == currentLang)
-                      ?? locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == "en");
+                      ?? locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == StaticData.EnCode);
             cat.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
         }
 
@@ -110,148 +109,19 @@ public partial class MainViewModel : ObservableObject
             if (t.Category != null)
             {
                 var loc = locs.FirstOrDefault(l => l.ParentId == t.Category.Id && l.LanguageCode == currentLang)
-                          ?? locs.FirstOrDefault(l => l.ParentId == t.Category.Id && l.LanguageCode == "en");
+                          ?? locs.FirstOrDefault(l => l.ParentId == t.Category.Id && l.LanguageCode == StaticData.EnCode);
                 t.Category.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
             }
 
             if (t.TransactionType != null)
             {
                 var loc = locs.FirstOrDefault(l => l.ParentId == t.TransactionType.Id && l.LanguageCode == currentLang)
-                          ?? locs.FirstOrDefault(l => l.ParentId == t.TransactionType.Id && l.LanguageCode == "en");
+                          ?? locs.FirstOrDefault(l => l.ParentId == t.TransactionType.Id && l.LanguageCode == StaticData.EnCode);
                 t.TransactionType.LocalizedName = loc?.Value ?? Resources.Strings.NoType;
             }
         }
 
         ApplyFilters();
-    }
-
-    partial void OnStartDateChanged(DateTime value)
-    {
-        if (value > EndDate)
-        {
-            EndDate = value;
-        }
-        ApplyFilters();
-    }
-
-    partial void OnEndDateChanged(DateTime value)
-    {
-        if (value < StartDate)
-        {
-            StartDate = value;
-        }
-        ApplyFilters();
-    }
-
-    partial void OnDisplayCurrencyChanged(string value)
-    {
-        if (value != "₴" && (_currentRates == null || !_currentRates.ContainsKey(value)))
-        {
-            DisplayCurrency = "₴";
-            return;
-        }
-        ApplyFilters();
-    }
-
-    [RelayCommand]
-    private void ToggleSortAscending()
-    {
-        if (IsSortedAscending)
-        {
-            IsSortedAscending = false;
-        }
-        else
-        {
-            IsSortedAscending = true;
-            IsSortedDescending = false;
-        }
-        ApplyFilters();
-    }
-
-    [RelayCommand]
-    private void ToggleSortDescending()
-    {
-        if (IsSortedDescending)
-        {
-            IsSortedDescending = false;
-        }
-        else
-        {
-            IsSortedDescending = true;
-            IsSortedAscending = false;
-        }
-        ApplyFilters();
-    }
-
-    [RelayCommand]
-    private void SelectType(TransactionType type)
-    {
-        if (type == null) return;
-
-        type.IsSelected = !type.IsSelected;
-
-        ApplyFilters();
-    }
-
-    [RelayCommand]
-    private void ClearFilters()
-    {
-        foreach (var t in TransactionTypes)
-        {
-            t.IsSelected = false;
-        }
-
-        IsSortedAscending = false;
-        IsSortedDescending = false;
-        DisplayCurrency = "₴";
-        StartDate = DateTime.Now.AddDays(-30);
-        EndDate = DateTime.Now;
-        ApplyFilters();
-    }
-
-    private void ApplyFilters()
-    {
-        var filtered = _allTransactions.Where(t => t.Date.Date >= StartDate.Date && t.Date.Date <= EndDate.Date);
-        var selectedTypeIds = TransactionTypes.Where(t => t.IsSelected).Select(t => t.Id).ToList();
-
-        if (selectedTypeIds.Any())
-        {
-            filtered = filtered.Where(t => selectedTypeIds.Contains(t.TransactionTypeId));
-        }
-
-        var filteredList = filtered.ToList();
-
-        if (IsSortedAscending)
-        {
-            filteredList = filteredList.OrderBy(t => t.GetAmountInUah(_currentRates)).ToList();
-        }
-        else if (IsSortedDescending)
-        {
-            filteredList = filteredList.OrderByDescending(t => t.GetAmountInUah(_currentRates)).ToList();
-        }
-
-        FilteredTransactions = new ObservableCollection<Transaction>(filteredList);
-
-        var incomeInUah = filteredList.Where(t => t.TransactionType?.Icon == "📥").Sum(t => t.GetAmountInUah(_currentRates));
-        var expenseInUah = filteredList.Where(t => t.TransactionType?.Icon == "📤").Sum(t => t.GetAmountInUah(_currentRates));
-        var savingsInUah = filteredList.Where(t => t.TransactionType?.Icon == "🐷").Sum(t => t.GetAmountInUah(_currentRates));
-        var othersInUah = filteredList.Where(t => t.TransactionType?.Icon == "🔄").Sum(t => t.GetAmountInUah(_currentRates));
-
-        double targetRate = _currentRates.TryGetValue(DisplayCurrency, out double r) ? r : 1.0;
-
-        var income = incomeInUah / targetRate;
-        var expense = expenseInUah / targetRate;
-        var savings = savingsInUah / targetRate;
-        var others = othersInUah / targetRate;
-
-        TotalIncome = $"+{income:N2} {DisplayCurrency}";
-        TotalExpenses = $"-{expense:N2} {DisplayCurrency}";
-        TotalSavings = $"{savings:N2} {DisplayCurrency}";
-        TotalOthers = $"{others:N2} {DisplayCurrency}";
-
-        CurrentBalance = $"{income - expense - savings:N2} {DisplayCurrency}";
-
-        UpdateChartData(filteredList);
     }
 
     public async void UpdateChartData(List<Transaction> transactions)
@@ -318,5 +188,134 @@ public partial class MainViewModel : ObservableObject
             LabelMode = LabelMode.None,
             GraphPosition = GraphPosition.Center
         };
+    }
+
+    partial void OnStartDateChanged(DateTime value)
+    {
+        if (value > EndDate)
+        {
+            EndDate = value;
+        }
+        ApplyFilters();
+    }
+
+    partial void OnEndDateChanged(DateTime value)
+    {
+        if (value < StartDate)
+        {
+            StartDate = value;
+        }
+        ApplyFilters();
+    }
+
+    partial void OnDisplayCurrencyChanged(string value)
+    {
+        if (value != StaticData.UahCurrency && (_currentRates == null || !_currentRates.ContainsKey(value)))
+        {
+            DisplayCurrency = StaticData.UahCurrency;
+            return;
+        }
+        ApplyFilters();
+    }
+
+    [RelayCommand]
+    private void ToggleSortAscending()
+    {
+        if (IsSortedAscending)
+        {
+            IsSortedAscending = false;
+        }
+        else
+        {
+            IsSortedAscending = true;
+            IsSortedDescending = false;
+        }
+        ApplyFilters();
+    }
+
+    [RelayCommand]
+    private void ToggleSortDescending()
+    {
+        if (IsSortedDescending)
+        {
+            IsSortedDescending = false;
+        }
+        else
+        {
+            IsSortedDescending = true;
+            IsSortedAscending = false;
+        }
+        ApplyFilters();
+    }
+
+    [RelayCommand]
+    private void SelectType(TransactionType type)
+    {
+        if (type == null) return;
+
+        type.IsSelected = !type.IsSelected;
+
+        ApplyFilters();
+    }
+
+    [RelayCommand]
+    private void ClearFilters()
+    {
+        foreach (var t in TransactionTypes)
+        {
+            t.IsSelected = false;
+        }
+
+        IsSortedAscending = false;
+        IsSortedDescending = false;
+        DisplayCurrency = StaticData.UahCurrency;
+        StartDate = DateTime.Now.AddDays(-30);
+        EndDate = DateTime.Now;
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        var filtered = _allTransactions.Where(t => t.Date.Date >= StartDate.Date && t.Date.Date <= EndDate.Date);
+        var selectedTypeIds = TransactionTypes.Where(t => t.IsSelected).Select(t => t.Id).ToList();
+
+        if (selectedTypeIds.Any())
+        {
+            filtered = filtered.Where(t => selectedTypeIds.Contains(t.TransactionTypeId));
+        }
+
+        var filteredList = filtered.ToList();
+
+        if (IsSortedAscending)
+        {
+            filteredList = filteredList.OrderBy(t => t.GetAmountInUah(_currentRates)).ToList();
+        }
+        else if (IsSortedDescending)
+        {
+            filteredList = filteredList.OrderByDescending(t => t.GetAmountInUah(_currentRates)).ToList();
+        }
+
+        FilteredTransactions = new ObservableCollection<Transaction>(filteredList);
+
+        var incomeInUah = filteredList.Where(t => t.TransactionType?.Icon == "📥").Sum(t => t.GetAmountInUah(_currentRates));
+        var expenseInUah = filteredList.Where(t => t.TransactionType?.Icon == "📤").Sum(t => t.GetAmountInUah(_currentRates));
+        var savingsInUah = filteredList.Where(t => t.TransactionType?.Icon == "🐷").Sum(t => t.GetAmountInUah(_currentRates));
+        var othersInUah = filteredList.Where(t => t.TransactionType?.Icon == "🔄").Sum(t => t.GetAmountInUah(_currentRates));
+
+        double targetRate = _currentRates.TryGetValue(DisplayCurrency, out double r) ? r : 1.0;
+
+        var income = incomeInUah / targetRate;
+        var expense = expenseInUah / targetRate;
+        var savings = savingsInUah / targetRate;
+        var others = othersInUah / targetRate;
+
+        TotalIncome = $"+{income:N2} {DisplayCurrency}";
+        TotalExpenses = $"-{expense:N2} {DisplayCurrency}";
+        TotalSavings = $"{savings:N2} {DisplayCurrency}";
+        TotalOthers = $"{others:N2} {DisplayCurrency}";
+
+        CurrentBalance = $"{income - expense - savings:N2} {DisplayCurrency}";
+
+        UpdateChartData(filteredList);
     }
 }

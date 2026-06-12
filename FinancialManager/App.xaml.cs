@@ -1,5 +1,5 @@
 ﻿using FinancialManager.Data;
-using FinancialManager.Services;
+using FinancialManager.Services.Contracts;
 
 namespace FinancialManager;
 

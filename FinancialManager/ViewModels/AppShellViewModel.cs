@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using FinancialManager.Services;
+using FinancialManager.Helpers;
+using FinancialManager.Services.Contracts;
 using FinancialManager.Services.Messages;
 using System.Collections.ObjectModel;
 
@@ -12,12 +13,11 @@ public partial class AppShellViewModel : ObservableObject
 
     public ObservableCollection<LanguageModel> Languages { get; } = new()
     {
-        new LanguageModel { Code = "en", Name = "🇺🇸 English" }, //Defolt language
-        new LanguageModel { Code = "uk", Name = "🇺🇦 Українська" }
+        new LanguageModel { Code = StaticData.EnCode, Name = StaticData.EnName },
+        new LanguageModel { Code = StaticData.UkCode, Name = StaticData.UkName }
     };
 
-    [ObservableProperty]
-    private LanguageModel? selectedLanguage;
+    [ObservableProperty] private LanguageModel? selectedLanguage;
 
     public AppShellViewModel(ILocalizationService localizationService)
     {

@@ -1,16 +1,11 @@
-﻿namespace FinancialManager.Services;
+﻿using FinancialManager.Helpers;
+using FinancialManager.Services.Contracts;
 
-public interface ILocalizationService
-{
-    string CurrentLanguage { get; set; }
-    void Init();
-}
+namespace FinancialManager.Services;
 
 public class LocalizationService : ILocalizationService
 {
-    private const string LanguageKey = "selected_language";
-    private const string DefaultLanguage = "en";
-    private string _currentLanguage = DefaultLanguage;
+    private string _currentLanguage = StaticData.DefaultLanguage;
 
     public string CurrentLanguage
     {
@@ -20,13 +15,13 @@ public class LocalizationService : ILocalizationService
             if (_currentLanguage != value)
             {
                 _currentLanguage = value;
-                Preferences.Default.Set(LanguageKey, value);
+                Preferences.Default.Set(StaticData.LanguageKey, value);
             }
         }
     }
 
     public void Init()
     {
-        _currentLanguage = Preferences.Default.Get(LanguageKey, DefaultLanguage);
+        _currentLanguage = Preferences.Default.Get(StaticData.LanguageKey, StaticData.DefaultLanguage);
     }
 }

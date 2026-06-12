@@ -1,4 +1,5 @@
-﻿using FinancialManager.Models;
+﻿using FinancialManager.Data.Contracts;
+using FinancialManager.Models;
 using SQLite;
 
 namespace FinancialManager.Data.Repositories;

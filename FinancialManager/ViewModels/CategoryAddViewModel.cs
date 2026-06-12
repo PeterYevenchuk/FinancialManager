@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FinancialManager.Data.Repositories;
+using FinancialManager.Data.Contracts;
+using FinancialManager.Helpers;
 using FinancialManager.Models;
-using FinancialManager.Services;
+using FinancialManager.Services.Contracts;
 using FinancialManager.Services.Messages;
 
 namespace FinancialManager.ViewModels;
@@ -15,13 +16,12 @@ public partial class CategoryAddViewModel : ObservableObject
     private readonly ILocalizationRepository _localizationRepository;
     private readonly ILocalizationService _localizationService;
 
-    [ObservableProperty] private string icon = "✨";
+    [ObservableProperty] private string icon = StaticData.DefaultIcon;
     [ObservableProperty] private string nameEng;
     [ObservableProperty] private string nameUkr;
-
     [ObservableProperty] private Category? categoryToEdit;
 
-    public bool IsUkrVisible => _localizationService.CurrentLanguage == "uk";
+    public bool IsUkrVisible => _localizationService.CurrentLanguage == StaticData.UkCode;
 
     public CategoryAddViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository, ILocalizationService localizationService)
     {
@@ -48,8 +48,8 @@ public partial class CategoryAddViewModel : ObservableObject
     {
         var allLocs = await _localizationRepository.GetAsync();
 
-        NameEng = allLocs.FirstOrDefault(l => l.ParentId == categoryId && l.LanguageCode == "en")?.Value ?? string.Empty;
-        NameUkr = allLocs.FirstOrDefault(l => l.ParentId == categoryId && l.LanguageCode == "uk")?.Value ?? string.Empty;
+        NameEng = allLocs.FirstOrDefault(l => l.ParentId == categoryId && l.LanguageCode == StaticData.EnCode)?.Value ?? string.Empty;
+        NameUkr = allLocs.FirstOrDefault(l => l.ParentId == categoryId && l.LanguageCode == StaticData.UkCode)?.Value ?? string.Empty;
     }
 
     [RelayCommand]
@@ -66,8 +66,8 @@ public partial class CategoryAddViewModel : ObservableObject
 
         await _categoryRepository.SaveAsync(category);
 
-        await SaveOrUpdateLocalization(category.Id, "en", NameEng);
-        await SaveOrUpdateLocalization(category.Id, "uk", NameUkr);
+        await SaveOrUpdateLocalization(category.Id, StaticData.EnCode, NameEng);
+        await SaveOrUpdateLocalization(category.Id, StaticData.UkCode, NameUkr);
 
         await Shell.Current.GoToAsync("..");
     }

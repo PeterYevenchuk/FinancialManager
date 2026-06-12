@@ -1,12 +1,8 @@
-﻿using FinancialManager.Models;
+﻿using FinancialManager.Data.Contracts;
+using FinancialManager.Models;
 using SQLite;
 
 namespace FinancialManager.Data.Repositories;
-
-public interface ICategoryRepository : IRepository<Category> 
-{
-    Task DeleteCategoryAsync(Category category);
-}
 
 public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
 {

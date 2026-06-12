@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FinancialManager.Data.Repositories;
+using FinancialManager.Data.Contracts;
+using FinancialManager.Helpers;
 using FinancialManager.Models;
-using FinancialManager.Services;
 using FinancialManager.Services.Contracts;
 using FinancialManager.Services.Messages;
 using System.Collections.ObjectModel;
@@ -25,16 +25,14 @@ public partial class TransactionAddViewModel : ObservableObject
     [ObservableProperty] private DateTime date = DateTime.Now;
     [ObservableProperty] private Category? selectedCategory;
     [ObservableProperty] private TransactionType? selectedType;
-    [ObservableProperty] private string selectedCurrency = "₴";
-    [ObservableProperty] private string exchangeRate = "1.0";
+    [ObservableProperty] private string selectedCurrency = StaticData.UahCurrency;
+    [ObservableProperty] private string exchangeRate = StaticData.ExchangeDefaultRate;
     [ObservableProperty] private bool isRateFieldsVisible;
-
     [ObservableProperty] private ObservableCollection<Category> categories = new();
     [ObservableProperty] private ObservableCollection<TransactionType> transactionTypes = new();
-
     [ObservableProperty] private Transaction? transactionToEdit;
 
-    public List<string> Currencies { get; } = new() { "₴", "$", "€" };
+    public List<string> Currencies { get; } = new() { StaticData.UahCurrency, StaticData.UsdCurrency, StaticData.EurCurrency };
 
     public TransactionAddViewModel(
         ITransactionRepository transactionRepository,
@@ -71,13 +69,40 @@ public partial class TransactionAddViewModel : ObservableObject
             Date = TransactionToEdit.Date;
             SelectedCategory = Categories.FirstOrDefault(c => c.Id == TransactionToEdit.CategoryId);
             SelectedType = TransactionTypes.FirstOrDefault(t => t.Id == TransactionToEdit.TransactionTypeId);
-            SelectedCurrency = Currencies.Contains(TransactionToEdit.Currency) ? TransactionToEdit.Currency : "₴";
+            SelectedCurrency = Currencies.Contains(TransactionToEdit.Currency) ? TransactionToEdit.Currency : StaticData.UahCurrency;
             ExchangeRate = TransactionToEdit.ExchangeRateToUah.ToString("F2");
         }
         else
         {
-            SelectedCurrency = "₴";
-            ExchangeRate = "1.0";
+            SelectedCurrency = StaticData.UahCurrency;
+            ExchangeRate = StaticData.ExchangeDefaultRate;
+        }
+    }
+
+    public void ResetForm()
+    {
+        if (TransactionToEdit == null)
+        {
+            Amount = 0;
+            Description = string.Empty;
+            Date = DateTime.Now;
+            SelectedCategory = null;
+            SelectedType = null;
+            SelectedCurrency = StaticData.UahCurrency;
+            ExchangeRate = StaticData.ExchangeDefaultRate;
+        }
+    }
+
+    partial void OnSelectedCurrencyChanged(string value)
+    {
+        IsRateFieldsVisible = value != StaticData.UahCurrency;
+        if (value == StaticData.UahCurrency)
+        {
+            ExchangeRate = StaticData.ExchangeDefaultRate;
+        }
+        else
+        {
+            _ = AutoFetchRateAsync(value);
         }
     }
 
@@ -92,14 +117,14 @@ public partial class TransactionAddViewModel : ObservableObject
         foreach (var cat in allCats)
         {
             var loc = allLocs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == currentLang)
-                      ?? allLocs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == "en");
+                      ?? allLocs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == StaticData.EnCode);
             cat.LocalizedName = loc?.Value ?? "No Name";
         }
 
         foreach (var type in allTypes)
         {
             var loc = allLocs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == currentLang)
-                      ?? allLocs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == "en");
+                      ?? allLocs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == StaticData.EnCode);
             type.LocalizedName = loc?.Value ?? "No Name";
         }
 
@@ -114,20 +139,6 @@ public partial class TransactionAddViewModel : ObservableObject
 
         if (currentSelectedTypeId != null)
             SelectedType = TransactionTypes.FirstOrDefault(t => t.Id == currentSelectedTypeId);
-    }
-
-    public void ResetForm()
-    {
-        if (TransactionToEdit == null)
-        {
-            Amount = 0;
-            Description = string.Empty;
-            Date = DateTime.Now;
-            SelectedCategory = null;
-            SelectedType = null;
-            SelectedCurrency = "₴";
-            ExchangeRate = "1.0";
-        }
     }
 
     [RelayCommand]
@@ -145,7 +156,7 @@ public partial class TransactionAddViewModel : ObservableObject
         }
 
         double rateValue = 1.0;
-        if (SelectedCurrency != "₴")
+        if (SelectedCurrency != StaticData.UahCurrency)
         {
             if (string.IsNullOrWhiteSpace(ExchangeRate) || !double.TryParse(ExchangeRate, out rateValue) || rateValue <= 0)
             {
@@ -165,19 +176,6 @@ public partial class TransactionAddViewModel : ObservableObject
 
         await _transactionRepository.SaveAsync(transaction);
         await Shell.Current.GoToAsync("..");
-    }
-
-    partial void OnSelectedCurrencyChanged(string value)
-    {
-        IsRateFieldsVisible = value != "₴";
-        if (value == "₴")
-        {
-            ExchangeRate = "1.0";
-        }
-        else
-        {
-            _ = AutoFetchRateAsync(value);
-        }
     }
 
     private async Task AutoFetchRateAsync(string currencySymbol)

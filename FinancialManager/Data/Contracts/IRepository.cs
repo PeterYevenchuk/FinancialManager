@@ -1,4 +1,4 @@
-﻿namespace FinancialManager.Data.Repositories;
+﻿namespace FinancialManager.Data.Contracts;
 
 public interface IRepository<T> where T : class, new()
 {

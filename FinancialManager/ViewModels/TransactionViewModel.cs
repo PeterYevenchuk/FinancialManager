@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FinancialManager.Data.Repositories;
+using FinancialManager.Data.Contracts;
+using FinancialManager.Helpers;
 using FinancialManager.Models;
-using FinancialManager.Services;
+using FinancialManager.Services.Contracts;
 using FinancialManager.Services.Messages;
 using System.Collections.ObjectModel;
 
@@ -22,12 +23,10 @@ public partial class TransactionViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<Transaction> transactions = new();
     [ObservableProperty] private ObservableCollection<Category> categories = new();
     [ObservableProperty] private ObservableCollection<TransactionType> transactionTypes = new();
-
     [ObservableProperty] private Category? selectedCategoryFilter;
     [ObservableProperty] private TransactionType? selectedTypeFilter;
     [ObservableProperty] private DateTime dateFrom;
     [ObservableProperty] private DateTime dateTo;
-
     [ObservableProperty] private Transaction? selectedTransaction;
 
     public TransactionViewModel(
@@ -62,32 +61,6 @@ public partial class TransactionViewModel : ObservableObject
         await RefreshTransactions();
     }
 
-    private async Task LoadFiltersData()
-    {
-        var cats = await _categoryRepository.GetAsync();
-        var types = await _typeRepository.GetAsync();
-        var locs = await _localizationRepository.GetAsync();
-
-        string currentLang = _localizationService.CurrentLanguage;
-
-        foreach (var cat in cats)
-        {
-            var loc = locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == currentLang)
-                      ?? locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == "en");
-            cat.LocalizedName = loc?.Value ?? "No Name";
-        }
-
-        foreach (var type in types)
-        {
-            var loc = locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == currentLang)
-                      ?? locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == "en");
-            type.LocalizedName = loc?.Value ?? "No Name";
-        }
-
-        Categories = new ObservableCollection<Category>(cats);
-        TransactionTypes = new ObservableCollection<TransactionType>(types);
-    }
-
     public async Task RefreshTransactions()
     {
         _allLoadedTransactions = await _transactionRepository.GetTransactionsWithDetailsAsync();
@@ -100,14 +73,14 @@ public partial class TransactionViewModel : ObservableObject
             if (t.Category != null)
             {
                 var loc = locs.FirstOrDefault(l => l.ParentId == t.Category.Id && l.LanguageCode == currentLang)
-                          ?? locs.FirstOrDefault(l => l.ParentId == t.Category.Id && l.LanguageCode == "en");
+                          ?? locs.FirstOrDefault(l => l.ParentId == t.Category.Id && l.LanguageCode == StaticData.EnCode);
                 t.Category.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
             }
 
             if (t.TransactionType != null)
             {
                 var loc = locs.FirstOrDefault(l => l.ParentId == t.TransactionType.Id && l.LanguageCode == currentLang)
-                          ?? locs.FirstOrDefault(l => l.ParentId == t.TransactionType.Id && l.LanguageCode == "en");
+                          ?? locs.FirstOrDefault(l => l.ParentId == t.TransactionType.Id && l.LanguageCode == StaticData.EnCode);
                 t.TransactionType.LocalizedName = loc?.Value ?? Resources.Strings.NoType;
             }
         }
@@ -153,6 +126,50 @@ public partial class TransactionViewModel : ObservableObject
         }
     }
 
+    partial void OnDateFromChanged(DateTime value)
+    {
+        if (value > DateTo)
+        {
+            DateTo = value;
+        }
+        ApplyFilters();
+    }
+
+    partial void OnDateToChanged(DateTime value)
+    {
+        if (value < DateFrom)
+        {
+            DateFrom = value;
+        }
+        ApplyFilters();
+    }
+
+    private async Task LoadFiltersData()
+    {
+        var cats = await _categoryRepository.GetAsync();
+        var types = await _typeRepository.GetAsync();
+        var locs = await _localizationRepository.GetAsync();
+
+        string currentLang = _localizationService.CurrentLanguage;
+
+        foreach (var cat in cats)
+        {
+            var loc = locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == currentLang)
+                      ?? locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == StaticData.EnCode);
+            cat.LocalizedName = loc?.Value ?? "No Name";
+        }
+
+        foreach (var type in types)
+        {
+            var loc = locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == currentLang)
+                      ?? locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == StaticData.EnCode);
+            type.LocalizedName = loc?.Value ?? "No Name";
+        }
+
+        Categories = new ObservableCollection<Category>(cats);
+        TransactionTypes = new ObservableCollection<TransactionType>(types);
+    }
+
     [RelayCommand]
     private void SelectTransaction(Transaction? transaction)
     {
@@ -187,23 +204,5 @@ public partial class TransactionViewModel : ObservableObject
             await _transactionRepository.DeleteAsync(transaction);
             await RefreshTransactions();
         }
-    }
-
-    partial void OnDateFromChanged(DateTime value)
-    {
-        if (value > DateTo)
-        {
-            DateTo = value;
-        }
-        ApplyFilters();
-    }
-
-    partial void OnDateToChanged(DateTime value)
-    {
-        if (value < DateFrom)
-        {
-            DateFrom = value;
-        }
-        ApplyFilters();
     }
 }

@@ -1,13 +1,9 @@
-﻿using FinancialManager.Models;
+﻿using FinancialManager.Data.Contracts;
+using FinancialManager.Models;
 using SQLite;
 using SQLiteNetExtensionsAsync.Extensions;
 
 namespace FinancialManager.Data.Repositories;
-
-public interface ITransactionRepository : IRepository<Transaction>
-{
-    Task<List<Transaction>> GetTransactionsWithDetailsAsync();
-}
 
 public class TransactionRepository : BaseRepository<Transaction>, ITransactionRepository
 {

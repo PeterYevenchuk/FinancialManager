@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FinancialManager.Data.Repositories;
+using FinancialManager.Data.Contracts;
+using FinancialManager.Helpers;
 using FinancialManager.Models;
-using FinancialManager.Services;
+using FinancialManager.Services.Contracts;
 using FinancialManager.Services.Messages;
 
 namespace FinancialManager.ViewModels;
@@ -16,12 +17,11 @@ public partial class TransactionTypeAddViewModel : ObservableObject
     private readonly ILocalizationService _localizationService;
 
     [ObservableProperty] private string nameEng;
-    [ObservableProperty] private string icon = "✨";
+    [ObservableProperty] private string icon = StaticData.DefaultIcon;
     [ObservableProperty] private string nameUkr;
-
     [ObservableProperty] private TransactionType? transactionTypeToEdit;
 
-    public bool IsUkrVisible => _localizationService.CurrentLanguage == "uk";
+    public bool IsUkrVisible => _localizationService.CurrentLanguage == StaticData.UkCode;
 
     public TransactionTypeAddViewModel(ITransactionTypeRepository transactionTypeRepository, ILocalizationRepository localizationRepository, ILocalizationService localizationService)
     {
@@ -48,8 +48,8 @@ public partial class TransactionTypeAddViewModel : ObservableObject
     {
         var allLocs = await _localizationRepository.GetAsync();
 
-        NameEng = allLocs.FirstOrDefault(l => l.ParentId == transactionTypeId && l.LanguageCode == "en")?.Value ?? string.Empty;
-        NameUkr = allLocs.FirstOrDefault(l => l.ParentId == transactionTypeId && l.LanguageCode == "uk")?.Value ?? string.Empty;
+        NameEng = allLocs.FirstOrDefault(l => l.ParentId == transactionTypeId && l.LanguageCode == StaticData.EnCode)?.Value ?? string.Empty;
+        NameUkr = allLocs.FirstOrDefault(l => l.ParentId == transactionTypeId && l.LanguageCode == StaticData.UkCode)?.Value ?? string.Empty;
     }
 
     [RelayCommand]
@@ -66,8 +66,8 @@ public partial class TransactionTypeAddViewModel : ObservableObject
 
         await _transactionTypeRepository.SaveAsync(transactionType);
 
-        await SaveOrUpdateLocalization(transactionType.Id, "en", NameEng);
-        await SaveOrUpdateLocalization(transactionType.Id, "uk", NameUkr);
+        await SaveOrUpdateLocalization(transactionType.Id, StaticData.EnCode, NameEng);
+        await SaveOrUpdateLocalization(transactionType.Id, StaticData.UkCode, NameUkr);
 
         await Shell.Current.GoToAsync("..");
     }

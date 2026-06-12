@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FinancialManager.Data.Repositories;
+using FinancialManager.Data.Contracts;
+using FinancialManager.Helpers;
 using FinancialManager.Models;
-using FinancialManager.Services;
+using FinancialManager.Services.Contracts;
 using FinancialManager.Services.Messages;
 using System.Collections.ObjectModel;
 
@@ -15,11 +16,8 @@ public partial class CategoryViewModel : ObservableObject
     private readonly ILocalizationRepository _localizationRepository;
     private readonly ILocalizationService _localizationService;
 
-    [ObservableProperty]
-    private ObservableCollection<Category> categories = new();
-
-    [ObservableProperty]
-    private Category? selectedCategory;
+    [ObservableProperty] private ObservableCollection<Category> categories = new();
+    [ObservableProperty] private Category? selectedCategory;
 
     public Command LoadCategoriesCommand { get; }
 
@@ -52,7 +50,7 @@ public partial class CategoryViewModel : ObservableObject
 
             if (loc == null)
             {
-                loc = allLocalizations.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == "en");
+                loc = allLocalizations.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == StaticData.EnCode);
             }
 
             cat.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
@@ -106,7 +104,8 @@ public partial class CategoryViewModel : ObservableObject
     {
         if (category == null || category.IsSystem) return;
 
-        bool confirm = await Shell.Current.DisplayAlert(Resources.Strings.DeleteTitle, string.Format(Resources.Strings.DeleteCategoryMessage, category.LocalizedName), Resources.Strings.Yes, Resources.Strings.No);
+        bool confirm = await Shell.Current.DisplayAlert(Resources.Strings.DeleteTitle, string.Format(Resources.Strings.DeleteCategoryMessage, category.LocalizedName), 
+            Resources.Strings.Yes, Resources.Strings.No);
 
         if (confirm)
         {

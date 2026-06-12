@@ -1,4 +1,5 @@
 ﻿using FinancialManager.Data;
+using FinancialManager.Data.Contracts;
 using FinancialManager.Data.Repositories;
 using FinancialManager.Services;
 using FinancialManager.Services.Contracts;

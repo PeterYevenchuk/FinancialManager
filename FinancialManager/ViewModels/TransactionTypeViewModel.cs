@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FinancialManager.Data.Repositories;
+using FinancialManager.Data.Contracts;
+using FinancialManager.Helpers;
 using FinancialManager.Models;
-using FinancialManager.Services;
+using FinancialManager.Services.Contracts;
 using FinancialManager.Services.Messages;
 using System.Collections.ObjectModel;
 
@@ -15,11 +16,8 @@ public partial class TransactionTypeViewModel : ObservableObject
     private readonly ILocalizationRepository _localizationRepository;
     private readonly ILocalizationService _localizationService;
 
-    [ObservableProperty]
-    private ObservableCollection<TransactionType> transactionTypes = new();
-
-    [ObservableProperty]
-    private TransactionType? selectedType;
+    [ObservableProperty] private ObservableCollection<TransactionType> transactionTypes = new();
+    [ObservableProperty] private TransactionType? selectedType;
 
     public Command LoadTransactionTypesCommand { get; }
 
@@ -52,7 +50,7 @@ public partial class TransactionTypeViewModel : ObservableObject
 
             if (loc == null)
             {
-                loc = allLocalizations.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == "en");
+                loc = allLocalizations.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == StaticData.EnCode);
             }
 
             type.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
@@ -106,7 +104,8 @@ public partial class TransactionTypeViewModel : ObservableObject
     {
         if (type == null || type.IsSystem) return;
 
-        bool confirm = await Shell.Current.DisplayAlert(Resources.Strings.DeleteTitle, string.Format(Resources.Strings.DeleteTransactionTypeMessage, type.LocalizedName), Resources.Strings.Yes, Resources.Strings.No);
+        bool confirm = await Shell.Current.DisplayAlert(Resources.Strings.DeleteTitle, string.Format(Resources.Strings.DeleteTransactionTypeMessage, type.LocalizedName), 
+            Resources.Strings.Yes, Resources.Strings.No);
 
         if (confirm)
         {

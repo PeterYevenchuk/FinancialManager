@@ -73,7 +73,7 @@
                 <DataTemplate x:DataType="models:Transaction">
                     <Grid Margin="10,5">
 
-                        <Frame Padding="0" CornerRadius="10" HasShadow="False" BackgroundColor="#1a1a1a" BorderColor="#333">
+                        <Frame Padding="0" CornerRadius="10" HasShadow="False" BackgroundColor="#1a1a1a" BorderColor="#333" Margin="10,0,10,8">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer 
                             Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.SelectTransactionCommand}" 
