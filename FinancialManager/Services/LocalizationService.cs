@@ -1,27 +1,36 @@
-﻿using FinancialManager.Helpers;
+﻿using System.Globalization;
+using FinancialManager.Helpers;
 using FinancialManager.Services.Contracts;
 
 namespace FinancialManager.Services;
 
 public class LocalizationService : ILocalizationService
 {
-    private string _currentLanguage = StaticData.DefaultLanguage;
-
     public string CurrentLanguage
     {
-        get => _currentLanguage;
+        get => field ??= Preferences.Default.Get(StaticData.LanguageKey, StaticData.DefaultLanguage);
         set
         {
-            if (_currentLanguage != value)
+            if (field != value)
             {
-                _currentLanguage = value;
+                field = value;
                 Preferences.Default.Set(StaticData.LanguageKey, value);
+                ApplyCulture(value);
             }
         }
     }
 
     public void Init()
     {
-        _currentLanguage = Preferences.Default.Get(StaticData.LanguageKey, StaticData.DefaultLanguage);
+        ApplyCulture(CurrentLanguage);
+    }
+
+    private void ApplyCulture(string languageCode)
+    {
+        var culture = new CultureInfo(languageCode);
+        Thread.CurrentThread.CurrentCulture = culture;
+        Thread.CurrentThread.CurrentUICulture = culture;
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="FinancialManager.AppShell"
+    x:Name="thisShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:FinancialManager"
@@ -40,25 +41,26 @@
 
     <Shell.FlyoutFooter>
         <Frame BackgroundColor="#1a1a1a" 
-               BorderColor="#333" 
-               CornerRadius="0" 
-               Padding="15,10" 
-               HasShadow="False"
-               x:DataType="vm:AppShellViewModel">
+           BorderColor="#333" 
+           CornerRadius="0" 
+           Padding="15,10" 
+           HasShadow="False"
+           BindingContext="{Binding BindingContext, Source={x:Reference thisShell}}"
+           x:DataType="vm:AppShellViewModel">
             <VerticalStackLayout Spacing="5">
                 <Label Text="{DynamicResource LanguageLabel}" 
-                       TextColor="#888" 
-                       FontSize="11" 
-                       FontAttributes="Bold"/>
+                   TextColor="#888" 
+                   FontSize="11" 
+                   FontAttributes="Bold"/>
 
-                <Picker ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type Shell}}, Path=BindingContext.Languages}"
-                        SelectedItem="{Binding Source={RelativeSource AncestorType={x:Type Shell}}, Path=BindingContext.SelectedLanguage, Mode=TwoWay}"
-                        ItemDisplayBinding="{Binding Name}"
-                        TextColor="White"
-                        TitleColor="#555"
-                        FontSize="14"
-                        HeightRequest="40"
-                        BackgroundColor="#252525"/>
+                <Picker ItemsSource="{Binding Languages}"
+                    SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
+                    ItemDisplayBinding="{Binding Name}"
+                    TextColor="White"
+                    TitleColor="#555"
+                    FontSize="14"
+                    HeightRequest="40"
+                    BackgroundColor="#252525"/>
             </VerticalStackLayout>
         </Frame>
     </Shell.FlyoutFooter>
