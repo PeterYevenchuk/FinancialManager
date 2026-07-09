@@ -32,14 +32,15 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private List<ChartLegendItem> chartLegendItems = new();
     [ObservableProperty] private string displayCurrency = StaticData.UahCurrency;
     [ObservableProperty] private bool isCurrencySelectionEnabled = true;
-    [ObservableProperty] private bool isSortedAscending;
-    [ObservableProperty] private bool isSortedDescending;
+    [ObservableProperty] private string _selectedSortOption;
+    [ObservableProperty] private ChartLegendItem selectedCategory;
+    [ObservableProperty] private bool isCategoryFilterActive;
 
     private List<Transaction> _allTransactions = new();
     private Dictionary<string, double> _currentRates = new() { { StaticData.UahCurrency, 1.0 } };
-    public List<string> AvailableDisplayCurrencies { get; } = new() { StaticData.UahCurrency, StaticData.UsdCurrency, StaticData.EurCurrency };
-
+    private List<Transaction> _fullyFilteredTransactions = new();
     private Chart _categoryChart;
+
     public Chart CategoryChart
     {
         get => _categoryChart;
@@ -49,6 +50,14 @@ public partial class MainViewModel : ObservableObject
             OnPropertyChanged();
         }
     }
+    public List<string> AvailableDisplayCurrencies { get; } = new() { StaticData.UahCurrency, StaticData.UsdCurrency, StaticData.EurCurrency };
+    public List<string> SortOptions { get; } = new()
+    {
+        Resources.Strings.SortOption_DateNewest,
+        Resources.Strings.SortOption_DateOldest,
+        Resources.Strings.SortOption_PriceLower,
+        Resources.Strings.SortOption_PriceHigher
+    };
 
     public MainViewModel(
         ITransactionRepository transactionRepository,
@@ -64,6 +73,8 @@ public partial class MainViewModel : ObservableObject
         _localizationRepository = localizationRepository;
         _localizationService = localizationService;
         _currencyService = currencyService;
+
+        SelectedSortOption = SortOptions[0];
     }
 
     public async Task InitializeAsync()
@@ -210,6 +221,12 @@ public partial class MainViewModel : ObservableObject
 
     partial void OnDisplayCurrencyChanged(string value)
     {
+        if (string.IsNullOrEmpty(value))
+        {
+            DisplayCurrency = StaticData.UahCurrency;
+            return;
+        }
+
         if (value != StaticData.UahCurrency && (_currentRates == null || !_currentRates.ContainsKey(value)))
         {
             DisplayCurrency = StaticData.UahCurrency;
@@ -218,33 +235,8 @@ public partial class MainViewModel : ObservableObject
         ApplyFilters();
     }
 
-    [RelayCommand]
-    private void ToggleSortAscending()
+    partial void OnSelectedSortOptionChanged(string value)
     {
-        if (IsSortedAscending)
-        {
-            IsSortedAscending = false;
-        }
-        else
-        {
-            IsSortedAscending = true;
-            IsSortedDescending = false;
-        }
-        ApplyFilters();
-    }
-
-    [RelayCommand]
-    private void ToggleSortDescending()
-    {
-        if (IsSortedDescending)
-        {
-            IsSortedDescending = false;
-        }
-        else
-        {
-            IsSortedDescending = true;
-            IsSortedAscending = false;
-        }
         ApplyFilters();
     }
 
@@ -259,6 +251,33 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void SelectCategory(ChartLegendItem item)
+    {
+        if (item == null) return;
+
+        if (SelectedCategory == item)
+        {
+            SelectedCategory = null;
+            IsCategoryFilterActive = false;
+        }
+        else
+        {
+            SelectedCategory = item;
+            IsCategoryFilterActive = true;
+        }
+
+        ApplyFilters();
+    }
+
+    [RelayCommand]
+    private void ClearCategoryFilter()
+    {
+        SelectedCategory = null;
+        IsCategoryFilterActive = false;
+        ApplyFilters();
+    }
+
+    [RelayCommand]
     private void ClearFilters()
     {
         foreach (var t in TransactionTypes)
@@ -266,8 +285,10 @@ public partial class MainViewModel : ObservableObject
             t.IsSelected = false;
         }
 
-        IsSortedAscending = false;
-        IsSortedDescending = false;
+        SelectedSortOption = SortOptions[0];
+        SelectedCategory = null;
+        IsCategoryFilterActive = false;
+
         DisplayCurrency = StaticData.UahCurrency;
         StartDate = DateTime.Now.AddDays(-30);
         EndDate = DateTime.Now;
@@ -277,8 +298,8 @@ public partial class MainViewModel : ObservableObject
     private void ApplyFilters()
     {
         var filtered = _allTransactions.Where(t => t.Date.Date >= StartDate.Date && t.Date.Date <= EndDate.Date);
-        var selectedTypeIds = TransactionTypes.Where(t => t.IsSelected).Select(t => t.Id).ToList();
 
+        var selectedTypeIds = TransactionTypes.Where(t => t.IsSelected).Select(t => t.Id).ToList();
         if (selectedTypeIds.Any())
         {
             filtered = filtered.Where(t => selectedTypeIds.Contains(t.TransactionTypeId));
@@ -286,16 +307,21 @@ public partial class MainViewModel : ObservableObject
 
         var filteredList = filtered.ToList();
 
-        if (IsSortedAscending)
+        if (SelectedCategory != null)
         {
-            filteredList = filteredList.OrderBy(t => t.GetAmountInUah(_currentRates)).ToList();
-        }
-        else if (IsSortedDescending)
-        {
-            filteredList = filteredList.OrderByDescending(t => t.GetAmountInUah(_currentRates)).ToList();
+            filteredList = filteredList.Where(t => (t.Category?.Icon ?? "📦") == SelectedCategory.Icon).ToList();
         }
 
-        FilteredTransactions = new ObservableCollection<Transaction>(filteredList);
+        filteredList = SelectedSortOption switch
+        {
+            var x when x == Resources.Strings.SortOption_DateOldest => filteredList.OrderBy(t => t.Date).ToList(),
+            var x when x == Resources.Strings.SortOption_PriceLower => filteredList.OrderBy(t => t.GetAmountInUah(_currentRates)).ToList(),
+            var x when x == Resources.Strings.SortOption_PriceHigher => filteredList.OrderByDescending(t => t.GetAmountInUah(_currentRates)).ToList(),
+            _ => filteredList.OrderByDescending(t => t.Date).ToList()
+        };
+
+        _fullyFilteredTransactions = filteredList;
+        FilteredTransactions = new ObservableCollection<Transaction>(_fullyFilteredTransactions.Take(20));
 
         var incomeInUah = filteredList.Where(t => t.TransactionType?.Icon == "📥").Sum(t => t.GetAmountInUah(_currentRates));
         var expenseInUah = filteredList.Where(t => t.TransactionType?.Icon == "📤").Sum(t => t.GetAmountInUah(_currentRates));
@@ -317,5 +343,27 @@ public partial class MainViewModel : ObservableObject
         CurrentBalance = $"{income - expense - savings:N2} {DisplayCurrency}";
 
         UpdateChartData(filteredList);
+    }
+
+    [RelayCommand]
+    private void LoadMoreTransactions()
+    {
+        if (FilteredTransactions == null || _fullyFilteredTransactions == null)
+            return;
+
+        int currentlyLoaded = FilteredTransactions.Count;
+        int totalAvailable = _fullyFilteredTransactions.Count;
+
+        if (currentlyLoaded >= totalAvailable)
+            return;
+
+        var nextItems = _fullyFilteredTransactions
+            .Skip(currentlyLoaded)
+            .Take(20);
+
+        foreach (var item in nextItems)
+        {
+            FilteredTransactions.Add(item);
+        }
     }
 }

@@ -42,6 +42,12 @@ public partial class Transaction : ObservableObject
     [Ignore]
     public string AmountDisplay => $"{Amount:N2} {Currency ?? "₴"}";
 
+    [Ignore]
+    public string ExchangeRateToUahDisplay => $"{ExchangeRateToUah:N2}";
+
+    [Ignore]
+    public bool ShowExchangeRate => Currency != "₴" ? true : false;
+
     public double GetAmountInUah(Dictionary<string, double> currentRatesFallback)
     {
         if (Currency == "₴") return Amount;

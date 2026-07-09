@@ -96,11 +96,12 @@ public partial class TransactionAddViewModel : ObservableObject
     partial void OnSelectedCurrencyChanged(string value)
     {
         IsRateFieldsVisible = value != StaticData.UahCurrency;
+        var exchangeRateToUah = TransactionToEdit?.ExchangeRateToUah.ToString("F1");
         if (value == StaticData.UahCurrency)
         {
             ExchangeRate = StaticData.ExchangeDefaultRate;
         }
-        else
+        else if (exchangeRateToUah == StaticData.ExchangeDefaultRate || string.IsNullOrEmpty(exchangeRateToUah))
         {
             _ = AutoFetchRateAsync(value);
         }
@@ -167,7 +168,7 @@ public partial class TransactionAddViewModel : ObservableObject
 
         var transaction = TransactionToEdit ?? new Transaction();
         transaction.Amount = Amount;
-        transaction.Description = Description;
+        transaction.Description = Description.Trim();
         transaction.Date = Date;
         transaction.CategoryId = SelectedCategory.Id;
         transaction.TransactionTypeId = SelectedType.Id;

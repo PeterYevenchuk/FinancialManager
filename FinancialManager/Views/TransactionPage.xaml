@@ -105,12 +105,25 @@
 
                                     </VerticalStackLayout>
 
-                                    <Label Grid.Column="1" 
-                                       Text="{Binding AmountDisplay}" 
-                                       FontSize="18" 
-                                       FontAttributes="Bold" 
-                                       VerticalOptions="Center"
-                                       TextColor="White"/>
+                                    <VerticalStackLayout Grid.Column="1" 
+                                         VerticalOptions="Center" 
+                                         HorizontalOptions="End" 
+                                         Spacing="2">
+
+                                        <Label Text="{Binding AmountDisplay}" 
+                                           FontSize="18" 
+                                           FontAttributes="Bold" 
+                                           TextColor="White"
+                                           HorizontalOptions="End"/>
+
+                                        <Label Text="{Binding ExchangeRateToUahDisplay}" 
+                                           FontSize="12" 
+                                           TextColor="#aaaaaa" 
+                                           IsVisible="{Binding ShowExchangeRate}"
+                                           HorizontalOptions="End"/>
+
+                                    </VerticalStackLayout>
+
                                 </Grid>
 
                                 <BoxView HeightRequest="1" BackgroundColor="#333" IsVisible="{Binding IsSelected}"/>

@@ -66,8 +66,8 @@ public partial class CategoryAddViewModel : ObservableObject
 
         await _categoryRepository.SaveAsync(category);
 
-        await SaveOrUpdateLocalization(category.Id, StaticData.EnCode, NameEng);
-        await SaveOrUpdateLocalization(category.Id, StaticData.UkCode, NameUkr);
+        await SaveOrUpdateLocalization(category.Id, StaticData.EnCode, NameEng.Trim());
+        await SaveOrUpdateLocalization(category.Id, StaticData.UkCode, NameUkr.Trim());
 
         await Shell.Current.GoToAsync("..");
     }

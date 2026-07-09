@@ -144,5 +144,11 @@ namespace Resources
         public static string DefaultCategory_Education_En => "Education";
         public static string DefaultCategory_Other_Uk => "Інше";
         public static string DefaultCategory_Other_En => "Other";
+
+        // Sort options
+        public static string SortOption_DateNewest => CurrentLanguage == "uk" ? "Дата: спочатку нові" : "Date: newest first";
+        public static string SortOption_DateOldest => CurrentLanguage == "uk" ? "Дата: спочатку старі" : "Date: oldest first";
+        public static string SortOption_PriceLower => CurrentLanguage == "uk" ? "Ціна: від меншої" : "Price: lower first";
+        public static string SortOption_PriceHigher => CurrentLanguage == "uk" ? "Ціна: від більшої" : "Price: higher first";
     }
 }
