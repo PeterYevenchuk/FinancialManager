@@ -9,20 +9,26 @@
 
 ---
 
+## 📥 Download APK Releases
+
+| Version | Download Link | Status | Description |
+| :--- | :--- | :--- | :--- |
+| **v2.0** | [Download v2.0 APK](https://github.com/PeterYevenchuk/FinancialManager/releases/download/v2.0/financialmanager-v2.apk) | ✅ **Supported** | Current stable release with full .NET 10 optimization, new features and bug fixes. |
+| **v1.0** | [Download v1.0 APK](https://github.com/PeterYevenchuk/FinancialManager/releases/download/v1.0/financialmanager-v1.apk) | ❌ **Deprecated** | Legacy release. No longer receives updates or bug fixes. |
+
+---
+
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/9107da13-976d-4062-8563-9ea7dff954e0" width="31%" alt="photo_2026-06-11_19-15-41"  />
   <img src="https://github.com/user-attachments/assets/b507cde7-ab6d-479f-a05c-d347476c8d7d" width="31%" alt="Screenshot_20260611_190127" />
-  <img src="https://github.com/user-attachments/assets/6f863385-9727-4b6a-af35-3411f00bd009" width="31%" alt="Screenshot_20260611_190136" />
-  <br />
-  <img src="https://github.com/user-attachments/assets/410a71a8-5e53-4f2a-bc07-4dc18e113ed6" width="31%" alt="Screenshot_20260611_190146" />
-  <img src="https://github.com/user-attachments/assets/80a0ee9a-92fa-4fd5-a89c-acf765386e2f" width="31%" alt="Screenshot_20260611_190153" />
-  <img src="https://github.com/user-attachments/assets/0a713e01-f8eb-444e-bd94-ab125f54aa1c" width="31%" alt="Screenshot_20260611_190159" />
-  <br />
-  <img src="https://github.com/user-attachments/assets/b0cd60b6-da6f-438e-ae66-7347e480e0cc" width="31%" alt="Screenshot_20260611_190204" />
-  <img src="https://github.com/user-attachments/assets/d3fd8357-e795-4229-a005-24ae4a87680d" width="31%" alt="Screenshot_20260611_190207" />
   <img src="https://github.com/user-attachments/assets/757bb9ce-bf7f-4fa5-8037-7b9395df82b8" width="31%" alt="Screenshot_20260611_190213" />
+  <br />
+  <img src="https://github.com/user-attachments/assets/6f863385-9727-4b6a-af35-3411f00bd009" width="31%" alt="Screenshot_20260611_190136" />
+  <img src="https://github.com/user-attachments/assets/410a71a8-5e53-4f2a-bc07-4dc18e113ed6" width="31%" alt="Screenshot_20260611_190146" />
+  <br />
+  <img src="https://github.com/user-attachments/assets/80a0ee9a-92fa-4fd5-a89c-acf765386e2f" width="31%" alt="Screenshot_20260611_190153" />
+  <img src="https://github.com/user-attachments/assets/b0cd60b6-da6f-438e-ae66-7347e480e0cc" width="31%" alt="Screenshot_20260611_190204" />
 </p>
 
 ---
