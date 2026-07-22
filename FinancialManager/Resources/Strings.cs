@@ -150,5 +150,19 @@ namespace Resources
         public static string SortOption_DateOldest => CurrentLanguage == "uk" ? "Дата: спочатку старі" : "Date: oldest first";
         public static string SortOption_PriceLower => CurrentLanguage == "uk" ? "Ціна: від меншої" : "Price: lower first";
         public static string SortOption_PriceHigher => CurrentLanguage == "uk" ? "Ціна: від більшої" : "Price: higher first";
+
+        // Dashboard
+        public static string NoDataForPeriod => CurrentLanguage == "uk" ? "Немає даних за вибраний період" : "No data for the selected period";
+
+        // Export
+        public static string ExportButton => CurrentLanguage == "uk" ? "⎘ Експорт" : "⎘ Export";
+        public static string ExportNoData => CurrentLanguage == "uk" ? "Немає даних для експорту за вибраний період" : "No data to export for the selected period";
+        public static string ExportTitle => CurrentLanguage == "uk" ? "Експорт транзакцій" : "Export transactions";
+        public static string ExportCsvHeader => CurrentLanguage == "uk" ? "Дата;Категорія;Тип;Опис;Сума;Валюта;Курс валюти" : "Date;Category;Type;Description;Amount;Currency;Exchange Rate";
+        public static string ExportNoCategory => CurrentLanguage == "uk" ? "Без категорії" : "No category";
+        public static string ExportNoType => CurrentLanguage == "uk" ? "Без типу" : "No type";
+
+        // Features Page
+        public static string FeaturesTitle => CurrentLanguage == "uk" ? "Функції" : "Features";
     }
 }

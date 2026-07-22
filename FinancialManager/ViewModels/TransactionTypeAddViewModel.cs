@@ -66,8 +66,8 @@ public partial class TransactionTypeAddViewModel : ObservableObject
 
         await _transactionTypeRepository.SaveAsync(transactionType);
 
-        await SaveOrUpdateLocalization(transactionType.Id, StaticData.EnCode, NameEng.Trim());
-        await SaveOrUpdateLocalization(transactionType.Id, StaticData.UkCode, NameUkr.Trim());
+        await SaveOrUpdateLocalization(transactionType.Id, StaticData.EnCode, NameEng?.Trim());
+        await SaveOrUpdateLocalization(transactionType.Id, StaticData.UkCode, NameUkr?.Trim());
 
         await Shell.Current.GoToAsync("..");
     }

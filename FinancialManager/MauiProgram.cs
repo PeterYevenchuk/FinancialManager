@@ -34,10 +34,12 @@ namespace FinancialManager
             builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();
             builder.Services.AddSingleton<ITransactionTypeRepository, TransactionTypeRepository>();
             builder.Services.AddSingleton<ILocalizationRepository, LocalizationRepository>();
+            builder.Services.AddSingleton<IFeatureRepository, FeatureRepository>();
 
             builder.Services.AddSingleton<ILocalizationService, LocalizationService>();
             builder.Services.AddSingleton<ILocalizationManager, LocalizationManager>();
             builder.Services.AddSingleton<ICurrencyService, CurrencyService>();
+            builder.Services.AddSingleton<IExportService, ExportService>();
             builder.Services.AddSingleton<JsonBackupService>();
 
             builder.Services.AddTransient<CategoryViewModel>();
@@ -50,6 +52,7 @@ namespace FinancialManager
             builder.Services.AddSingleton<AppShellViewModel>();
             builder.Services.AddTransient<BackupViewModel>();
             builder.Services.AddTransient<MainViewModel>();
+            builder.Services.AddTransient<FeaturesViewModel>();
 
             builder.Services.AddTransient<TransactionAddPage>();
             builder.Services.AddTransient<TransactionPage>();
@@ -61,6 +64,7 @@ namespace FinancialManager
             builder.Services.AddSingleton<AppShell>();
             builder.Services.AddTransient<BackupPage>();
             builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<FeaturesPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

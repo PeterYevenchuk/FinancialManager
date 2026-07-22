@@ -14,7 +14,7 @@ public class DatabaseInitializer
 
     public async Task InitializeAndSeedAsync()
     {
-        await _connection.CreateTablesAsync<TransactionType, Category, Transaction, Localization>();
+        await _connection.CreateTablesAsync<TransactionType, Category, Transaction, Localization, Feature>();
 
         var typeCount = await _connection.Table<TransactionType>().CountAsync();
         if (typeCount == 0)
@@ -78,6 +78,43 @@ public class DatabaseInitializer
 
                 await _connection.InsertAsync(locUk);
                 await _connection.InsertAsync(locEn);
+            }
+        }
+
+        var defaultFeatures = new List<(string Key, string UkName, string EnName, string UkDesc, string EnDesc)>
+        {
+            (
+                "ExportData",
+                "Експорт даних",
+                "Export Data",
+                "Можливість експортувати інформацію з головної сторінки у CSV або Excel для аналізу.",
+                "Export main page data into CSV or Excel format for analysis."
+            )
+        };
+
+        foreach (var feat in defaultFeatures)
+        {
+            var existing = await _connection.Table<Feature>().FirstOrDefaultAsync(f => f.Key == feat.Key);
+            if (existing == null)
+            {
+                var newFeature = new Feature
+                {
+                    Key = feat.Key,
+                    IsEnabled = false
+                };
+                await _connection.InsertAsync(newFeature);
+
+                var locUk = new Localization { ParentId = newFeature.Id, LanguageCode = "uk", Value = feat.UkName };
+                var locEn = new Localization { ParentId = newFeature.Id, LanguageCode = "en", Value = feat.EnName };
+
+                await _connection.InsertAsync(locUk);
+                await _connection.InsertAsync(locEn);
+
+                var locDescUk = new Localization { ParentId = newFeature.Id, LanguageCode = "uk", Value = feat.UkDesc };
+                var locDescEn = new Localization { ParentId = newFeature.Id, LanguageCode = "en", Value = feat.EnDesc };
+
+                await _connection.InsertAsync(locDescUk);
+                await _connection.InsertAsync(locDescEn);
             }
         }
     }

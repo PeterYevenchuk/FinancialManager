@@ -7,6 +7,7 @@ using FinancialManager.Services.Contracts;
 using Microcharts;
 using SkiaSharp;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace FinancialManager.ViewModels;
 
@@ -18,14 +19,22 @@ public partial class MainViewModel : ObservableObject
     private readonly ILocalizationRepository _localizationRepository;
     private readonly ILocalizationService _localizationService;
     private readonly ICurrencyService _currencyService;
+    private readonly IFeatureRepository _featureRepository;
+    private readonly IExportService _exportService;
 
     [ObservableProperty] private string currentBalance = StaticData.BalancePlaceholderUah;
     [ObservableProperty] private string totalIncome = StaticData.BalancePlaceholderUah;
     [ObservableProperty] private string totalExpenses = StaticData.BalancePlaceholderUah;
     [ObservableProperty] private string totalSavings = StaticData.BalancePlaceholderUah;
     [ObservableProperty] private string totalOthers = StaticData.BalancePlaceholderUah;
+
+    [ObservableProperty] private DateTime selectedMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+    [ObservableProperty] private string selectedMonthDisplay = string.Empty;
+    [ObservableProperty] private bool canGoNextMonth;
+
     [ObservableProperty] private DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
     [ObservableProperty] private DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+
     [ObservableProperty] private ObservableCollection<TransactionType> transactionTypes = new();
     [ObservableProperty] private ObservableCollection<Category> categories = new();
     [ObservableProperty] private ObservableCollection<Transaction> filteredTransactions = new();
@@ -35,6 +44,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string _selectedSortOption;
     [ObservableProperty] private ChartLegendItem selectedCategory;
     [ObservableProperty] private bool isCategoryFilterActive;
+    [ObservableProperty] private bool hasChartData;
+    [ObservableProperty] private bool isExportFeatureEnabled;
 
     private List<Transaction> _allTransactions = new();
     private Dictionary<string, double> _currentRates = new() { { StaticData.UahCurrency, 1.0 } };
@@ -50,6 +61,7 @@ public partial class MainViewModel : ObservableObject
             OnPropertyChanged();
         }
     }
+
     public List<string> AvailableDisplayCurrencies { get; } = new() { StaticData.UahCurrency, StaticData.UsdCurrency, StaticData.EurCurrency };
     public List<string> SortOptions { get; } = new()
     {
@@ -65,7 +77,9 @@ public partial class MainViewModel : ObservableObject
         ITransactionTypeRepository typeRepository,
         ILocalizationRepository localizationRepository,
         ILocalizationService localizationService,
-        ICurrencyService currencyService)
+        ICurrencyService currencyService,
+        IFeatureRepository featureRepository,
+        IExportService exportService)
     {
         _transactionRepository = transactionRepository;
         _categoryRepository = categoryRepository;
@@ -73,8 +87,11 @@ public partial class MainViewModel : ObservableObject
         _localizationRepository = localizationRepository;
         _localizationService = localizationService;
         _currencyService = currencyService;
+        _featureRepository = featureRepository;
+        _exportService = exportService;
 
         SelectedSortOption = SortOptions[0];
+        UpdateMonthState();
     }
 
     public async Task InitializeAsync()
@@ -82,6 +99,8 @@ public partial class MainViewModel : ObservableObject
         var types = await _typeRepository.GetAsync();
         var cats = await _categoryRepository.GetAsync();
         var locs = await _localizationRepository.GetAsync();
+
+        IsExportFeatureEnabled = await _featureRepository.IsFeatureEnabledAsync("ExportData");
 
         try
         {
@@ -135,14 +154,66 @@ public partial class MainViewModel : ObservableObject
         ApplyFilters();
     }
 
-    public async void UpdateChartData(List<Transaction> transactions)
+    [RelayCommand]
+    private void PreviousMonth()
     {
-        CategoryChart = null;
-        ChartLegendItems = new List<ChartLegendItem>();
-        await Task.Delay(30);
+        SelectedMonth = SelectedMonth.AddMonths(-1);
+        UpdateMonthState();
+    }
 
+    [RelayCommand]
+    private void NextMonth()
+    {
+        if (!CanGoNextMonth) return;
+
+        SelectedMonth = SelectedMonth.AddMonths(1);
+        UpdateMonthState();
+    }
+
+    private void UpdateMonthState()
+    {
+        var now = DateTime.Now;
+        var currentMonthStart = new DateTime(now.Year, now.Month, 1);
+
+        CanGoNextMonth = SelectedMonth < currentMonthStart;
+
+        StartDate = new DateTime(SelectedMonth.Year, SelectedMonth.Month, 1);
+        EndDate = new DateTime(SelectedMonth.Year, SelectedMonth.Month, DateTime.DaysInMonth(SelectedMonth.Year, SelectedMonth.Month));
+
+        UpdatePeriodDisplay();
+        ApplyFilters();
+    }
+
+    private void UpdatePeriodDisplay()
+    {
+        var culture = CultureInfo.CurrentCulture;
+
+        if (StartDate.Year == EndDate.Year && StartDate.Month == EndDate.Month)
+        {
+            string monthName = StartDate.ToString("MMMM yyyy", culture);
+            SelectedMonthDisplay = char.ToUpper(monthName[0]) + monthName.Substring(1);
+        }
+        else
+        {
+            string startStr = StartDate.ToString("MMM yyyy", culture);
+            string endStr = EndDate.ToString("MMM yyyy", culture);
+
+            string startFormatted = char.ToUpper(startStr[0]) + startStr.Substring(1);
+            string endFormatted = char.ToUpper(endStr[0]) + endStr.Substring(1);
+
+            SelectedMonthDisplay = $"{startFormatted} – {endFormatted}";
+        }
+    }
+
+    public void UpdateChartData(List<Transaction> transactions)
+    {
         if (transactions == null || !transactions.Any())
+        {
+            CategoryChart = null;
+            ChartLegendItems = new List<ChartLegendItem>();
+            HasChartData = false;
             return;
+        }
 
         double targetRate = _currentRates.TryGetValue(DisplayCurrency, out double r) ? r : 1.0;
         var tempLegendItems = new List<ChartLegendItem>();
@@ -199,6 +270,8 @@ public partial class MainViewModel : ObservableObject
             LabelMode = LabelMode.None,
             GraphPosition = GraphPosition.Center
         };
+
+        HasChartData = true;
     }
 
     partial void OnStartDateChanged(DateTime value)
@@ -207,6 +280,7 @@ public partial class MainViewModel : ObservableObject
         {
             EndDate = value;
         }
+        UpdatePeriodDisplay();
         ApplyFilters();
     }
 
@@ -216,6 +290,7 @@ public partial class MainViewModel : ObservableObject
         {
             StartDate = value;
         }
+        UpdatePeriodDisplay();
         ApplyFilters();
     }
 
@@ -290,9 +365,9 @@ public partial class MainViewModel : ObservableObject
         IsCategoryFilterActive = false;
 
         DisplayCurrency = StaticData.UahCurrency;
-        StartDate = DateTime.Now.AddDays(-30);
-        EndDate = DateTime.Now;
-        ApplyFilters();
+
+        SelectedMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        UpdateMonthState();
     }
 
     private void ApplyFilters()
@@ -346,6 +421,9 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task AddTransaction() => await Shell.Current.GoToAsync("TransactionAddPage");
+
+    [RelayCommand]
     private void LoadMoreTransactions()
     {
         if (FilteredTransactions == null || _fullyFilteredTransactions == null)
@@ -365,5 +443,18 @@ public partial class MainViewModel : ObservableObject
         {
             FilteredTransactions.Add(item);
         }
+    }
+
+    [RelayCommand]
+    private async Task ExportData()
+    {
+        if (_fullyFilteredTransactions == null || !_fullyFilteredTransactions.Any())
+        {
+            await Shell.Current.DisplayAlert(Resources.Strings.Warning, Resources.Strings.ExportNoData, Resources.Strings.Ok);
+            return;
+        }
+
+        string fileName = $"Transactions_{StartDate:yyyyMMdd}_{EndDate:yyyyMMdd}.csv";
+        await _exportService.ExportTransactionsAsync(_fullyFilteredTransactions, fileName);
     }
 }

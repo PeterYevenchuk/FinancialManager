@@ -71,6 +71,7 @@ public class LocalizationManager : ILocalizationManager
             d["HomeTitle"] = Resources.Strings.HomeTitle;
             d["LanguageLabel"] = Resources.Strings.LanguageLabel;
             d["BackupTitle"] = Resources.Strings.BackupTitle;
+            d["FeaturesTitle"] = Resources.Strings.FeaturesTitle;
 
             // Backup page
             d["Backup_SecurityHeading"] = Resources.Strings.Backup_SecurityHeading;
@@ -91,6 +92,7 @@ public class LocalizationManager : ILocalizationManager
             d["SavingsLabel"] = Resources.Strings.SavingsLabel;
             d["OthersLabel"] = Resources.Strings.OthersLabel;
             d["TransactionTypeHeader"] = Resources.Strings.TransactionTypeHeader;
+            d["NoDataForPeriod"] = Resources.Strings.NoDataForPeriod;
             d["ChartPlaceholder"] = Resources.Strings.ChartPlaceholder;
             d["ChartSubtitle"] = Resources.Strings.ChartSubtitle;
             d["TransactionsPeriodLabel"] = Resources.Strings.TransactionsPeriodLabel;
@@ -100,6 +102,14 @@ public class LocalizationManager : ILocalizationManager
             d["PlaceholderExchangeRate"] = Resources.Strings.PlaceholderExchangeRate;
             d["InvalidExchangeRateTitle"] = Resources.Strings.InvalidExchangeRateTitle;
             d["InvalidExchangeRateMessage"] = Resources.Strings.InvalidExchangeRateMessage;
+
+            // Export
+            d["ExportButton"] = Resources.Strings.ExportButton;
+            d["ExportNoData"] = Resources.Strings.ExportNoData;
+            d["ExportTitle"] = Resources.Strings.ExportTitle;
+            d["ExportCsvHeader"] = Resources.Strings.ExportCsvHeader;
+            d["ExportNoCategory"] = Resources.Strings.ExportNoCategory;
+            d["ExportNoType"] = Resources.Strings.ExportNoType;
 
             if (Application.Current?.Resources == null)
             {

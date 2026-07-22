@@ -63,6 +63,9 @@
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+            <CollectionView.Footer>
+                <VerticalStackLayout HeightRequest="90"/>
+            </CollectionView.Footer>
         </CollectionView>
 
         <Button Text="{DynamicResource Plus}"
