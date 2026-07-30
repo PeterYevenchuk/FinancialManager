@@ -10,11 +10,11 @@
     xmlns:resources="clr-namespace:Resources"
     x:DataType="vm:AppShellViewModel"
     Title="FinancialManager"
-    FlyoutBackgroundColor="{StaticResource AppBackground}"
-    Shell.BackgroundColor="{StaticResource AppBackground}"
-    Shell.ForegroundColor="{StaticResource TextPrimary}"
-    Shell.TitleColor="{StaticResource TextPrimary}"
-    Shell.UnselectedColor="{StaticResource MutedText}">
+    FlyoutBackgroundColor="{DynamicResource AppBackground}"
+    Shell.BackgroundColor="{DynamicResource AppBackground}"
+    Shell.ForegroundColor="{DynamicResource TextPrimary}"
+    Shell.TitleColor="{DynamicResource TextPrimary}"
+    Shell.UnselectedColor="{DynamicResource MutedText}">
 
     <Shell.ItemTemplate>
         <DataTemplate x:DataType="BaseShellItem">
@@ -28,14 +28,14 @@
                         </VisualState>
                         <VisualState x:Name="Selected">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{StaticResource FieldBackground}" />
+                                <Setter Property="BackgroundColor" Value="{DynamicResource FieldBackground}" />
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
 
                 <Label Text="{Binding Title}"
-                       TextColor="{StaticResource TextPrimary}"
+                       TextColor="{DynamicResource TextPrimary}"
                        FontSize="15"
                        VerticalOptions="Center"
                        HorizontalOptions="Start" />
@@ -68,8 +68,8 @@
     </FlyoutItem>
 
     <Shell.FlyoutFooter>
-        <Border BackgroundColor="{StaticResource CardBackground}"
-           Stroke="{StaticResource CardStroke}"
+        <Border BackgroundColor="{DynamicResource CardBackground}"
+           Stroke="{DynamicResource CardStroke}"
            StrokeThickness="1"
            StrokeShape="Rectangle"
            Padding="15,12"
@@ -77,16 +77,16 @@
            x:DataType="vm:AppShellViewModel">
             <VerticalStackLayout Spacing="6">
                 <Label Text="{DynamicResource LanguageLabel}"
-                   TextColor="{StaticResource MutedText}"
+                   TextColor="{DynamicResource MutedText}"
                    FontSize="11"
                    FontAttributes="Bold"/>
 
-                <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 8" Padding="10,0">
+                <Border BackgroundColor="{DynamicResource FieldBackground}" Stroke="{DynamicResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 8" Padding="10,0">
                     <Picker ItemsSource="{Binding Languages}"
                         SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
                         ItemDisplayBinding="{Binding Name}"
-                        TextColor="{StaticResource TextPrimary}"
-                        TitleColor="{StaticResource MutedText}"
+                        TextColor="{DynamicResource TextPrimary}"
+                        TitleColor="{DynamicResource MutedText}"
                         FontSize="14"
                         HeightRequest="42"/>
                 </Border>
