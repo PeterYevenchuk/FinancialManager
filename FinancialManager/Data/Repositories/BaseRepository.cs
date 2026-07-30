@@ -33,7 +33,6 @@ public abstract class BaseRepository<T> : IRepository<T> where T : class, new()
     public virtual async Task<int> SaveAsync(T entity)
     {
         await Init();
-        var info = _database.GetConnection().GetTableInfo(typeof(T).Name);
         return await _database.InsertOrReplaceAsync(entity);
     }
 

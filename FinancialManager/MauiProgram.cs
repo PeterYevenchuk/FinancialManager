@@ -44,7 +44,6 @@ namespace FinancialManager
 
             builder.Services.AddTransient<CategoryViewModel>();
             builder.Services.AddTransient<CategoryAddViewModel>();
-            builder.Services.AddTransient<CategoryViewModel>();
             builder.Services.AddTransient<TransactionTypeAddViewModel>();
             builder.Services.AddTransient<TransactionTypeViewModel>();
             builder.Services.AddTransient<TransactionViewModel>();

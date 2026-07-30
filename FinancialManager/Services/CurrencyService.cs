@@ -1,10 +1,11 @@
 ﻿using FinancialManager.Helpers;
 using FinancialManager.Services.Contracts;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace FinancialManager.Services;
 
-public class CurrencyService : ICurrencyService
+public sealed class CurrencyService : ICurrencyService
 {
     private readonly HttpClient _httpClient;
 
@@ -24,16 +25,24 @@ public class CurrencyService : ICurrencyService
             using var doc = JsonDocument.Parse(response);
             foreach (var element in doc.RootElement.EnumerateArray())
             {
-                string cc = element.GetProperty(StaticData.CurrencyCodeProperty).GetString(); // "USD", "EUR"
+                string? cc = element.GetProperty(StaticData.CurrencyCodeProperty).GetString();
                 double rate = element.GetProperty(StaticData.RateProperty).GetDouble();
 
-                if (cc == StaticData.UsdCode) rates[StaticData.UsdCurrency] = rate;
-                if (cc == StaticData.EurCode) rates[StaticData.EurCurrency] = rate;
+                if (cc == StaticData.UsdCode)
+                {
+                    rates[StaticData.UsdCurrency] = rate;
+                }
+
+                if (cc == StaticData.EurCode)
+                {
+                    rates[StaticData.EurCurrency] = rate;
+                }
             }
         }
-        catch
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
         {
-
+            // Network/parse failures are non-fatal: caller falls back to UAH-only rates.
+            Debug.WriteLine($"Failed to fetch exchange rates: {ex.Message}");
         }
 
         return rates;

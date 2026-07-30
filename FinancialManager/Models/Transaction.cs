@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using FinancialManager.Helpers;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 
@@ -10,7 +11,7 @@ public partial class Transaction : ObservableObject
     {
         Id = Guid.NewGuid();
         Date = DateTime.Now;
-        Currency = "₴";
+        Currency = StaticData.UahCurrency;
         ExchangeRateToUah = 1.0;
     }
 
@@ -19,7 +20,7 @@ public partial class Transaction : ObservableObject
 
     public double Amount { get; set; }
 
-    public string Currency { get; set; } = "₴";
+    public string Currency { get; set; } = StaticData.UahCurrency;
 
     public double ExchangeRateToUah { get; set; } = 1.0;
 
@@ -40,22 +41,31 @@ public partial class Transaction : ObservableObject
     public TransactionType TransactionType { get; set; }
 
     [Ignore]
-    public string AmountDisplay => $"{Amount:N2} {Currency ?? "₴"}";
+    public string AmountDisplay => $"{Amount:N2} {Currency ?? StaticData.UahCurrency}";
 
     [Ignore]
     public string ExchangeRateToUahDisplay => $"{ExchangeRateToUah:N2}";
 
     [Ignore]
-    public bool ShowExchangeRate => Currency != "₴" ? true : false;
+    public bool ShowExchangeRate => Currency != StaticData.UahCurrency;
 
     public double GetAmountInUah(Dictionary<string, double> currentRatesFallback)
     {
-        if (Currency == "₴") return Amount;
-        if (ExchangeRateToUah > 0) return Amount * ExchangeRateToUah;
+        if (Currency == StaticData.UahCurrency)
+        {
+            return Amount;
+        }
+
+        if (ExchangeRateToUah > 0)
+        {
+            return Amount * ExchangeRateToUah;
+        }
+
         if (currentRatesFallback != null && currentRatesFallback.TryGetValue(Currency, out double currentRate))
         {
             return Amount * currentRate;
         }
+
         return Amount;
     }
 

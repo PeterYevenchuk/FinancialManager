@@ -3,35 +3,36 @@
 public static class StaticData
 {
     // Language codes
-    public static readonly string EnCode = "en";
-    public static readonly string UkCode = "uk";
-    public static readonly string EnName = "🇺🇸 English";
-    public static readonly string UkName = "🇺🇦 Українська";
-    public static readonly string DefaultLanguage = "en";
-    public static readonly string LanguageKey = "selected_language";
+    public const string EnCode = "en";
+    public const string UkCode = "uk";
+    public const string EnName = "🇺🇸 English";
+    public const string UkName = "🇺🇦 Українська";
+    public const string DefaultLanguage = "en";
+    public const string LanguageKey = "selected_language";
 
     // Currency symbols
-    public static readonly string UahCurrency = "₴";
-    public static readonly string UsdCurrency = "$";
-    public static readonly string EurCurrency = "€";
+    public const string UahCurrency = "₴";
+    public const string UsdCurrency = "$";
+    public const string EurCurrency = "€";
 
     // Currency codes
-    public static readonly string UsdCode = "USD";
-    public static readonly string EurCode = "EUR";
+    public const string UsdCode = "USD";
+    public const string EurCode = "EUR";
 
     // API endpoints
-    public static readonly string NbuExchangeRateUrl = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json";
+    public const string NbuExchangeRateUrl = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json";
 
     // JSON property names
-    public static readonly string CurrencyCodeProperty = "cc";
-    public static readonly string RateProperty = "rate";
+    public const string CurrencyCodeProperty = "cc";
+    public const string RateProperty = "rate";
 
     // Icons
-    public static readonly string DefaultIcon = "✨";
+    public const string DefaultIcon = "✨";
+    public const string DefaultCategoryIcon = "📦";
 
     // Balance placeholder
-    public static readonly string BalancePlaceholderUah = "0.00 ₴";
+    public const string BalancePlaceholderUah = "0.00 ₴";
 
     // Exchange rate
-    public static readonly string ExchangeDefaultRate = "1.0";
+    public const string ExchangeDefaultRate = "1.0";
 }
