@@ -4,57 +4,86 @@
              xmlns:resources="clr-namespace:Resources"
              x:Class="FinancialManager.Views.TransactionAddPage"
              Title="{DynamicResource ManageTransactionTitle}"
-             BackgroundColor="#121212">
+             BackgroundColor="{StaticResource AppBackground}">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="18">
 
-        <Grid ColumnDefinitions="*, 80" ColumnSpacing="10">
-            <Entry Grid.Column="0" 
-                   Text="{Binding Amount}" 
-                   Keyboard="Numeric" 
-                   Placeholder="{DynamicResource PlaceholderAmount}"
-                   TextColor="White"/>
+            <Label Text="{DynamicResource AmountLabel}" TextColor="{StaticResource SubtleText}" FontSize="13"/>
+            <Grid ColumnDefinitions="*, 96" ColumnSpacing="10">
+                <Border Grid.Column="0" BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="14,0">
+                    <Entry Text="{Binding Amount}"
+                           Keyboard="Numeric"
+                           Placeholder="{DynamicResource PlaceholderAmount}"
+                           TextColor="{StaticResource TextPrimary}"/>
+                </Border>
+                <Border Grid.Column="1" BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="10,0">
+                    <Picker ItemsSource="{Binding Currencies}"
+                            SelectedItem="{Binding SelectedCurrency}"
+                            TextColor="{StaticResource TextPrimary}"
+                            TitleColor="{StaticResource MutedText}"
+                            HorizontalOptions="Fill"
+                            FontSize="16"/>
+                </Border>
+            </Grid>
 
-            <Picker Grid.Column="1" 
-                    ItemsSource="{Binding Currencies}" 
-                    SelectedItem="{Binding SelectedCurrency}" 
-                    TextColor="White"
-                    TitleColor="#555"
-                    HorizontalOptions="Fill"
-                    FontSize="16"/>
-        </Grid>
+            <VerticalStackLayout IsVisible="{Binding IsRateFieldsVisible}" Spacing="6">
+                <Label Text="{DynamicResource ExchangeRateLabel}" TextColor="{StaticResource SubtleText}" FontSize="13"/>
+                <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="14,0">
+                    <Entry Text="{Binding ExchangeRate}"
+                           Keyboard="Numeric"
+                           TextColor="{StaticResource TextPrimary}"
+                           Placeholder="{DynamicResource PlaceholderExchangeRate}"/>
+                </Border>
+            </VerticalStackLayout>
 
-        <VerticalStackLayout IsVisible="{Binding IsRateFieldsVisible}" Spacing="5">
-            <Label Text="{DynamicResource ExchangeRateLabel}" TextColor="#aaa" FontSize="12"/>
-            <Entry Text="{Binding ExchangeRate}" 
-                   Keyboard="Numeric" 
-                   TextColor="White"
-                   Placeholder="{DynamicResource PlaceholderExchangeRate}"/>
+            <VerticalStackLayout Spacing="6">
+                <Label Text="{DynamicResource DescriptionLabel}" TextColor="{StaticResource SubtleText}" FontSize="13"/>
+                <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="14,0">
+                    <Entry Text="{Binding Description}" Placeholder="{DynamicResource PlaceholderDescription}" MaxLength="250" TextColor="{StaticResource TextPrimary}"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="{DynamicResource CategoryLabel}" TextColor="{StaticResource SubtleText}" FontSize="13" FontAttributes="Bold"/>
+                <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="14,0">
+                    <Picker ItemsSource="{Binding Categories}"
+                            SelectedItem="{Binding SelectedCategory}"
+                            ItemDisplayBinding="{Binding LocalizedName}"
+                            Title="{DynamicResource SelectCategory}"
+                            TextColor="{StaticResource TextPrimary}"
+                            TitleColor="{StaticResource MutedText}"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="{DynamicResource TypeLabel}" TextColor="{StaticResource SubtleText}" FontSize="13" FontAttributes="Bold"/>
+                <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="14,0">
+                    <Picker ItemsSource="{Binding TransactionTypes}"
+                            SelectedItem="{Binding SelectedType}"
+                            ItemDisplayBinding="{Binding LocalizedName}"
+                            Title="{DynamicResource SelectType}"
+                            TextColor="{StaticResource TextPrimary}"
+                            TitleColor="{StaticResource MutedText}"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="{DynamicResource DateLabel}" TextColor="{StaticResource SubtleText}" FontSize="13"/>
+                <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="14,0">
+                    <DatePicker Date="{Binding Date}" TextColor="{StaticResource TextPrimary}"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <Button Text="{DynamicResource Save}"
+                    Command="{Binding SaveCommand}"
+                    Margin="0,10,0,0"
+                    HeightRequest="50"
+                    CornerRadius="12"
+                    FontAttributes="Bold"
+                    BackgroundColor="{StaticResource Accent}"
+                    TextColor="{StaticResource OnAccentText}" />
+
         </VerticalStackLayout>
-
-        <Label Text="{DynamicResource DescriptionLabel}" />
-        <Entry Text="{Binding Description}" Placeholder="{DynamicResource PlaceholderDescription}" MaxLength="250" />
-
-        <Label Text="{DynamicResource CategoryLabel}" FontAttributes="Bold" />
-        <Picker ItemsSource="{Binding Categories}" 
-                SelectedItem="{Binding SelectedCategory}" 
-                ItemDisplayBinding="{Binding LocalizedName}" 
-                Title="{DynamicResource SelectCategory}" />
-
-        <Label Text="{DynamicResource TypeLabel}" FontAttributes="Bold" />
-        <Picker ItemsSource="{Binding TransactionTypes}" 
-                SelectedItem="{Binding SelectedType}" 
-                ItemDisplayBinding="{Binding LocalizedName}" 
-                Title="{DynamicResource SelectType}" />
-
-        <Label Text="{DynamicResource DateLabel}" />
-        <DatePicker Date="{Binding Date}" />
-
-        <Button Text="{DynamicResource Save}" 
-                Command="{Binding SaveCommand}"
-                Margin="0,20,0,0" 
-                BackgroundColor="#2196F3" 
-                TextColor="White" />
-
-    </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

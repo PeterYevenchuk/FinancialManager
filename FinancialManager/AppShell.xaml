@@ -10,11 +10,11 @@
     xmlns:resources="clr-namespace:Resources"
     x:DataType="vm:AppShellViewModel"
     Title="FinancialManager"
-    FlyoutBackgroundColor="#121212"
-    Shell.BackgroundColor="#121212"
-    Shell.ForegroundColor="White"
-    Shell.TitleColor="White"
-    Shell.UnselectedColor="#aaaaaa">
+    FlyoutBackgroundColor="{StaticResource AppBackground}"
+    Shell.BackgroundColor="{StaticResource AppBackground}"
+    Shell.ForegroundColor="{StaticResource TextPrimary}"
+    Shell.TitleColor="{StaticResource TextPrimary}"
+    Shell.UnselectedColor="{StaticResource MutedText}">
 
     <Shell.ItemTemplate>
         <DataTemplate x:DataType="BaseShellItem">
@@ -35,7 +35,7 @@
                 </VisualStateManager.VisualStateGroups>
 
                 <Label Text="{Binding Title}"
-                       TextColor="White"
+                       TextColor="{StaticResource TextPrimary}"
                        FontSize="15"
                        VerticalOptions="Center"
                        HorizontalOptions="Start" />
@@ -68,28 +68,29 @@
     </FlyoutItem>
 
     <Shell.FlyoutFooter>
-        <Frame BackgroundColor="#1a1a1a" 
-           BorderColor="#333" 
-           CornerRadius="0" 
-           Padding="15,10" 
-           HasShadow="False"
+        <Border BackgroundColor="{StaticResource CardBackground}"
+           Stroke="{StaticResource CardStroke}"
+           StrokeThickness="1"
+           StrokeShape="Rectangle"
+           Padding="15,12"
            BindingContext="{Binding BindingContext, Source={x:Reference thisShell}}"
            x:DataType="vm:AppShellViewModel">
-            <VerticalStackLayout Spacing="5">
-                <Label Text="{DynamicResource LanguageLabel}" 
-                   TextColor="#888" 
-                   FontSize="11" 
+            <VerticalStackLayout Spacing="6">
+                <Label Text="{DynamicResource LanguageLabel}"
+                   TextColor="{StaticResource MutedText}"
+                   FontSize="11"
                    FontAttributes="Bold"/>
 
-                <Picker ItemsSource="{Binding Languages}"
-                    SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
-                    ItemDisplayBinding="{Binding Name}"
-                    TextColor="White"
-                    TitleColor="#555"
-                    FontSize="14"
-                    HeightRequest="40"
-                    BackgroundColor="#252525"/>
+                <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 8" Padding="10,0">
+                    <Picker ItemsSource="{Binding Languages}"
+                        SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
+                        ItemDisplayBinding="{Binding Name}"
+                        TextColor="{StaticResource TextPrimary}"
+                        TitleColor="{StaticResource MutedText}"
+                        FontSize="14"
+                        HeightRequest="42"/>
+                </Border>
             </VerticalStackLayout>
-        </Frame>
+        </Border>
     </Shell.FlyoutFooter>
 </Shell>

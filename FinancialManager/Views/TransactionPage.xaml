@@ -7,78 +7,86 @@
              x:Class="FinancialManager.Views.TransactionPage"
              x:Name="thisPage"
              Title="{DynamicResource TransactionsTitle}"
-             BackgroundColor="#121212">
+             BackgroundColor="{StaticResource AppBackground}">
 
     <Grid RowDefinitions="Auto, *">
 
-        <Frame Grid.Row="0" Margin="10" Padding="10" BackgroundColor="#1a1a1a" BorderColor="#333" CornerRadius="10">
-            <VerticalStackLayout Spacing="10">
+        <Border Grid.Row="0" Margin="12,10" Padding="14" StrokeShape="RoundRectangle 16" BackgroundColor="{StaticResource CardBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1">
+            <VerticalStackLayout Spacing="12">
                 <Grid ColumnDefinitions="*, *, Auto" ColumnSpacing="10">
-                    <VerticalStackLayout Grid.Column="0">
-                        <Label Text="{DynamicResource CategoryLabel}" TextColor="#aaa" FontSize="12"/>
-                        <Picker ItemsSource="{Binding Categories}" 
-                        SelectedItem="{Binding SelectedCategoryFilter}" 
-                        ItemDisplayBinding="{Binding LocalizedName}"/>
+                    <VerticalStackLayout Grid.Column="0" Spacing="4">
+                        <Label Text="{DynamicResource CategoryLabel}" TextColor="{StaticResource SubtleText}" FontSize="12"/>
+                        <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="10,0">
+                            <Picker ItemsSource="{Binding Categories}"
+                                    SelectedItem="{Binding SelectedCategoryFilter}"
+                                    ItemDisplayBinding="{Binding LocalizedName}"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    TitleColor="{StaticResource MutedText}"/>
+                        </Border>
                     </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="1">
-                        <Label Text="{DynamicResource TypeLabel}" TextColor="#aaa" FontSize="12"/>
-                        <Picker ItemsSource="{Binding TransactionTypes}" 
-                        SelectedItem="{Binding SelectedTypeFilter}" 
-                        ItemDisplayBinding="{Binding LocalizedName}"/>
+                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                        <Label Text="{DynamicResource TypeLabel}" TextColor="{StaticResource SubtleText}" FontSize="12"/>
+                        <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="10,0">
+                            <Picker ItemsSource="{Binding TransactionTypes}"
+                                    SelectedItem="{Binding SelectedTypeFilter}"
+                                    ItemDisplayBinding="{Binding LocalizedName}"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    TitleColor="{StaticResource MutedText}"/>
+                        </Border>
                     </VerticalStackLayout>
 
-                    <Button Grid.Column="2" 
-                        Text="{DynamicResource Apply}" 
-                        Command="{Binding ApplyFiltersCommand}" 
-                        BackgroundColor="#28a745" 
-                        TextColor="White" 
+                    <Button Grid.Column="2"
+                        Text="{DynamicResource Apply}"
+                        Command="{Binding ApplyFiltersCommand}"
+                        BackgroundColor="{StaticResource AccentGreen}"
+                        TextColor="{StaticResource OnAccentText}"
                         FontAttributes="Bold"
-                        VerticalOptions="End" 
-                        HeightRequest="36"
+                        VerticalOptions="End"
+                        HeightRequest="42"
                         WidthRequest="95"
-                        Padding="0"
-                        Margin="0,0,0,1"/>
+                        CornerRadius="10"
+                        Padding="0"/>
                 </Grid>
 
-                <Grid ColumnDefinitions="*, *, Auto" ColumnSpacing="10" VerticalOptions="Center">
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="10" VerticalOptions="Center">
                     <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
-                        <Label Text="{DynamicResource FromLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
-                        <DatePicker Date="{Binding DateFrom}" 
-                    MaximumDate="{Binding DateTo}" 
-                    Format="dd.MM.yyyy" 
-                    TextColor="White" 
-                    VerticalOptions="Center"/>
+                        <Label Text="{DynamicResource FromLabel}" FontSize="14" TextColor="{StaticResource SubtleText}" VerticalOptions="Center"/>
+                        <DatePicker Date="{Binding DateFrom}"
+                                    MaximumDate="{Binding DateTo}"
+                                    Format="dd.MM.yyyy"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    VerticalOptions="Center"/>
                     </HorizontalStackLayout>
 
                     <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
-                        <Label Text="{DynamicResource ToLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
-                        <DatePicker Date="{Binding DateTo}" 
-                    MinimumDate="{Binding DateFrom}" 
-                    Format="dd.MM.yyyy" 
-                    TextColor="White" 
-                    VerticalOptions="Center"/>
+                        <Label Text="{DynamicResource ToLabel}" FontSize="14" TextColor="{StaticResource SubtleText}" VerticalOptions="Center"/>
+                        <DatePicker Date="{Binding DateTo}"
+                                    MinimumDate="{Binding DateFrom}"
+                                    Format="dd.MM.yyyy"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    VerticalOptions="Center"/>
                     </HorizontalStackLayout>
                 </Grid>
 
-                <Button Text="{DynamicResource ClearFilters}" Command="{Binding ClearFiltersCommand}" 
-                        BackgroundColor="Transparent" TextColor="#2196F3" Padding="0" HeightRequest="30"/>
+                <Button Text="{DynamicResource ClearFilters}" Command="{Binding ClearFiltersCommand}"
+                        BackgroundColor="Transparent" TextColor="{StaticResource Accent}" Padding="0" MinimumHeightRequest="0" HeightRequest="34"/>
             </VerticalStackLayout>
-        </Frame>
+        </Border>
 
-        <CollectionView Grid.Row="1" 
-                        ItemsSource="{Binding Transactions}" 
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Transactions}"
                         SelectionMode="None"
                         ItemsUpdatingScrollMode="KeepScrollOffset">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Transaction">
-                    <Grid Margin="10,5">
+                    <Grid Margin="12,5">
 
-                        <Frame Padding="0" CornerRadius="10" HasShadow="False" BackgroundColor="#1a1a1a" BorderColor="#333" Margin="10,0,10,0">
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer 
-                            Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.SelectTransactionCommand}" 
+                        <Border Padding="0" StrokeShape="RoundRectangle 14" BackgroundColor="{StaticResource CardBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                            Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.SelectTransactionCommand}"
                             CommandParameter="{Binding .}"/>
-                            </Frame.GestureRecognizers>
+                            </Border.GestureRecognizers>
 
                             <VerticalStackLayout>
                                 <Grid Padding="15" ColumnDefinitions="*, Auto">
@@ -86,39 +94,38 @@
 
                                         <HorizontalStackLayout Spacing="10">
                                             <Label Text="{Binding Category.Icon}" FontSize="18"/>
-                                            <Label Text="{Binding Category.LocalizedName}" FontSize="16" TextColor="White" FontAttributes="Bold"/>
+                                            <Label Text="{Binding Category.LocalizedName}" FontSize="16" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold"/>
                                         </HorizontalStackLayout>
 
                                         <HorizontalStackLayout Spacing="10" Margin="28,0,0,0">
                                             <Label Text="{Binding TransactionType.Icon}" FontSize="14" VerticalOptions="Center"/>
-                                            <Label Text="{Binding TransactionType.LocalizedName}" FontSize="14" TextColor="#bbb"/>
+                                            <Label Text="{Binding TransactionType.LocalizedName}" FontSize="14" TextColor="{StaticResource SubtleText}"/>
                                         </HorizontalStackLayout>
 
-                                        <Label Text="{Binding Date, StringFormat='{0:yyyy-MM-dd}'}" FontSize="12" TextColor="#888" Margin="28,0,0,0"/>
+                                        <Label Text="{Binding Date, StringFormat='{0:yyyy-MM-dd}'}" FontSize="12" TextColor="{StaticResource MutedText}" Margin="28,0,0,0"/>
 
-  
-                                        <Label Text="{Binding Description}" 
-                                            FontSize="14" 
-                                            TextColor="#bbb"
+                                        <Label Text="{Binding Description}"
+                                            FontSize="14"
+                                            TextColor="{StaticResource SubtleText}"
                                             LineBreakMode="WordWrap"
                                             Margin="28,2,15,0"/>
 
                                     </VerticalStackLayout>
 
-                                    <VerticalStackLayout Grid.Column="1" 
-                                         VerticalOptions="Center" 
-                                         HorizontalOptions="End" 
+                                    <VerticalStackLayout Grid.Column="1"
+                                         VerticalOptions="Center"
+                                         HorizontalOptions="End"
                                          Spacing="2">
 
-                                        <Label Text="{Binding AmountDisplay}" 
-                                           FontSize="18" 
-                                           FontAttributes="Bold" 
-                                           TextColor="White"
+                                        <Label Text="{Binding AmountDisplay}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"
                                            HorizontalOptions="End"/>
 
-                                        <Label Text="{Binding ExchangeRateToUahDisplay}" 
-                                           FontSize="12" 
-                                           TextColor="#aaaaaa" 
+                                        <Label Text="{Binding ExchangeRateToUahDisplay}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource MutedText}"
                                            IsVisible="{Binding ShowExchangeRate}"
                                            HorizontalOptions="End"/>
 
@@ -126,19 +133,19 @@
 
                                 </Grid>
 
-                                <BoxView HeightRequest="1" BackgroundColor="#333" IsVisible="{Binding IsSelected}"/>
+                                <BoxView HeightRequest="1" BackgroundColor="{StaticResource CardStroke}" IsVisible="{Binding IsSelected}"/>
 
-                                <VerticalStackLayout IsVisible="{Binding IsSelected}" BackgroundColor="#252525" Padding="15,12">
+                                <VerticalStackLayout IsVisible="{Binding IsSelected}" BackgroundColor="{StaticResource CardBackgroundAlt}" Padding="15,12">
 
                                     <Grid ColumnDefinitions="*, *">
-                                        <Button Grid.Column="0" Text="{DynamicResource Edit}" TextColor="White" BackgroundColor="Transparent"
+                                        <Button Grid.Column="0" Text="{DynamicResource Edit}" TextColor="{StaticResource TextPrimary}" BackgroundColor="Transparent"
                                         Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.EditTransactionCommand}" CommandParameter="{Binding .}"/>
-                                        <Button Grid.Column="1" Text="{DynamicResource Delete}" TextColor="#ff4d4d" BackgroundColor="Transparent"
+                                        <Button Grid.Column="1" Text="{DynamicResource Delete}" TextColor="{StaticResource Danger}" BackgroundColor="Transparent"
                                         Command="{Binding Source={x:Reference thisPage}, Path=BindingContext.DeleteTransactionCommand}" CommandParameter="{Binding .}"/>
                                     </Grid>
                                 </VerticalStackLayout>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
@@ -147,8 +154,8 @@
             </CollectionView.Footer>
         </CollectionView>
 
-        <Button Grid.Row="1" Text="{DynamicResource Plus}" FontSize="24" BackgroundColor="#28a745" TextColor="White" CornerRadius="25"
-                HeightRequest="50" WidthRequest="50" HorizontalOptions="End" VerticalOptions="End" Margin="20"
+        <Button Grid.Row="1" Text="{DynamicResource Plus}" FontSize="24" BackgroundColor="{StaticResource AccentGreen}" TextColor="{StaticResource OnAccentText}" CornerRadius="28"
+                HeightRequest="56" WidthRequest="56" HorizontalOptions="End" VerticalOptions="End" Margin="20"
                 Command="{Binding AddTransactionCommand}"/>
     </Grid>
 </ContentPage>

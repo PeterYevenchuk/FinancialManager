@@ -6,7 +6,7 @@
              xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              x:DataType="viewmodels:MainViewModel"
              x:Class="FinancialManager.Views.MainPage"
-             BackgroundColor="#121212"
+             BackgroundColor="{StaticResource AppBackground}"
              Title="{DynamicResource DashboardTitle}">
     <Grid>
         <CollectionView ItemsSource="{Binding FilteredTransactions}" 
@@ -21,9 +21,9 @@
                     <Button Text="{DynamicResource ExportButton}"
                         Command="{Binding ExportDataCommand}"
                         IsVisible="{Binding IsExportFeatureEnabled}"
-                        BackgroundColor="#1e293b"
-                        TextColor="#38bdf8"
-                        BorderColor="#334155"
+                        BackgroundColor="{StaticResource CardBackground}"
+                        TextColor="{StaticResource AccentSoft}"
+                        BorderColor="{StaticResource CardStroke}"
                         BorderWidth="1"
                         CornerRadius="8"
                         FontAttributes="Bold"
@@ -32,7 +32,7 @@
                         Padding="14,0"
                         HorizontalOptions="End" />
 
-                    <Border BackgroundColor="{StaticResource Primary}" StrokeShape="RoundRectangle 16" StrokeThickness="0" Padding="15">
+                    <Border Background="{StaticResource HeroGradient}" StrokeShape="RoundRectangle 20" StrokeThickness="0" Padding="18">
                         <Border.GestureRecognizers>
                             <PanGestureRecognizer PanUpdated="OnDashboardPanUpdated" />
                         </Border.GestureRecognizers>
@@ -122,18 +122,18 @@
 
                     <Grid ColumnDefinitions="*, *" ColumnSpacing="10" VerticalOptions="Center">
                         <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
-                            <Label Text="{DynamicResource FromLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
-                            <DatePicker Date="{Binding StartDate}" MaximumDate="{Binding EndDate}" Format="dd.MM.yyyy" TextColor="White" VerticalOptions="Center"/>
+                            <Label Text="{DynamicResource FromLabel}" FontSize="14" TextColor="{StaticResource SubtleText}" VerticalOptions="Center"/>
+                            <DatePicker Date="{Binding StartDate}" MaximumDate="{Binding EndDate}" Format="dd.MM.yyyy" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                         <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
-                            <Label Text="{DynamicResource ToLabel}" FontSize="14" TextColor="#aaa" VerticalOptions="Center"/>
-                            <DatePicker Date="{Binding EndDate}" MinimumDate="{Binding StartDate}" Format="dd.MM.yyyy" TextColor="White" VerticalOptions="Center"/>
+                            <Label Text="{DynamicResource ToLabel}" FontSize="14" TextColor="{StaticResource SubtleText}" VerticalOptions="Center"/>
+                            <DatePicker Date="{Binding EndDate}" MinimumDate="{Binding StartDate}" Format="dd.MM.yyyy" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                     </Grid>
 
                     <VerticalStackLayout Spacing="10">
                         <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                            <Label Grid.Column="0" Text="{DynamicResource TransactionTypeHeader}" FontAttributes="Bold" FontSize="14" TextColor="White" VerticalOptions="Center"/>
+                            <Label Grid.Column="0" Text="{DynamicResource TransactionTypeHeader}" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center"/>
                             <Button Grid.Column="1"
                                     Text="{DynamicResource Reset}"
                                     FontSize="12"
@@ -152,14 +152,14 @@
                         <FlexLayout BindableLayout.ItemsSource="{Binding TransactionTypes}" Wrap="Wrap" Direction="Row" JustifyContent="Start" AlignItems="Center" AlignContent="Start">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="models:TransactionType">
-                                    <Border WidthRequest="50" HeightRequest="50" StrokeShape="RoundRectangle 25" BackgroundColor="Transparent" Stroke="#333" StrokeThickness="1.5" Margin="0,0,10,10">
+                                    <Border WidthRequest="50" HeightRequest="50" StrokeShape="RoundRectangle 25" BackgroundColor="Transparent" Stroke="{StaticResource CardStroke}" StrokeThickness="1.5" Margin="0,0,10,10">
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=SelectTypeCommand}" CommandParameter="{Binding .}"/>
                                         </Border.GestureRecognizers>
                                         <Border.Triggers>
                                             <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                                <Setter Property="BackgroundColor" Value="#28a745" />
-                                                <Setter Property="Stroke" Value="#28a745" />
+                                                <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                                                <Setter Property="Stroke" Value="{StaticResource Accent}" />
                                             </DataTrigger>
                                         </Border.Triggers>
                                         <Label Text="{Binding Icon}" FontSize="22" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -169,7 +169,7 @@
                         </FlexLayout>
                     </VerticalStackLayout>
 
-                    <Border StrokeShape="RoundRectangle 12" Padding="15" BackgroundColor="#1a1a1a" Stroke="#333">
+                    <Border StrokeShape="RoundRectangle 16" Padding="15" BackgroundColor="{StaticResource CardBackground}" Stroke="{StaticResource CardStroke}">
                         <Grid>
                             <FlexLayout Direction="Row" 
                                         Wrap="Wrap" 
@@ -202,16 +202,16 @@
                                                 </Grid.GestureRecognizers>
                                                 <BoxView Grid.Column="0" WidthRequest="10" HeightRequest="10" CornerRadius="2" BackgroundColor="{Binding ColorHex}" VerticalOptions="Center"/>
                                                 <Label Grid.Column="1" Text="{Binding Icon}" FontSize="13" VerticalOptions="Center"/>
-                                                <Label Grid.Column="2" Text="{Binding Label}" FontSize="13" TextColor="White" LineBreakMode="TailTruncation" VerticalOptions="Center"/>
-                                                <Label Grid.Column="3" Text="{Binding ValueLabel}" FontSize="12" TextColor="#aaa" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="Center" Margin="4,0,0,0"/>
+                                                <Label Grid.Column="2" Text="{Binding Label}" FontSize="13" TextColor="{StaticResource TextPrimary}" LineBreakMode="TailTruncation" VerticalOptions="Center"/>
+                                                <Label Grid.Column="3" Text="{Binding ValueLabel}" FontSize="12" TextColor="{StaticResource SubtleText}" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="Center" Margin="4,0,0,0"/>
                                             </Grid>
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
                                 </VerticalStackLayout>
                             </FlexLayout>
 
-                            <Label Text="{DynamicResource NoDataForPeriod}" 
-                                   TextColor="#777" 
+                            <Label Text="{DynamicResource NoDataForPeriod}"
+                                   TextColor="{StaticResource MutedText}"
                                    FontSize="14" 
                                    HorizontalOptions="Center" 
                                    VerticalOptions="Center" 
@@ -228,12 +228,12 @@
                         </Grid>
                     </Border>
 
-                    <Border IsVisible="{Binding IsCategoryFilterActive}" 
-                            BackgroundColor="#222" 
-                            Stroke="#2196F3" 
-                            StrokeThickness="1" 
-                            StrokeShape="RoundRectangle 8" 
-                            Padding="12,4" 
+                    <Border IsVisible="{Binding IsCategoryFilterActive}"
+                            BackgroundColor="{StaticResource CardBackgroundAlt}"
+                            Stroke="{StaticResource Accent}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 8"
+                            Padding="12,4"
                             Margin="0,5,0,0">
                         <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
 
@@ -247,12 +247,12 @@
 
                             </HorizontalStackLayout>
 
-                            <Button Grid.Column="1" 
-                                    Text="✕" 
-                                    TextColor="#ff4d4d" 
-                                    FontAttributes="Bold" 
-                                    BackgroundColor="Transparent" 
-                                    Command="{Binding ClearCategoryFilterCommand}" 
+                            <Button Grid.Column="1"
+                                    Text="✕"
+                                    TextColor="{StaticResource Danger}"
+                                    FontAttributes="Bold"
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding ClearCategoryFilterCommand}"
                                     WidthRequest="30" 
                                     HeightRequest="30" 
                                     Padding="0"
@@ -261,11 +261,11 @@
                     </Border>
 
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center" Margin="0,10,0,0">
-                        <Label Grid.Column="0" 
-                               Text="{DynamicResource TransactionsPeriodLabel}" 
-                               FontAttributes="Bold" 
-                               FontSize="16" 
-                               TextColor="White" 
+                        <Label Grid.Column="0"
+                               Text="{DynamicResource TransactionsPeriodLabel}"
+                               FontAttributes="Bold"
+                               FontSize="16"
+                               TextColor="{StaticResource TextPrimary}"
                                VerticalOptions="Center"/>
 
                         <Border Grid.Column="1"
@@ -292,7 +292,7 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Transaction">
-                    <Border Margin="16, 4" Padding="0" StrokeShape="RoundRectangle 10" BackgroundColor="#1a1a1a" Stroke="#333" StrokeThickness="1">
+                    <Border Margin="16, 4" Padding="0" StrokeShape="RoundRectangle 14" BackgroundColor="{StaticResource CardBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=SelectTransactionCommand}" CommandParameter="{Binding .}"/>
                         </Border.GestureRecognizers>
@@ -302,28 +302,28 @@
                                 <VerticalStackLayout Spacing="3" VerticalOptions="Center">
                                     <HorizontalStackLayout Spacing="10">
                                         <Label Text="{Binding Category.Icon}" FontSize="18"/>
-                                        <Label Text="{Binding Category.LocalizedName}" FontSize="16" TextColor="White" FontAttributes="Bold"/>
+                                        <Label Text="{Binding Category.LocalizedName}" FontSize="16" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold"/>
                                     </HorizontalStackLayout>
 
                                     <HorizontalStackLayout Spacing="10" Margin="28,0,0,0">
                                         <Label Text="{Binding TransactionType.Icon}" FontSize="14" VerticalOptions="Center"/>
-                                        <Label Text="{Binding TransactionType.LocalizedName}" FontSize="14" TextColor="#bbb"/>
+                                        <Label Text="{Binding TransactionType.LocalizedName}" FontSize="14" TextColor="{StaticResource SubtleText}"/>
                                     </HorizontalStackLayout>
 
-                                    <Label Text="{Binding Description}" FontSize="14" TextColor="#bbb" LineBreakMode="WordWrap" Margin="28,4,15,0"/>
+                                    <Label Text="{Binding Description}" FontSize="14" TextColor="{StaticResource SubtleText}" LineBreakMode="WordWrap" Margin="28,4,15,0"/>
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" HorizontalOptions="End" Spacing="2">
-                                    <Label Text="{Binding Date, StringFormat='{0:yyyy-MM-dd}'}" FontSize="12" TextColor="#888" HorizontalOptions="End"/>
-                                    <Label Text="{Binding AmountDisplay}" FontSize="18" FontAttributes="Bold" TextColor="White" HorizontalOptions="End"/>
-                                    <Label Text="{Binding ExchangeRateToUahDisplay}" FontSize="12" TextColor="#aaaaaa" IsVisible="{Binding ShowExchangeRate}" HorizontalOptions="End"/>
+                                    <Label Text="{Binding Date, StringFormat='{0:yyyy-MM-dd}'}" FontSize="12" TextColor="{StaticResource MutedText}" HorizontalOptions="End"/>
+                                    <Label Text="{Binding AmountDisplay}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" HorizontalOptions="End"/>
+                                    <Label Text="{Binding ExchangeRateToUahDisplay}" FontSize="12" TextColor="{StaticResource MutedText}" IsVisible="{Binding ShowExchangeRate}" HorizontalOptions="End"/>
                                 </VerticalStackLayout>
                             </Grid>
 
-                            <VerticalStackLayout IsVisible="{Binding IsSelected}" BackgroundColor="#252525" Padding="15,12">
+                            <VerticalStackLayout IsVisible="{Binding IsSelected}" BackgroundColor="{StaticResource CardBackgroundAlt}" Padding="15,12">
                             <Grid ColumnDefinitions="*, *">
-                                <Button Grid.Column="0" Text="{DynamicResource Edit}" TextColor="White" BackgroundColor="Transparent" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=EditTransactionCommand}" CommandParameter="{Binding .}"/>
-                                <Button Grid.Column="1" Text="{DynamicResource Delete}" TextColor="#ff4d4d" BackgroundColor="Transparent" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=DeleteTransactionCommand}" CommandParameter="{Binding .}"/>
+                                <Button Grid.Column="0" Text="{DynamicResource Edit}" TextColor="{StaticResource TextPrimary}" BackgroundColor="Transparent" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=EditTransactionCommand}" CommandParameter="{Binding .}"/>
+                                <Button Grid.Column="1" Text="{DynamicResource Delete}" TextColor="{StaticResource Danger}" BackgroundColor="Transparent" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=DeleteTransactionCommand}" CommandParameter="{Binding .}"/>
                             </Grid>
                         </VerticalStackLayout>
 
@@ -336,16 +336,16 @@
             </CollectionView.Footer>
         </CollectionView>
 
-        <Button Text="+" 
-                FontSize="28" 
-                TextColor="White" 
-                BackgroundColor="#28a745" 
-                CornerRadius="28" 
-                WidthRequest="56" 
-                HeightRequest="56" 
-                HorizontalOptions="End" 
-                VerticalOptions="End" 
-                Margin="0,0,20,20" 
+        <Button Text="+"
+                FontSize="28"
+                TextColor="{StaticResource OnAccentText}"
+                BackgroundColor="{StaticResource AccentGreen}"
+                CornerRadius="28"
+                WidthRequest="56"
+                HeightRequest="56"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,20,20"
                 Command="{Binding AddTransactionCommand}"/>
     </Grid>
 </ContentPage>

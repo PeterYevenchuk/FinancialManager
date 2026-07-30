@@ -4,30 +4,41 @@
              xmlns:vm="clr-namespace:FinancialManager.ViewModels"
              x:Class="FinancialManager.Views.TransactionTypeAddPage"
              Title="{DynamicResource ManageTypeTitle}"
-             BackgroundColor="#121212">
+             BackgroundColor="{StaticResource AppBackground}">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="18">
 
-        <VerticalStackLayout Spacing="5">
-            <Label Text="{DynamicResource TransactionType_IconLabel}" />
-            <Entry Text="{Binding Icon}" Placeholder="{DynamicResource PlaceholderIcon}" />
+            <VerticalStackLayout Spacing="6">
+                <Label Text="{DynamicResource TransactionType_IconLabel}" TextColor="{StaticResource SubtleText}" FontSize="13" />
+                <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="14,0">
+                    <Entry Text="{Binding Icon}" Placeholder="{DynamicResource PlaceholderIcon}" TextColor="{StaticResource TextPrimary}" />
+                </Border>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="{DynamicResource NameEnglishLabel}" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" FontSize="13" />
+                <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="14,0">
+                    <Entry Text="{Binding NameEng}" Placeholder="{DynamicResource PlaceholderRequired}" TextColor="{StaticResource TextPrimary}" />
+                </Border>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6" IsVisible="{Binding IsUkrVisible}">
+                <Label Text="{DynamicResource NameUkrLabel}" TextColor="{StaticResource SubtleText}" FontSize="13" />
+                <Border BackgroundColor="{StaticResource FieldBackground}" Stroke="{StaticResource CardStroke}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="14,0">
+                    <Entry Text="{Binding NameUkr}" Placeholder="{DynamicResource PlaceholderOptional}" TextColor="{StaticResource TextPrimary}" />
+                </Border>
+            </VerticalStackLayout>
+
+            <Button Text="{DynamicResource Save}"
+                    Command="{Binding SaveCommand}"
+                    Margin="0,10,0,0"
+                    HeightRequest="50"
+                    CornerRadius="12"
+                    FontAttributes="Bold"
+                    BackgroundColor="{StaticResource Accent}"
+                    TextColor="{StaticResource OnAccentText}" />
+
         </VerticalStackLayout>
-
-        <VerticalStackLayout Spacing="5">
-            <Label Text="{DynamicResource NameEnglishLabel}" FontAttributes="Bold" />
-            <Entry Text="{Binding NameEng}" Placeholder="{DynamicResource PlaceholderRequired}" />
-        </VerticalStackLayout>
-
-        <VerticalStackLayout Spacing="5" IsVisible="{Binding IsUkrVisible}">
-            <Label Text="{DynamicResource NameUkrLabel}" />
-            <Entry Text="{Binding NameUkr}" Placeholder="{DynamicResource PlaceholderOptional}" />
-        </VerticalStackLayout>
-
-        <Button Text="{DynamicResource Save}" 
-             Command="{Binding SaveCommand}"
-             Margin="0,20,0,0" 
-             BackgroundColor="#2196F3" 
-             TextColor="White" />
-
-    </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
