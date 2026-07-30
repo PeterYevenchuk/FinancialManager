@@ -1,4 +1,5 @@
-﻿using FinancialManager.Models;
+﻿using FinancialManager.Helpers;
+using FinancialManager.Models;
 using SQLite;
 
 namespace FinancialManager.Data;
@@ -14,17 +15,17 @@ public class DatabaseInitializer
 
     public async Task InitializeAndSeedAsync()
     {
-        await _connection.CreateTablesAsync<TransactionType, Category, Transaction, Localization, Feature>();
+        await DatabaseSchema.EnsureCreatedAsync(_connection);
 
         var typeCount = await _connection.Table<TransactionType>().CountAsync();
         if (typeCount == 0)
         {
             var defaultTypes = new List<(string Icon, string Uk, string En)>
             {
-                ("📥", "Прибуток", "Income"),
-                ("📤", "Витрати", "Expenses"),
-                ("🐷", "Заощадження", "Savings"),
-                ("🔄", "Інше", "Other")
+                (StaticData.IncomeIcon, "Прибуток", "Income"),
+                (StaticData.ExpenseIcon, "Витрати", "Expenses"),
+                (StaticData.SavingsIcon, "Заощадження", "Savings"),
+                (StaticData.OtherTypeIcon, "Інше", "Other")
             };
 
             foreach (var typeData in defaultTypes)
@@ -61,7 +62,7 @@ public class DatabaseInitializer
                 ("🏠", "Житло / Оренда", "Housing / Rent"),
                 ("✈️", "Подорожі", "Travel"),
                 ("🎓", "Освіта", "Education"),
-                ("📦", "Інше", "Other")
+                (StaticData.DefaultCategoryIcon, "Інше", "Other")
             };
 
             foreach (var catData in defaultCategories)

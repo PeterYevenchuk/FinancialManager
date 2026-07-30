@@ -1,4 +1,5 @@
 ﻿using FinancialManager.Data.Contracts;
+using FinancialManager.Helpers;
 using FinancialManager.Models;
 using SQLite;
 
@@ -16,7 +17,7 @@ public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
         }
 
         var defaultCategory = await _database.Table<Category>()
-            .FirstOrDefaultAsync(c => c.IsSystem && c.Icon == "📦");
+            .FirstOrDefaultAsync(c => c.IsSystem && c.Icon == StaticData.DefaultCategoryIcon);
 
         if (defaultCategory != null)
         {

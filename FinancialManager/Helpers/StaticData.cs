@@ -30,6 +30,12 @@ public static class StaticData
     public const string DefaultIcon = "✨";
     public const string DefaultCategoryIcon = "📦";
 
+    // System transaction type icons (used both for seeding and dashboard totals)
+    public const string IncomeIcon = "📥";
+    public const string ExpenseIcon = "📤";
+    public const string SavingsIcon = "🐷";
+    public const string OtherTypeIcon = "🔄";
+
     // Balance placeholder
     public const string BalancePlaceholderUah = "0.00 ₴";
 

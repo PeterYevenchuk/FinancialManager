@@ -179,7 +179,7 @@ public partial class MainViewModel : ObservableObject
         var tempLegendItems = new List<ChartLegendItem>();
 
         var entries = transactions
-            .GroupBy(t => t.Category?.Icon ?? "📦")
+            .GroupBy(t => t.Category?.Icon ?? StaticData.DefaultCategoryIcon)
             .Select(group =>
             {
                 var totalAmountInUah = group.Sum(t => t.GetAmountInUah(_currentRates));
@@ -209,6 +209,7 @@ public partial class MainViewModel : ObservableObject
                 {
                     Icon = icon,
                     Label = localizedName,
+                    Value = totalAmountConverted,
                     ValueLabel = $"{totalAmountConverted:N0} {DisplayCurrency}",
                     ColorHex = colorHex
                 });
@@ -220,7 +221,7 @@ public partial class MainViewModel : ObservableObject
             })
             .ToList();
 
-        ChartLegendItems = tempLegendItems.OrderByDescending(x => x.ValueLabel).ToList();
+        ChartLegendItems = tempLegendItems.OrderByDescending(x => x.Value).ToList();
 
         CategoryChart = new DonutChart
         {
@@ -344,7 +345,7 @@ public partial class MainViewModel : ObservableObject
 
         if (SelectedCategory != null)
         {
-            filteredList = filteredList.Where(t => (t.Category?.Icon ?? "📦") == SelectedCategory.Icon).ToList();
+            filteredList = filteredList.Where(t => (t.Category?.Icon ?? StaticData.DefaultCategoryIcon) == SelectedCategory.Icon).ToList();
         }
 
         filteredList = SelectedSortOption switch
@@ -358,10 +359,10 @@ public partial class MainViewModel : ObservableObject
         _fullyFilteredTransactions = filteredList;
         FilteredTransactions = new ObservableCollection<Transaction>(_fullyFilteredTransactions.Take(20));
 
-        var incomeInUah = filteredList.Where(t => t.TransactionType?.Icon == "📥").Sum(t => t.GetAmountInUah(_currentRates));
-        var expenseInUah = filteredList.Where(t => t.TransactionType?.Icon == "📤").Sum(t => t.GetAmountInUah(_currentRates));
-        var savingsInUah = filteredList.Where(t => t.TransactionType?.Icon == "🐷").Sum(t => t.GetAmountInUah(_currentRates));
-        var othersInUah = filteredList.Where(t => t.TransactionType?.Icon == "🔄").Sum(t => t.GetAmountInUah(_currentRates));
+        var incomeInUah = filteredList.Where(t => t.TransactionType?.Icon == StaticData.IncomeIcon).Sum(t => t.GetAmountInUah(_currentRates));
+        var expenseInUah = filteredList.Where(t => t.TransactionType?.Icon == StaticData.ExpenseIcon).Sum(t => t.GetAmountInUah(_currentRates));
+        var savingsInUah = filteredList.Where(t => t.TransactionType?.Icon == StaticData.SavingsIcon).Sum(t => t.GetAmountInUah(_currentRates));
+        var othersInUah = filteredList.Where(t => t.TransactionType?.Icon == StaticData.OtherTypeIcon).Sum(t => t.GetAmountInUah(_currentRates));
 
         double targetRate = _currentRates.TryGetValue(DisplayCurrency, out double r) ? r : 1.0;
 
