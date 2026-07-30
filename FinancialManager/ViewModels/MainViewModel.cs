@@ -16,11 +16,10 @@ public partial class MainViewModel : ObservableObject
     private readonly ITransactionRepository _transactionRepository;
     private readonly ICategoryRepository _categoryRepository;
     private readonly ITransactionTypeRepository _typeRepository;
-    private readonly ILocalizationRepository _localizationRepository;
-    private readonly ILocalizationService _localizationService;
     private readonly ICurrencyService _currencyService;
     private readonly IFeatureRepository _featureRepository;
     private readonly IExportService _exportService;
+    private readonly ILocalizationApplier _localizationApplier;
 
     [ObservableProperty] private string currentBalance = StaticData.BalancePlaceholderUah;
     [ObservableProperty] private string totalIncome = StaticData.BalancePlaceholderUah;
@@ -75,20 +74,18 @@ public partial class MainViewModel : ObservableObject
         ITransactionRepository transactionRepository,
         ICategoryRepository categoryRepository,
         ITransactionTypeRepository typeRepository,
-        ILocalizationRepository localizationRepository,
-        ILocalizationService localizationService,
         ICurrencyService currencyService,
         IFeatureRepository featureRepository,
-        IExportService exportService)
+        IExportService exportService,
+        ILocalizationApplier localizationApplier)
     {
         _transactionRepository = transactionRepository;
         _categoryRepository = categoryRepository;
         _typeRepository = typeRepository;
-        _localizationRepository = localizationRepository;
-        _localizationService = localizationService;
         _currencyService = currencyService;
         _featureRepository = featureRepository;
         _exportService = exportService;
+        _localizationApplier = localizationApplier;
 
         SelectedSortOption = SortOptions[0];
         UpdateMonthState();
@@ -98,58 +95,21 @@ public partial class MainViewModel : ObservableObject
     {
         var types = await _typeRepository.GetAsync();
         var cats = await _categoryRepository.GetAsync();
-        var locs = await _localizationRepository.GetAsync();
 
         IsExportFeatureEnabled = await _featureRepository.IsFeatureEnabledAsync("ExportData");
 
-        try
-        {
-            _currentRates = await _currencyService.GetLatestRatesAsync();
-            IsCurrencySelectionEnabled = _currentRates != null && _currentRates.Count > 1;
-        }
-        catch (Exception)
-        {
-            _currentRates = new Dictionary<string, double> { { StaticData.UahCurrency, 1.0 } };
-            IsCurrencySelectionEnabled = false;
-        }
+        _currentRates = await _currencyService.GetLatestRatesAsync();
+        IsCurrencySelectionEnabled = _currentRates != null && _currentRates.Count > 1;
 
-        string currentLang = _localizationService.CurrentLanguage;
-
-        foreach (var type in types)
-        {
-            var loc = locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == currentLang)
-                      ?? locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == StaticData.EnCode);
-            type.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
-        }
-
-        foreach (var cat in cats)
-        {
-            var loc = locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == currentLang)
-                      ?? locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == StaticData.EnCode);
-            cat.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
-        }
+        var resolver = await _localizationApplier.CreateResolverAsync();
+        resolver.Apply(types, Resources.Strings.NoName);
+        resolver.Apply(cats, Resources.Strings.NoName);
 
         TransactionTypes = new ObservableCollection<TransactionType>(types);
         Categories = new ObservableCollection<Category>(cats);
 
         _allTransactions = await _transactionRepository.GetTransactionsWithDetailsAsync();
-
-        foreach (var t in _allTransactions)
-        {
-            if (t.Category != null)
-            {
-                var loc = locs.FirstOrDefault(l => l.ParentId == t.Category.Id && l.LanguageCode == currentLang)
-                          ?? locs.FirstOrDefault(l => l.ParentId == t.Category.Id && l.LanguageCode == StaticData.EnCode);
-                t.Category.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
-            }
-
-            if (t.TransactionType != null)
-            {
-                var loc = locs.FirstOrDefault(l => l.ParentId == t.TransactionType.Id && l.LanguageCode == currentLang)
-                          ?? locs.FirstOrDefault(l => l.ParentId == t.TransactionType.Id && l.LanguageCode == StaticData.EnCode);
-                t.TransactionType.LocalizedName = loc?.Value ?? Resources.Strings.NoType;
-            }
-        }
+        resolver.ApplyToTransactions(_allTransactions, Resources.Strings.NoName, Resources.Strings.NoType);
 
         ApplyFilters();
     }

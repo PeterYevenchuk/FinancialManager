@@ -3,7 +3,7 @@ using SQLite;
 
 namespace FinancialManager.Models;
 
-public partial class Category : ObservableObject
+public partial class Category : ObservableObject, ILocalizable
 {
     public Category()
     {

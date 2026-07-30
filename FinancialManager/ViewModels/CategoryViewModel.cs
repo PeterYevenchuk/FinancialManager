@@ -14,19 +14,19 @@ public partial class CategoryViewModel : ObservableObject
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly ILocalizationRepository _localizationRepository;
-    private readonly ILocalizationService _localizationService;
+    private readonly ILocalizationApplier _localizationApplier;
 
     [ObservableProperty] private ObservableCollection<Category> categories = new();
     [ObservableProperty] private Category? selectedCategory;
 
     public Command LoadCategoriesCommand { get; }
 
-    public CategoryViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository, ILocalizationService localizationService)
+    public CategoryViewModel(ICategoryRepository categoryRepository, ILocalizationRepository localizationRepository, ILocalizationApplier localizationApplier)
     {
         _categoryRepository = categoryRepository;
         LoadCategoriesCommand = new Command(async () => await LoadCategories());
         _localizationRepository = localizationRepository;
-        _localizationService = localizationService;
+        _localizationApplier = localizationApplier;
 
         WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, async (r, m) =>
         {
@@ -40,21 +40,9 @@ public partial class CategoryViewModel : ObservableObject
     public async Task RefreshCategories()
     {
         var allCategories = await _categoryRepository.GetAsync();
-        var allLocalizations = await _localizationRepository.GetAsync();
 
-        string currentLang = _localizationService.CurrentLanguage;
-
-        foreach (var cat in allCategories)
-        {
-            var loc = allLocalizations.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == currentLang);
-
-            if (loc == null)
-            {
-                loc = allLocalizations.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == StaticData.EnCode);
-            }
-
-            cat.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
-        }
+        var resolver = await _localizationApplier.CreateResolverAsync();
+        resolver.Apply(allCategories, Resources.Strings.NoName);
 
         Categories = new ObservableCollection<Category>(allCategories);
     }

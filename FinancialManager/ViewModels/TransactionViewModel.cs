@@ -15,8 +15,7 @@ public partial class TransactionViewModel : ObservableObject
     private readonly ITransactionRepository _transactionRepository;
     private readonly ICategoryRepository _categoryRepository;
     private readonly ITransactionTypeRepository _typeRepository;
-    private readonly ILocalizationRepository _localizationRepository;
-    private readonly ILocalizationService _localizationService;
+    private readonly ILocalizationApplier _localizationApplier;
 
     private List<Transaction> _allLoadedTransactions = new();
 
@@ -33,14 +32,12 @@ public partial class TransactionViewModel : ObservableObject
         ITransactionRepository transactionRepository,
         ICategoryRepository categoryRepository,
         ITransactionTypeRepository typeRepository,
-        ILocalizationRepository localizationRepository,
-        ILocalizationService localizationService)
+        ILocalizationApplier localizationApplier)
     {
         _transactionRepository = transactionRepository;
         _categoryRepository = categoryRepository;
         _typeRepository = typeRepository;
-        _localizationRepository = localizationRepository;
-        _localizationService = localizationService;
+        _localizationApplier = localizationApplier;
 
         var now = DateTime.Now;
         DateFrom = new DateTime(now.Year, now.Month, 1);
@@ -65,25 +62,8 @@ public partial class TransactionViewModel : ObservableObject
     {
         _allLoadedTransactions = await _transactionRepository.GetTransactionsWithDetailsAsync();
 
-        var locs = await _localizationRepository.GetAsync();
-        string currentLang = _localizationService.CurrentLanguage;
-
-        foreach (var t in _allLoadedTransactions)
-        {
-            if (t.Category != null)
-            {
-                var loc = locs.FirstOrDefault(l => l.ParentId == t.Category.Id && l.LanguageCode == currentLang)
-                          ?? locs.FirstOrDefault(l => l.ParentId == t.Category.Id && l.LanguageCode == StaticData.EnCode);
-                t.Category.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
-            }
-
-            if (t.TransactionType != null)
-            {
-                var loc = locs.FirstOrDefault(l => l.ParentId == t.TransactionType.Id && l.LanguageCode == currentLang)
-                          ?? locs.FirstOrDefault(l => l.ParentId == t.TransactionType.Id && l.LanguageCode == StaticData.EnCode);
-                t.TransactionType.LocalizedName = loc?.Value ?? Resources.Strings.NoType;
-            }
-        }
+        var resolver = await _localizationApplier.CreateResolverAsync();
+        resolver.ApplyToTransactions(_allLoadedTransactions, Resources.Strings.NoName, Resources.Strings.NoType);
 
         ApplyFilters();
     }
@@ -148,23 +128,10 @@ public partial class TransactionViewModel : ObservableObject
     {
         var cats = await _categoryRepository.GetAsync();
         var types = await _typeRepository.GetAsync();
-        var locs = await _localizationRepository.GetAsync();
 
-        string currentLang = _localizationService.CurrentLanguage;
-
-        foreach (var cat in cats)
-        {
-            var loc = locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == currentLang)
-                      ?? locs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == StaticData.EnCode);
-            cat.LocalizedName = loc?.Value ?? "No Name";
-        }
-
-        foreach (var type in types)
-        {
-            var loc = locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == currentLang)
-                      ?? locs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == StaticData.EnCode);
-            type.LocalizedName = loc?.Value ?? "No Name";
-        }
+        var resolver = await _localizationApplier.CreateResolverAsync();
+        resolver.Apply(cats, Resources.Strings.NoName);
+        resolver.Apply(types, Resources.Strings.NoName);
 
         Categories = new ObservableCollection<Category>(cats);
         TransactionTypes = new ObservableCollection<TransactionType>(types);

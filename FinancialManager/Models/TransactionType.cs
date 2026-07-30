@@ -3,7 +3,7 @@ using SQLite;
 
 namespace FinancialManager.Models;
 
-public partial class TransactionType : ObservableObject
+public partial class TransactionType : ObservableObject, ILocalizable
 {
     public TransactionType()
     {

@@ -38,6 +38,7 @@ namespace FinancialManager
 
             builder.Services.AddSingleton<ILocalizationService, LocalizationService>();
             builder.Services.AddSingleton<ILocalizationManager, LocalizationManager>();
+            builder.Services.AddSingleton<ILocalizationApplier, LocalizationApplier>();
             builder.Services.AddSingleton<ICurrencyService, CurrencyService>();
             builder.Services.AddSingleton<IExportService, ExportService>();
             builder.Services.AddSingleton<JsonBackupService>();

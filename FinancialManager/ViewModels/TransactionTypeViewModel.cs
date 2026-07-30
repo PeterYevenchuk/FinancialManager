@@ -14,18 +14,18 @@ public partial class TransactionTypeViewModel : ObservableObject
 {
     private readonly ITransactionTypeRepository _transactionTypeRepository;
     private readonly ILocalizationRepository _localizationRepository;
-    private readonly ILocalizationService _localizationService;
+    private readonly ILocalizationApplier _localizationApplier;
 
     [ObservableProperty] private ObservableCollection<TransactionType> transactionTypes = new();
     [ObservableProperty] private TransactionType? selectedType;
 
     public Command LoadTransactionTypesCommand { get; }
 
-    public TransactionTypeViewModel(ITransactionTypeRepository transactionTypeRepository, ILocalizationRepository localizationRepository, ILocalizationService localizationService)
+    public TransactionTypeViewModel(ITransactionTypeRepository transactionTypeRepository, ILocalizationRepository localizationRepository, ILocalizationApplier localizationApplier)
     {
         _localizationRepository = localizationRepository;
         _transactionTypeRepository = transactionTypeRepository;
-        _localizationService = localizationService;
+        _localizationApplier = localizationApplier;
         LoadTransactionTypesCommand = new Command(async () => await LoadTransactionTypes());
 
         WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, async (r, m) =>
@@ -40,21 +40,9 @@ public partial class TransactionTypeViewModel : ObservableObject
     public async Task RefreshTransactionTypes()
     {
         var allTransactionTypes = await _transactionTypeRepository.GetAsync();
-        var allLocalizations = await _localizationRepository.GetAsync();
 
-        string currentLang = _localizationService.CurrentLanguage;
-
-        foreach (var type in allTransactionTypes)
-        {
-            var loc = allLocalizations.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == currentLang);
-
-            if (loc == null)
-            {
-                loc = allLocalizations.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == StaticData.EnCode);
-            }
-
-            type.LocalizedName = loc?.Value ?? Resources.Strings.NoName;
-        }
+        var resolver = await _localizationApplier.CreateResolverAsync();
+        resolver.Apply(allTransactionTypes, Resources.Strings.NoName);
 
         TransactionTypes = new ObservableCollection<TransactionType>(allTransactionTypes);
     }

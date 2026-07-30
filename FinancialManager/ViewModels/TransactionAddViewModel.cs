@@ -16,8 +16,7 @@ public partial class TransactionAddViewModel : ObservableObject
     private readonly ITransactionRepository _transactionRepository;
     private readonly ICategoryRepository _categoryRepository;
     private readonly ITransactionTypeRepository _typeRepository;
-    private readonly ILocalizationRepository _localizationRepository;
-    private readonly ILocalizationService _localizationService;
+    private readonly ILocalizationApplier _localizationApplier;
     private readonly ICurrencyService _currencyService;
 
     [ObservableProperty] private double amount;
@@ -38,15 +37,13 @@ public partial class TransactionAddViewModel : ObservableObject
         ITransactionRepository transactionRepository,
         ICategoryRepository categoryRepository,
         ITransactionTypeRepository typeRepository,
-        ILocalizationRepository localizationRepository,
-        ILocalizationService localizationService,
+        ILocalizationApplier localizationApplier,
         ICurrencyService currencyService)
     {
         _transactionRepository = transactionRepository;
         _categoryRepository = categoryRepository;
         _typeRepository = typeRepository;
-        _localizationRepository = localizationRepository;
-        _localizationService = localizationService;
+        _localizationApplier = localizationApplier;
         _currencyService = currencyService;
 
         WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, async (r, m) =>
@@ -111,23 +108,10 @@ public partial class TransactionAddViewModel : ObservableObject
     {
         var allCats = await _categoryRepository.GetAsync();
         var allTypes = await _typeRepository.GetAsync();
-        var allLocs = await _localizationRepository.GetAsync();
 
-        string currentLang = _localizationService.CurrentLanguage;
-
-        foreach (var cat in allCats)
-        {
-            var loc = allLocs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == currentLang)
-                      ?? allLocs.FirstOrDefault(l => l.ParentId == cat.Id && l.LanguageCode == StaticData.EnCode);
-            cat.LocalizedName = loc?.Value ?? "No Name";
-        }
-
-        foreach (var type in allTypes)
-        {
-            var loc = allLocs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == currentLang)
-                      ?? allLocs.FirstOrDefault(l => l.ParentId == type.Id && l.LanguageCode == StaticData.EnCode);
-            type.LocalizedName = loc?.Value ?? "No Name";
-        }
+        var resolver = await _localizationApplier.CreateResolverAsync();
+        resolver.Apply(allCats, Resources.Strings.NoName);
+        resolver.Apply(allTypes, Resources.Strings.NoName);
 
         var currentSelectedCatId = SelectedCategory?.Id;
         var currentSelectedTypeId = SelectedType?.Id;
