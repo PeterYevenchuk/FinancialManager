@@ -96,6 +96,8 @@ public class DatabaseInitializer
         foreach (var feat in defaultFeatures)
         {
             var existing = await _connection.Table<Feature>().FirstOrDefaultAsync(f => f.Key == feat.Key);
+
+            Guid featureId;
             if (existing == null)
             {
                 var newFeature = new Feature
@@ -104,18 +106,27 @@ public class DatabaseInitializer
                     IsEnabled = false
                 };
                 await _connection.InsertAsync(newFeature);
+                featureId = newFeature.Id;
+            }
+            else
+            {
+                featureId = existing.Id;
+            }
 
-                var locUk = new Localization { ParentId = newFeature.Id, LanguageCode = "uk", Value = feat.UkName };
-                var locEn = new Localization { ParentId = newFeature.Id, LanguageCode = "en", Value = feat.EnName };
+            // Seed the feature's localizations if they are missing. This runs even when the
+            // feature row already exists, so features created before localization seeding
+            // (which otherwise show their raw Key) self-heal on the next launch.
+            // Order matters: name first, description second (FeatureRepository reads them positionally).
+            var hasLocalizations = await _connection.Table<Localization>()
+                .Where(l => l.ParentId == featureId)
+                .CountAsync() > 0;
 
-                await _connection.InsertAsync(locUk);
-                await _connection.InsertAsync(locEn);
-
-                var locDescUk = new Localization { ParentId = newFeature.Id, LanguageCode = "uk", Value = feat.UkDesc };
-                var locDescEn = new Localization { ParentId = newFeature.Id, LanguageCode = "en", Value = feat.EnDesc };
-
-                await _connection.InsertAsync(locDescUk);
-                await _connection.InsertAsync(locDescEn);
+            if (!hasLocalizations)
+            {
+                await _connection.InsertAsync(new Localization { ParentId = featureId, LanguageCode = "uk", Value = feat.UkName });
+                await _connection.InsertAsync(new Localization { ParentId = featureId, LanguageCode = "en", Value = feat.EnName });
+                await _connection.InsertAsync(new Localization { ParentId = featureId, LanguageCode = "uk", Value = feat.UkDesc });
+                await _connection.InsertAsync(new Localization { ParentId = featureId, LanguageCode = "en", Value = feat.EnDesc });
             }
         }
     }

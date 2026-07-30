@@ -46,6 +46,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool hasChartData;
     [ObservableProperty] private bool isExportFeatureEnabled;
 
+    private const int PageSize = 20;
+
     private List<Transaction> _allTransactions = new();
     private Dictionary<string, double> _currentRates = new() { { StaticData.UahCurrency, 1.0 } };
     private List<Transaction> _fullyFilteredTransactions = new();
@@ -357,7 +359,7 @@ public partial class MainViewModel : ObservableObject
         };
 
         _fullyFilteredTransactions = filteredList;
-        FilteredTransactions = new ObservableCollection<Transaction>(_fullyFilteredTransactions.Take(20));
+        SyncFilteredWindow();
 
         var incomeInUah = filteredList.Where(t => t.TransactionType?.Icon == StaticData.IncomeIcon).Sum(t => t.GetAmountInUah(_currentRates));
         var expenseInUah = filteredList.Where(t => t.TransactionType?.Icon == StaticData.ExpenseIcon).Sum(t => t.GetAmountInUah(_currentRates));
@@ -381,6 +383,35 @@ public partial class MainViewModel : ObservableObject
         UpdateChartData(filteredList);
     }
 
+    // Update the visible window in place instead of replacing the ObservableCollection.
+    // Reassigning it rebinds the CollectionView's ItemsSource, which resets the scroll
+    // position to the top (the jump seen when selecting a chart category). Applying
+    // incremental Replace/Remove/Add changes lets ItemsUpdatingScrollMode keep the offset.
+    private void SyncFilteredWindow()
+    {
+        var window = _fullyFilteredTransactions.Take(PageSize).ToList();
+
+        while (FilteredTransactions.Count > window.Count)
+        {
+            FilteredTransactions.RemoveAt(FilteredTransactions.Count - 1);
+        }
+
+        for (int i = 0; i < window.Count; i++)
+        {
+            if (i < FilteredTransactions.Count)
+            {
+                if (!ReferenceEquals(FilteredTransactions[i], window[i]))
+                {
+                    FilteredTransactions[i] = window[i];
+                }
+            }
+            else
+            {
+                FilteredTransactions.Add(window[i]);
+            }
+        }
+    }
+
     [RelayCommand]
     private async Task AddTransaction() => await Shell.Current.GoToAsync("TransactionAddPage");
 
@@ -398,7 +429,7 @@ public partial class MainViewModel : ObservableObject
 
         var nextItems = _fullyFilteredTransactions
             .Skip(currentlyLoaded)
-            .Take(20);
+            .Take(PageSize);
 
         foreach (var item in nextItems)
         {

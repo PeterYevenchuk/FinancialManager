@@ -48,8 +48,8 @@
                         Padding="0"/>
                 </Grid>
 
-                <Grid ColumnDefinitions="*, *" ColumnSpacing="10" VerticalOptions="Center">
-                    <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
+                <Grid ColumnDefinitions="*, *, Auto" ColumnSpacing="8" VerticalOptions="Center">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center" HorizontalOptions="Center">
                         <Label Text="{DynamicResource FromLabel}" FontSize="14" TextColor="{StaticResource SubtleText}" VerticalOptions="Center"/>
                         <DatePicker Date="{Binding DateFrom}"
                                     MaximumDate="{Binding DateTo}"
@@ -58,7 +58,7 @@
                                     VerticalOptions="Center"/>
                     </HorizontalStackLayout>
 
-                    <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
+                    <HorizontalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center" HorizontalOptions="Center">
                         <Label Text="{DynamicResource ToLabel}" FontSize="14" TextColor="{StaticResource SubtleText}" VerticalOptions="Center"/>
                         <DatePicker Date="{Binding DateTo}"
                                     MinimumDate="{Binding DateFrom}"
@@ -66,10 +66,21 @@
                                     TextColor="{StaticResource TextPrimary}"
                                     VerticalOptions="Center"/>
                     </HorizontalStackLayout>
-                </Grid>
 
-                <Button Text="{DynamicResource ClearFilters}" Command="{Binding ClearFiltersCommand}"
-                        BackgroundColor="Transparent" TextColor="{StaticResource Accent}" Padding="0" MinimumHeightRequest="0" HeightRequest="34"/>
+                    <Button Grid.Column="2"
+                            Text="{DynamicResource Reset}"
+                            FontSize="12"
+                            Command="{Binding ClearFiltersCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Accent}"
+                            BorderColor="{StaticResource Accent}"
+                            BorderWidth="1"
+                            CornerRadius="8"
+                            Padding="14,4"
+                            MinimumHeightRequest="0"
+                            HeightRequest="34"
+                            VerticalOptions="Center"/>
+                </Grid>
             </VerticalStackLayout>
         </Border>
 
