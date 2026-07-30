@@ -13,22 +13,25 @@
 
 | Version | Download Link | Status | Description |
 | :--- | :--- | :--- | :--- |
+| **v2.1** | [Download v2.1 APK](https://github.com/PeterYevenchuk/FinancialManager/releases/download/v2.1/financialmanager-v2.1.apk) | ✅ **Supported** | Current stable release with full .NET 10 optimization, new UI and UX and bug fixes. |
 | **v2.0** | [Download v2.0 APK](https://github.com/PeterYevenchuk/FinancialManager/releases/download/v2.0/financialmanager-v2.apk) | ✅ **Supported** | Current stable release with full .NET 10 optimization, new features and bug fixes. |
 | **v1.0** | [Download v1.0 APK](https://github.com/PeterYevenchuk/FinancialManager/releases/download/v1.0/financialmanager-v1.apk) | ❌ **Deprecated** | Legacy release. No longer receives updates or bug fixes. |
 
 ---
 
 ## 📸 Screenshots
-
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b507cde7-ab6d-479f-a05c-d347476c8d7d" width="31%" alt="Screenshot_20260611_190127" />
-  <img src="https://github.com/user-attachments/assets/757bb9ce-bf7f-4fa5-8037-7b9395df82b8" width="31%" alt="Screenshot_20260611_190213" />
+  <img alt="photo_8_2026-07-30_19-09-57" src="https://github.com/user-attachments/assets/c2dedde8-0c13-4d25-8076-191e120a8e4f" width="40%" />
+  <img alt="photo_5_2026-07-30_19-09-57" src="https://github.com/user-attachments/assets/7ebb640c-6456-4ac7-bbac-365576dc9ebf" width="40%" />
   <br />
-  <img src="https://github.com/user-attachments/assets/6f863385-9727-4b6a-af35-3411f00bd009" width="31%" alt="Screenshot_20260611_190136" />
-  <img src="https://github.com/user-attachments/assets/410a71a8-5e53-4f2a-bc07-4dc18e113ed6" width="31%" alt="Screenshot_20260611_190146" />
+  <img alt="photo_3_2026-07-30_19-09-57" src="https://github.com/user-attachments/assets/7d915400-78d0-4fa8-ace5-3b3e1dc02cd7" width="40%" />
+  <img alt="photo_6_2026-07-30_19-09-57" src="https://github.com/user-attachments/assets/f311fd3d-928e-49a2-a695-d0e9223e3f73" width="40%" />
   <br />
-  <img src="https://github.com/user-attachments/assets/80a0ee9a-92fa-4fd5-a89c-acf765386e2f" width="31%" alt="Screenshot_20260611_190153" />
-  <img src="https://github.com/user-attachments/assets/b0cd60b6-da6f-438e-ae66-7347e480e0cc" width="31%" alt="Screenshot_20260611_190204" />
+  <img alt="photo_2_2026-07-30_19-09-57" src="https://github.com/user-attachments/assets/ae491799-652b-4144-88dc-21901247db2f" width="40%" />
+  <img alt="photo_7_2026-07-30_19-09-57" src="https://github.com/user-attachments/assets/cef0a027-124f-4c0d-9b19-72980cf31a38" width="40%" />
+  <br />
+  <img alt="photo_4_2026-07-30_19-09-57" src="https://github.com/user-attachments/assets/1fbcbb00-5c41-4a67-99ef-9443b148bf47" width="40%" />
+  <img alt="photo_1_2026-07-30_19-09-57" src="https://github.com/user-attachments/assets/7f70ef5a-6b6d-4b51-a91d-269e3e60329b" width="40%" />
 </p>
 
 ---
