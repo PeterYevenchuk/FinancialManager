@@ -32,10 +32,9 @@
                         Padding="14,0"
                         HorizontalOptions="End" />
 
-                    <Border BackgroundColor="{StaticResource Primary}" StrokeShape="RoundRectangle 16" Padding="15">
+                    <Border BackgroundColor="{StaticResource Primary}" StrokeShape="RoundRectangle 16" StrokeThickness="0" Padding="15">
                         <Border.GestureRecognizers>
-                            <SwipeGestureRecognizer Direction="Left" Command="{Binding NextMonthCommand}" />
-                            <SwipeGestureRecognizer Direction="Right" Command="{Binding PreviousMonthCommand}" />
+                            <PanGestureRecognizer PanUpdated="OnDashboardPanUpdated" />
                         </Border.GestureRecognizers>
 
                         <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
@@ -82,9 +81,19 @@
                                 </Button>
                             </Grid>
 
-                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" Margin="0,0,0,5">
+                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="8" Margin="0,0,0,5">
                                 <Label Text="{DynamicResource ReportCurrencyLabel}" TextColor="#D1E4FF" FontSize="12" VerticalOptions="Center"/>
-                                <Picker ItemsSource="{Binding AvailableDisplayCurrencies}" SelectedItem="{Binding DisplayCurrency}" IsEnabled="{Binding IsCurrencySelectionEnabled}" TextColor="White" TitleColor="White" FontSize="12" HeightRequest="30" VerticalOptions="Center"/>
+                                <Border BackgroundColor="#33FFFFFF" Stroke="#55FFFFFF" StrokeThickness="1" StrokeShape="RoundRectangle 8" Padding="10,0" VerticalOptions="Center">
+                                    <Picker ItemsSource="{Binding AvailableDisplayCurrencies}"
+                                            SelectedItem="{Binding DisplayCurrency}"
+                                            IsEnabled="{Binding IsCurrencySelectionEnabled}"
+                                            TextColor="White"
+                                            TitleColor="White"
+                                            FontSize="13"
+                                            HeightRequest="34"
+                                            WidthRequest="70"
+                                            VerticalOptions="Center"/>
+                                </Border>
                             </HorizontalStackLayout>
 
                             <Label Text="{DynamicResource TotalBalanceLabel}" TextColor="#D1E4FF" FontSize="13" HorizontalOptions="Center"/>
@@ -125,7 +134,19 @@
                     <VerticalStackLayout Spacing="10">
                         <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                             <Label Grid.Column="0" Text="{DynamicResource TransactionTypeHeader}" FontAttributes="Bold" FontSize="14" TextColor="White" VerticalOptions="Center"/>
-                            <Button Grid.Column="1" Text="{DynamicResource Reset}" FontSize="12" Command="{Binding ClearFiltersCommand}" BackgroundColor="Transparent" TextColor="#2196F3" Padding="0" HeightRequest="30"/>
+                            <Button Grid.Column="1"
+                                    Text="{DynamicResource Reset}"
+                                    FontSize="12"
+                                    Command="{Binding ClearFiltersCommand}"
+                                    BackgroundColor="Transparent"
+                                    TextColor="{StaticResource Accent}"
+                                    BorderColor="{StaticResource Accent}"
+                                    BorderWidth="1"
+                                    CornerRadius="8"
+                                    Padding="16,4"
+                                    MinimumHeightRequest="0"
+                                    HeightRequest="34"
+                                    VerticalOptions="Center"/>
                         </Grid>
 
                         <FlexLayout BindableLayout.ItemsSource="{Binding TransactionTypes}" Wrap="Wrap" Direction="Row" JustifyContent="Start" AlignItems="Center" AlignContent="Start">
@@ -216,8 +237,9 @@
                             Margin="0,5,0,0">
                         <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
 
-                            <HorizontalStackLayout BindingContext="{Binding SelectedCategory}" 
-                                                   Spacing="8" 
+                            <HorizontalStackLayout BindingContext="{Binding SelectedCategory}"
+                                                   x:DataType="models:ChartLegendItem"
+                                                   Spacing="8"
                                                    VerticalOptions="Center">
 
                                 <Label Text="{Binding Icon}" VerticalOptions="Center" />
@@ -246,16 +268,23 @@
                                TextColor="White" 
                                VerticalOptions="Center"/>
 
-                        <Picker Grid.Column="1" 
-                                ItemsSource="{Binding SortOptions}" 
-                                SelectedItem="{Binding SelectedSortOption}" 
-                                TextColor="#2196F3" 
-                                TitleColor="#777" 
-                                FontSize="13" 
-                                HeightRequest="35"
-                                WidthRequest="170"
+                        <Border Grid.Column="1"
+                                BackgroundColor="{StaticResource FieldBackground}"
+                                Stroke="{StaticResource CardStroke}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 8"
+                                Padding="12,0"
                                 HorizontalOptions="End"
-                                VerticalOptions="Center"/>
+                                VerticalOptions="Center">
+                            <Picker ItemsSource="{Binding SortOptions}"
+                                    SelectedItem="{Binding SelectedSortOption}"
+                                    TextColor="{StaticResource Accent}"
+                                    TitleColor="{StaticResource MutedText}"
+                                    FontSize="13"
+                                    HeightRequest="38"
+                                    WidthRequest="180"
+                                    VerticalOptions="Center"/>
+                        </Border>
                     </Grid>
 
                 </VerticalStackLayout>

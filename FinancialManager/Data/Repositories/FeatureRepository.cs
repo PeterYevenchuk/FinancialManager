@@ -1,4 +1,5 @@
 ﻿using FinancialManager.Data.Contracts;
+using FinancialManager.Helpers;
 using FinancialManager.Models;
 using FinancialManager.Services.Contracts;
 using SQLite;
@@ -29,16 +30,28 @@ public class FeatureRepository : IFeatureRepository
 
         foreach (var feature in features)
         {
-            var nameLoc = localizations.FirstOrDefault(l => l.ParentId == feature.Id && l.LanguageCode == currentLang)
-                       ?? localizations.FirstOrDefault(l => l.ParentId == feature.Id && l.LanguageCode == "en");
-            feature.LocalizedName = nameLoc?.Value ?? feature.Key;
+            // A feature stores two localization rows per language under the same ParentId,
+            // in seeding order: [0] = name, [1] = description. Resolving both from a single
+            // FirstOrDefault returned the name twice, so the description showed the name.
+            var localized = GetFeatureTexts(localizations, feature.Id, currentLang);
+            if (localized.Count < 2)
+            {
+                localized = GetFeatureTexts(localizations, feature.Id, StaticData.EnCode);
+            }
 
-            var descLoc = localizations.FirstOrDefault(l => l.ParentId == feature.Id && l.LanguageCode == currentLang)
-                       ?? localizations.FirstOrDefault(l => l.ParentId == feature.Id && l.LanguageCode == "en");
-            feature.LocalizedDescription = descLoc?.Value ?? string.Empty;
+            feature.LocalizedName = localized.ElementAtOrDefault(0) ?? feature.Key;
+            feature.LocalizedDescription = localized.ElementAtOrDefault(1) ?? string.Empty;
         }
 
         return features;
+    }
+
+    private static List<string> GetFeatureTexts(List<Localization> localizations, Guid featureId, string languageCode)
+    {
+        return localizations
+            .Where(l => l.ParentId == featureId && l.LanguageCode == languageCode)
+            .Select(l => l.Value)
+            .ToList();
     }
 
     public async Task<bool> IsFeatureEnabledAsync(string featureKey)

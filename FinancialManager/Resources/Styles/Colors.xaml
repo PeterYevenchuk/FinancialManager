@@ -27,6 +27,18 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
+    <!-- Semantic dark-theme palette used across the app screens -->
+    <Color x:Key="AppBackground">#121212</Color>
+    <Color x:Key="CardBackground">#1a1a1a</Color>
+    <Color x:Key="CardBackgroundAlt">#252525</Color>
+    <Color x:Key="CardStroke">#333333</Color>
+    <Color x:Key="FieldBackground">#1e1e24</Color>
+    <Color x:Key="Accent">#2196F3</Color>
+    <Color x:Key="AccentGreen">#28a745</Color>
+    <Color x:Key="Danger">#ff4d4d</Color>
+    <Color x:Key="MutedText">#888888</Color>
+    <Color x:Key="SubtleText">#aaaaaa</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>

@@ -16,6 +16,33 @@
     Shell.TitleColor="White"
     Shell.UnselectedColor="#aaaaaa">
 
+    <Shell.ItemTemplate>
+        <DataTemplate x:DataType="BaseShellItem">
+            <Grid HeightRequest="52" Padding="20,0" ColumnDefinitions="*">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="Transparent" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{StaticResource FieldBackground}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+
+                <Label Text="{Binding Title}"
+                       TextColor="White"
+                       FontSize="15"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Start" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
     <FlyoutItem Title="{DynamicResource HomeTitle}">
         <ShellContent ContentTemplate="{DataTemplate views:MainPage}" />
     </FlyoutItem>
