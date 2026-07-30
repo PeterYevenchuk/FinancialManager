@@ -16,7 +16,9 @@
     <Color x:Key="Black">Black</Color>
     <Color x:Key="Magenta">#D600AA</Color>
     <Color x:Key="MidnightBlue">#190649</Color>
-    <Color x:Key="OffBlack">#1f1f1f</Color>
+    <!-- Base dark surface retuned to the soft pastel background so the shared
+         Page/Shell styles (which bind to OffBlack in dark mode) match the theme. -->
+    <Color x:Key="OffBlack">#1B1B27</Color>
 
     <Color x:Key="Gray100">#E1E1E1</Color>
     <Color x:Key="Gray200">#C8C8C8</Color>
@@ -27,17 +29,36 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
-    <!-- Semantic dark-theme palette used across the app screens -->
-    <Color x:Key="AppBackground">#121212</Color>
-    <Color x:Key="CardBackground">#1a1a1a</Color>
-    <Color x:Key="CardBackgroundAlt">#252525</Color>
-    <Color x:Key="CardStroke">#333333</Color>
-    <Color x:Key="FieldBackground">#1e1e24</Color>
-    <Color x:Key="Accent">#2196F3</Color>
-    <Color x:Key="AccentGreen">#28a745</Color>
-    <Color x:Key="Danger">#ff4d4d</Color>
-    <Color x:Key="MutedText">#888888</Color>
-    <Color x:Key="SubtleText">#aaaaaa</Color>
+    <!-- ===== Soft dark pastel palette (lavender + mint) ===== -->
+
+    <!-- Surfaces -->
+    <Color x:Key="AppBackground">#1B1B27</Color>
+    <Color x:Key="CardBackground">#262636</Color>
+    <Color x:Key="CardBackgroundAlt">#30303F</Color>
+    <Color x:Key="FieldBackground">#2C2C3B</Color>
+    <Color x:Key="CardStroke">#3A3A4D</Color>
+
+    <!-- Accents -->
+    <Color x:Key="Accent">#A895F2</Color>          <!-- lavender: primary accent / selection -->
+    <Color x:Key="AccentSoft">#C6BAF6</Color>       <!-- lighter lavender for text on dark -->
+    <Color x:Key="AccentGreen">#86E0B8</Color>      <!-- mint: positive / income / CTA -->
+    <Color x:Key="AccentBlue">#9BC4F0</Color>       <!-- sky: secondary / info -->
+    <Color x:Key="AccentPeach">#F4C89A</Color>      <!-- peach: savings -->
+    <Color x:Key="Danger">#F2A0A0</Color>          <!-- coral: expense / delete -->
+
+    <!-- Text -->
+    <Color x:Key="TextPrimary">#ECEAF6</Color>
+    <Color x:Key="SubtleText">#C2C0D4</Color>
+    <Color x:Key="MutedText">#9E9CB4</Color>
+
+    <!-- On-accent text (dark, for readable labels on pastel buttons) -->
+    <Color x:Key="OnAccentText">#20202E</Color>
+
+    <!-- Hero card gradient (soft lavender) -->
+    <LinearGradientBrush x:Key="HeroGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#6F5FD0" Offset="0.0" />
+        <GradientStop Color="#9C8CEC" Offset="1.0" />
+    </LinearGradientBrush>
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>

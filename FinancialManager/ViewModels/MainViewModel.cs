@@ -188,19 +188,19 @@ public partial class MainViewModel : ObservableObject
                 var icon = group.Key;
                 var colorHex = icon switch
                 {
-                    "🛒" => "#2196F3",
-                    "🚗" => "#FF9800",
-                    "💡" => "#FFEB3B",
-                    "💰" => "#4CAF50",
-                    "🍔" => "#F44336",
-                    "💊" => "#E91E63",
-                    "🎬" => "#9C27B0",
-                    "🛍️" => "#00BCD4",
-                    "🏠" => "#795548",
-                    "✈️" => "#03A9F4",
-                    "🎓" => "#607D8B",
-                    "📦" => "#444444",
-                    _ => "#444444"
+                    "🛒" => "#9BC4F0", // sky
+                    "🚗" => "#F4C89A", // peach
+                    "💡" => "#F2E6A0", // soft yellow
+                    "💰" => "#86E0B8", // mint
+                    "🍔" => "#F2A0A0", // coral
+                    "💊" => "#F0A6C6", // pink
+                    "🎬" => "#C6A6E8", // lavender-purple
+                    "🛍️" => "#9BD9E0", // aqua
+                    "🏠" => "#C6AE9E", // taupe
+                    "✈️" => "#A6C8F0", // light blue
+                    "🎓" => "#A6B6C2", // blue-gray
+                    "📦" => "#9A98B0", // muted lavender-gray
+                    _ => "#9A98B0"
                 };
 
                 var localizedName = group.First().Category?.LocalizedName ?? "Other";
